@@ -1,41 +1,27 @@
-const sections = document.querySelectorAll('.section');
+const sections = document.querySelectorAll('.reveal');
 const progressBar = document.getElementById('progressBar');
 const topBtn = document.getElementById('topBtn');
 
-function reveal() {
-  const trigger = window.innerHeight * 0.9;
+function onScroll() {
+  const trigger = window.innerHeight * 0.92;
 
-  sections.forEach(section => {
+  sections.forEach((section) => {
     const top = section.getBoundingClientRect().top;
-
-    if (top < trigger) {
-      section.classList.add('active');
-    }
+    if (top < trigger) section.classList.add('active');
   });
-}
 
-function progress() {
   const scrollTop = window.scrollY;
-  const height = document.documentElement.scrollHeight - window.innerHeight;
+  const docHeight = document.documentElement.scrollHeight - window.innerHeight;
+  const progress = docHeight > 0 ? (scrollTop / docHeight) * 100 : 0;
+  progressBar.style.width = `${progress}%`;
 
-  const percent = (scrollTop / height) * 100;
-  progressBar.style.width = percent + "%";
+  if (scrollTop > 500) topBtn.classList.add('show');
+  else topBtn.classList.remove('show');
 }
 
-function toggleTopBtn() {
-  if (window.scrollY > 400) {
-    topBtn.style.display = "block";
-  } else {
-    topBtn.style.display = "none";
-  }
-}
+window.addEventListener('scroll', onScroll, { passive: true });
+window.addEventListener('load', onScroll);
 
-window.addEventListener("scroll", () => {
-  reveal();
-  progress();
-  toggleTopBtn();
-});
-
-topBtn.addEventListener("click", () => {
-  window.scrollTo({ top: 0, behavior: "smooth" });
+topBtn.addEventListener('click', () => {
+  window.scrollTo({ top: 0, behavior: 'smooth' });
 });
