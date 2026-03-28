@@ -3,47 +3,41 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Wahyu Damar Jati</title>
-  <meta name="description" content="Portfolio" />
+  <title>Wahyu Damar Jati — Portfolio</title>
+  <meta name="description" content="Instructional Designer Portfolio" />
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
   <div class="bg-orb orb-a"></div>
   <div class="bg-orb orb-b"></div>
+  <div class="bg-grid"></div>
   <div class="noise"></div>
-  <div class="progress" id="progress"></div>
+  <div class="scroll-progress"><span id="progressBar"></span></div>
 
   <header class="topbar">
-    <div class="brand">Wahyu Damar Jati</div>
+    <div class="brand">WAHYU DAMAR JATI</div>
     <nav class="mini-nav" id="miniNav"></nav>
   </header>
 
-  <main id="app"></main>
+  <main id="portfolioRoot"></main>
 
-  <button class="to-top" id="toTop" aria-label="Back to top">
-    <span>↑</span>
-  </button>
+  <button id="topBtn" aria-label="Back to top">↑</button>
 
   <script>
-    window.PORTFOLIO = {
-      hero: "assets/pages/page-01.png",
-      chapters: [
-        { id:"about", label:"About", pages:["02","03"], layout:"duo" },
-        { id:"education", label:"Education", pages:["04","05","06","07"], layout:"masonry" },
-        { id:"experience", label:"Experience", layout:"experience", groups:[
-          { company:"ILMS · The KPI Institute", meta:"May 2024 — Present", pages:["08","09"] },
-          { company:"Dicoding Indonesia", meta:"Feb 2023 — May 2024", pages:["10","11"] },
-          { company:"Netpolitan", meta:"Apr 2021 — Feb 2023", pages:["12","13"] }
-        ]},
-        { id:"skills", label:"Core Skills", pages:["14","15"], layout:"duo" },
-        { id:"instructional", label:"Instructional Design", pages:["16","17","18","19","20"], layout:"cascade" },
-        { id:"training", label:"Training", pages:["21","22","23","24","25","26"], layout:"filmstrip" },
-        { id:"automation", label:"Automation", pages:["27"], layout:"feature" },
-        { id:"closing", label:"Closing", pages:["28"], layout:"feature" },
-        { id:"contact", label:"Contact", pages:["29"], layout:"contact" }
+    window.PORTFOLIO_CONFIG = {
+      title: 'Wahyu Damar Jati',
+      subtitle: 'Instructional Designer',
+      sections: [
+        { id: 'intro', label: 'Intro', pages: [1], mode: 'hero' },
+        { id: 'about', label: 'About', pages: [2,3,4,5,6,7], mode: 'stack' },
+        { id: 'experience', label: 'Experience', pages: [8,9,10,11,12,13], mode: 'experience' },
+        { id: 'skills', label: 'Core Skills', pages: [14,15], mode: 'stack' },
+        { id: 'craft', label: 'Craft', pages: [16,17,18,19,20,21,22,23,24,25,26,27], mode: 'stack' },
+        { id: 'closing', label: 'Closing', pages: [28], mode: 'closing' },
+        { id: 'contact', label: 'Contact', pages: [29], mode: 'contact' }
       ]
     };
   </script>
