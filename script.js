@@ -1,171 +1,183 @@
-
-const app = document.getElementById('app');
-const progress = document.getElementById('progress');
-const toTop = document.getElementById('toTop');
+const config = window.PORTFOLIO_CONFIG;
+const root = document.getElementById('portfolioRoot');
 const miniNav = document.getElementById('miniNav');
+const topBtn = document.getElementById('topBtn');
+const progressBar = document.getElementById('progressBar');
 
-const data = window.PORTFOLIO;
+const fileName = (n) => `assets/pages/page-${String(n).padStart(2, '0')}.png`;
 
-function imgCard(src, extra='') {
-  return `
-    <figure class="card tilt ${extra}">
-      <img src="${src}" alt="" loading="lazy" decoding="async" />
-    </figure>
+function createImageCard(page, extraClass = '') {
+  const article = document.createElement('article');
+  article.className = `page-card reveal ${extraClass}`.trim();
+  article.innerHTML = `
+    <div class="page-tag">${String(page).padStart(2, '0')}</div>
+    <div class="page-card-media">
+      <img loading="lazy" src="${fileName(page)}" alt="Portfolio page ${page}" />
+    </div>
   `;
+  return article;
 }
 
-function renderHero() {
+function createRail(index, label) {
   return `
-    <section class="hero">
-      <div class="hero-shell">
-        <div class="hero-glow"></div>
-        <div class="hero-frame">
-          <img src="${data.hero}" alt="" />
-          <div class="hero-caption">
-            <span class="pill">Portfolio</span>
-            <span class="pill subtle">Scroll</span>
-          </div>
-        </div>
+    <aside class="section-rail">
+      <div class="rail-card">
+        <div class="rail-index">${String(index + 1).padStart(2, '0')}</div>
+        <div class="rail-label">${label}</div>
       </div>
-    </section>
+    </aside>
   `;
 }
 
-function renderSimple(chapter) {
-  let inner = '';
-  const paths = chapter.pages.map(p => `assets/pages/page-${p}.png`);
-  switch (chapter.layout) {
-    case 'duo':
-      inner = `<div class="duo-grid">${paths.map(imgCard).join('')}</div>`;
-      break;
-    case 'masonry':
-      inner = `<div class="masonry-grid">${paths.map(imgCard).join('')}</div>`;
-      break;
-    case 'cascade':
-      inner = `<div class="cascade-grid">${paths.map(imgCard).join('')}</div>`;
-      break;
-    case 'filmstrip':
-      const rows = [];
-      for (let i=0; i<paths.length; i+=2) {
-        const pair = paths.slice(i, i+2).map(imgCard).join('');
-        rows.push(`<div class="film-row">${pair}</div>`);
-      }
-      inner = `<div class="filmstrip">${rows.join('')}</div>`;
-      break;
-    case 'feature':
-    case 'contact':
-    default:
-      inner = `<div class="feature-grid">${paths.map(imgCard).join('')}</div>`;
-      break;
-  }
-
-  return `
-    <section class="section" id="${chapter.id}">
-      <div class="section-grid">
-        <aside class="section-rail">
-          <div class="section-label">${chapter.label}</div>
-        </aside>
-        <div class="section-stack ${chapter.id === 'contact' ? 'contact-wrap' : ''}">
-          ${inner}
-        </div>
+function buildHero(section) {
+  const sec = document.createElement('section');
+  sec.className = 'story-section';
+  sec.id = section.id;
+  sec.dataset.label = section.label;
+  sec.innerHTML = `
+    <div class="hero-frame">
+      <div class="hero-panel reveal visible">
+        <div class="hero-badge">${config.subtitle}</div>
+        <div class="hero-media"><img src="${fileName(section.pages[0])}" alt="Portfolio cover" /></div>
       </div>
-    </section>
+    </div>
   `;
+  return sec;
 }
 
-function renderExperience(chapter) {
-  const groups = chapter.groups.map(group => {
-    const media = group.pages.map(p => imgCard(`assets/pages/page-${p}.png`)).join('');
-    return `
-      <article class="exp-item">
-        <div class="exp-meta">
-          <h3>${group.company}</h3>
-          <p>${group.meta}</p>
-        </div>
-        <div class="exp-media">${media}</div>
-      </article>
+function buildStack(section, index) {
+  const sec = document.createElement('section');
+  sec.className = 'story-section';
+  sec.id = section.id;
+  sec.dataset.label = section.label;
+  sec.innerHTML = `
+    <div class="section-shell">
+      ${createRail(index, section.label)}
+      <div class="section-stage"><div class="stack-list"></div></div>
+    </div>
+  `;
+  const list = sec.querySelector('.stack-list');
+  section.pages.forEach((page) => list.appendChild(createImageCard(page)));
+  return sec;
+}
+
+function buildExperience(section, index) {
+  const rows = [
+    { title: 'ILMS', kicker: 'May 2024 — Present', sub: 'The KPI Institute', pages: [8, 9] },
+    { title: 'Dicoding', kicker: 'Feb 2023 — May 2024', sub: 'Learning Designer', pages: [10, 11] },
+    { title: 'Netpolitan', kicker: 'Apr 2021 — Feb 2023', sub: 'Instructional Designer', pages: [12, 13] }
+  ];
+
+  const sec = document.createElement('section');
+  sec.className = 'story-section';
+  sec.id = section.id;
+  sec.dataset.label = section.label;
+  sec.innerHTML = `
+    <div class="section-shell">
+      ${createRail(index, section.label)}
+      <div class="section-stage">
+        <div class="experience-shell"></div>
+      </div>
+    </div>
+  `;
+
+  const shell = sec.querySelector('.experience-shell');
+  rows.forEach((row) => {
+    const wrap = document.createElement('div');
+    wrap.className = 'exp-row';
+    wrap.innerHTML = `
+      <div class="exp-meta reveal">
+        <div class="exp-kicker">${row.kicker}</div>
+        <h2 class="exp-title">${row.title}</h2>
+        <div class="exp-sub">${row.sub}</div>
+      </div>
+      <div class="exp-panels"></div>
     `;
-  }).join('');
-
-  return `
-    <section class="section" id="${chapter.id}">
-      <div class="section-grid">
-        <aside class="section-rail">
-          <div class="section-label">${chapter.label}</div>
-        </aside>
-        <div class="experience-stack">
-          ${groups}
-        </div>
-      </div>
-    </section>
-  `;
+    const panels = wrap.querySelector('.exp-panels');
+    row.pages.forEach((page) => panels.appendChild(createImageCard(page, 'compact')));
+    shell.appendChild(wrap);
+  });
+  return sec;
 }
 
-function render() {
-  let html = renderHero();
-  data.chapters.forEach(ch => {
-    if (ch.layout === 'experience') html += renderExperience(ch);
-    else html += renderSimple(ch);
-  });
-  app.innerHTML = html;
-
-  miniNav.innerHTML = data.chapters
-    .filter(ch => ['about','experience','instructional','training','contact'].includes(ch.id))
-    .map(ch => `<a href="#${ch.id}">${ch.label}</a>`)
-    .join('');
+function buildClosing(section, index) {
+  return buildStack(section, index);
 }
 
-render();
+function buildContact(section, index) {
+  const sec = buildStack(section, index);
+  const spacer = document.createElement('div');
+  spacer.className = 'footer-space';
+  sec.appendChild(spacer);
+  return sec;
+}
 
-const cards = [...document.querySelectorAll('.card')];
-const sections = [...document.querySelectorAll('.section[id]')];
-const navLinks = [...miniNav.querySelectorAll('a')];
-
-const io = new IntersectionObserver((entries) => {
-  entries.forEach(entry => {
-    if (entry.isIntersecting) entry.target.classList.add('is-visible');
+function buildNav() {
+  config.sections.forEach((section) => {
+    const a = document.createElement('a');
+    a.href = `#${section.id}`;
+    a.textContent = section.label;
+    miniNav.appendChild(a);
   });
-}, { threshold: 0.15, rootMargin: '0px 0px -6% 0px' });
+}
 
-cards.forEach(card => io.observe(card));
+function build() {
+  config.sections.forEach((section, index) => {
+    let node;
+    if (section.mode === 'hero') node = buildHero(section, index);
+    else if (section.mode === 'experience') node = buildExperience(section, index);
+    else if (section.mode === 'closing') node = buildClosing(section, index);
+    else if (section.mode === 'contact') node = buildContact(section, index);
+    else node = buildStack(section, index);
+    root.appendChild(node);
+  });
+}
+
+buildNav();
+build();
+
+const revealEls = [...document.querySelectorAll('.reveal')];
+const sectionEls = [...document.querySelectorAll('.story-section')];
+const navLinks = [...document.querySelectorAll('.mini-nav a')];
+
+const revealObserver = new IntersectionObserver((entries) => {
+  entries.forEach((entry) => {
+    if (entry.isIntersecting) entry.target.classList.add('visible');
+  });
+}, { threshold: 0.12, rootMargin: '0px 0px -8% 0px' });
+revealEls.forEach((el) => revealObserver.observe(el));
 
 const sectionObserver = new IntersectionObserver((entries) => {
-  entries.forEach(entry => {
+  entries.forEach((entry) => {
     if (!entry.isIntersecting) return;
     const id = entry.target.id;
-    navLinks.forEach(link => link.classList.toggle('is-active', link.getAttribute('href') === `#${id}`));
+    navLinks.forEach((link) => link.classList.toggle('active', link.getAttribute('href') === `#${id}`));
   });
-}, { threshold: 0.35 });
+}, { threshold: 0.45 });
+sectionEls.forEach((el) => sectionObserver.observe(el));
 
-sections.forEach(section => sectionObserver.observe(section));
-
-function updateProgress() {
-  const max = document.documentElement.scrollHeight - innerHeight;
-  const value = Math.max(0, Math.min(100, scrollY / max * 100));
-  progress.style.width = `${value}%`;
-  toTop.classList.toggle('show', scrollY > 700);
+function onScroll() {
+  const height = document.documentElement.scrollHeight - window.innerHeight;
+  const progress = height > 0 ? (window.scrollY / height) * 100 : 0;
+  progressBar.style.width = `${progress}%`;
+  topBtn.classList.toggle('show', window.scrollY > 500);
 }
-updateProgress();
-addEventListener('scroll', updateProgress, { passive: true });
+window.addEventListener('scroll', onScroll, { passive: true });
+onScroll();
 
-toTop.addEventListener('click', () => scrollTo({ top: 0, behavior: 'smooth' }));
+topBtn.addEventListener('click', () => window.scrollTo({ top: 0, behavior: 'smooth' }));
 
-document.querySelectorAll('.tilt').forEach(card => {
-  let raf = null;
-  function reset() {
-    card.style.transform = '';
-  }
+document.querySelectorAll('.page-card').forEach((card) => {
   card.addEventListener('pointermove', (e) => {
-    if (matchMedia('(max-width: 860px)').matches || matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+    if (window.innerWidth < 900) return;
     const rect = card.getBoundingClientRect();
-    const px = (e.clientX - rect.left) / rect.width;
-    const py = (e.clientY - rect.top) / rect.height;
-    const rx = (0.5 - py) * 3.5;
-    const ry = (px - 0.5) * 5;
-    cancelAnimationFrame(raf);
-    raf = requestAnimationFrame(() => {
-      card.style.transform = `translateY(0) perspective(1000px) rotateX(${rx}deg) rotateY(${ry}deg)`;
-    });
+    const x = ((e.clientX - rect.left) / rect.width - 0.5) * 8;
+    const y = ((e.clientY - rect.top) / rect.height - 0.5) * -8;
+    card.style.transform = `translateY(0) rotateX(${y}deg) rotateY(${x}deg)`;
   });
-  card.addEventListener('pointerleave', reset);
+  card.addEventListener('pointerleave', () => {
+    if (card.classList.contains('visible')) {
+      card.style.transform = '';
+    }
+  });
 });
