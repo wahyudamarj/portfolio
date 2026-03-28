@@ -4,117 +4,49 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Wahyu Damar Jati</title>
+  <meta name="description" content="Portfolio" />
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
-  <div class="ambient ambient-1"></div>
-  <div class="ambient ambient-2"></div>
+  <div class="bg-orb orb-a"></div>
+  <div class="bg-orb orb-b"></div>
   <div class="noise"></div>
-  <div class="progress-wrap"><div class="progress-bar" id="progressBar"></div></div>
+  <div class="progress" id="progress"></div>
 
   <header class="topbar">
-    <div class="brand">WAHYU DAMAR JATI</div>
-    <nav class="mini-nav">
-      <a href="#about">About</a>
-      <a href="#experience">Experience</a>
-      <a href="#skills">Skills</a>
-      <a href="#closing">Closing</a>
-      <a href="#contact">Contact</a>
-    </nav>
+    <div class="brand">Wahyu Damar Jati</div>
+    <nav class="mini-nav" id="miniNav"></nav>
   </header>
 
-  <section class="hero">
-    <div class="hero-copy reveal reveal-soft">
-      <p class="eyebrow">Personal Portfolio</p>
-      <h1>Instructional Designer</h1>
-      <p class="subcopy">A cinematic, scroll-first portfolio experience.</p>
-    </div>
-    <div class="hero-image reveal reveal-strong floating-card">
-      <img src="assets/pages/page-01.png" alt="Portfolio cover" />
-    </div>
-    <div class="scroll-hint">Scroll</div>
-  </section>
+  <main id="app"></main>
 
-  <main>
-    <section class="chapter" id="about">
-      <div class="chapter-head reveal reveal-soft">
-        <span class="chapter-kicker">01</span>
-        <h2>About</h2>
-      </div>
-      <div class="stack stack-narrow">
-        <article class="page-card reveal reveal-left tilt-card"><img src="assets/pages/page-02.png" alt="About page 2" /></article>
-        <article class="page-card reveal reveal-right tilt-card"><img src="assets/pages/page-03.png" alt="About page 3" /></article>
-        <article class="page-card reveal reveal-left tilt-card"><img src="assets/pages/page-04.png" alt="Education page 4" /></article>
-        <article class="page-card reveal reveal-right tilt-card"><img src="assets/pages/page-05.png" alt="Education page 5" /></article>
-        <article class="page-card reveal reveal-left tilt-card"><img src="assets/pages/page-06.png" alt="Education page 6" /></article>
-        <article class="page-card reveal reveal-right tilt-card"><img src="assets/pages/page-07.png" alt="Education page 7" /></article>
-      </div>
-    </section>
+  <button class="to-top" id="toTop" aria-label="Back to top">
+    <span>↑</span>
+  </button>
 
-    <section class="chapter chapter-alt" id="experience">
-      <div class="chapter-head reveal reveal-soft">
-        <span class="chapter-kicker">02</span>
-        <h2>Experience</h2>
-      </div>
-      <div class="stack">
-        <article class="page-card reveal reveal-left tilt-card wide"><img src="assets/pages/page-08.png" alt="Experience page 8" /></article>
-        <article class="page-card reveal reveal-right tilt-card wide"><img src="assets/pages/page-09.png" alt="Experience page 9" /></article>
-        <article class="page-card reveal reveal-left tilt-card wide"><img src="assets/pages/page-10.png" alt="Experience page 10" /></article>
-        <article class="page-card reveal reveal-right tilt-card wide"><img src="assets/pages/page-11.png" alt="Experience page 11" /></article>
-        <article class="page-card reveal reveal-left tilt-card wide"><img src="assets/pages/page-12.png" alt="Experience page 12" /></article>
-        <article class="page-card reveal reveal-right tilt-card wide"><img src="assets/pages/page-13.png" alt="Experience page 13" /></article>
-      </div>
-    </section>
-
-    <section class="chapter" id="skills">
-      <div class="chapter-head reveal reveal-soft">
-        <span class="chapter-kicker">03</span>
-        <h2>Core Skills</h2>
-      </div>
-      <div class="stack stack-featured">
-        <article class="page-card reveal reveal-zoom spotlight-card"><img src="assets/pages/page-14.png" alt="Core skills page 14" /></article>
-        <article class="page-card reveal reveal-zoom spotlight-card"><img src="assets/pages/page-15.png" alt="Core skills page 15" /></article>
-        <article class="page-card reveal reveal-left tilt-card"><img src="assets/pages/page-16.png" alt="Instructional design page 16" /></article>
-        <article class="page-card reveal reveal-right tilt-card"><img src="assets/pages/page-17.png" alt="Instructional design page 17" /></article>
-        <article class="page-card reveal reveal-left tilt-card"><img src="assets/pages/page-18.png" alt="Instructional design page 18" /></article>
-        <article class="page-card reveal reveal-right tilt-card"><img src="assets/pages/page-19.png" alt="Instructional design page 19" /></article>
-        <article class="page-card reveal reveal-left tilt-card"><img src="assets/pages/page-20.png" alt="Instructional design page 20" /></article>
-        <article class="page-card reveal reveal-right tilt-card"><img src="assets/pages/page-21.png" alt="Training page 21" /></article>
-        <article class="page-card reveal reveal-left tilt-card"><img src="assets/pages/page-22.png" alt="Training page 22" /></article>
-        <article class="page-card reveal reveal-right tilt-card"><img src="assets/pages/page-23.png" alt="Training page 23" /></article>
-        <article class="page-card reveal reveal-left tilt-card"><img src="assets/pages/page-24.png" alt="Training page 24" /></article>
-        <article class="page-card reveal reveal-right tilt-card"><img src="assets/pages/page-25.png" alt="Training page 25" /></article>
-        <article class="page-card reveal reveal-left tilt-card"><img src="assets/pages/page-26.png" alt="Training page 26" /></article>
-        <article class="page-card reveal reveal-zoom spotlight-card"><img src="assets/pages/page-27.png" alt="Automation page 27" /></article>
-      </div>
-    </section>
-
-    <section class="chapter chapter-end" id="closing">
-      <div class="chapter-head reveal reveal-soft">
-        <span class="chapter-kicker">04</span>
-        <h2>Closing</h2>
-      </div>
-      <div class="stack stack-end">
-        <article class="page-card reveal reveal-strong spotlight-card end-card"><img src="assets/pages/page-28.png" alt="Closing page 28" /></article>
-      </div>
-    </section>
-
-    <section class="chapter chapter-contact" id="contact">
-      <div class="chapter-head reveal reveal-soft">
-        <span class="chapter-kicker">05</span>
-        <h2>Contact</h2>
-      </div>
-      <div class="stack stack-end">
-        <article class="page-card reveal reveal-strong spotlight-card end-card"><img src="assets/pages/page-29.png" alt="Contact page 29" /></article>
-      </div>
-    </section>
-  </main>
-
-  <button class="top-btn" id="topBtn" aria-label="Back to top">↑</button>
-
+  <script>
+    window.PORTFOLIO = {
+      hero: "assets/pages/page-01.png",
+      chapters: [
+        { id:"about", label:"About", pages:["02","03"], layout:"duo" },
+        { id:"education", label:"Education", pages:["04","05","06","07"], layout:"masonry" },
+        { id:"experience", label:"Experience", layout:"experience", groups:[
+          { company:"ILMS · The KPI Institute", meta:"May 2024 — Present", pages:["08","09"] },
+          { company:"Dicoding Indonesia", meta:"Feb 2023 — May 2024", pages:["10","11"] },
+          { company:"Netpolitan", meta:"Apr 2021 — Feb 2023", pages:["12","13"] }
+        ]},
+        { id:"skills", label:"Core Skills", pages:["14","15"], layout:"duo" },
+        { id:"instructional", label:"Instructional Design", pages:["16","17","18","19","20"], layout:"cascade" },
+        { id:"training", label:"Training", pages:["21","22","23","24","25","26"], layout:"filmstrip" },
+        { id:"automation", label:"Automation", pages:["27"], layout:"feature" },
+        { id:"closing", label:"Closing", pages:["28"], layout:"feature" },
+        { id:"contact", label:"Contact", pages:["29"], layout:"contact" }
+      ]
+    };
+  </script>
   <script src="script.js"></script>
 </body>
 </html>
