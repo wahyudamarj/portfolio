@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Wahyu Damar Jati — Portfolio</title>
+  <meta name="description" content="Instructional Designer portfolio of Wahyu Damar Jati" />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Syne:wght@700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <div class="ambient-noise" aria-hidden="true"></div>
+  <div class="cursor-glow" id="cursorGlow" aria-hidden="true"></div>
+  <div class="scroll-progress"><span id="scrollProgressBar"></span></div>
+
+  <div class="intro-overlay" id="introOverlay">
+    <div class="intro-panel">
+      <p class="eyebrow">Personal Portfolio</p>
+      <h1>Wahyu Damar Jati</h1>
+      <p class="intro-lead">Instructional Designer · Trainer · Automation Builder</p>
+      <div class="intro-actions">
+        <button id="enterSiteBtn" class="btn btn-primary" type="button">Open Portfolio</button>
+      </div>
+    </div>
+  </div>
+
+  <header class="floating-header">
+    <a class="brand" href="#hero" aria-label="Back to hero">WDJ</a>
+    <nav class="floating-nav" id="floatingNav"></nav>
+    <div class="header-actions">
+      <button class="btn btn-ghost compact" id="toggleMotionBtn" type="button">Pause Motion</button>
+      <button class="btn btn-ghost compact" id="themeToggleBtn" type="button">Glow</button>
+    </div>
+  </header>
+
+  <main>
+    <section class="hero section" id="hero">
+      <div class="hero-backdrop"></div>
+      <div class="container hero-grid">
+        <div class="hero-copy reveal">
+          <p class="eyebrow">Portfolio 2026</p>
+          <h1>Turning complex ideas into clear and engaging learning experiences.</h1>
+          <p class="lead">Instructional designer with 5+ years of experience across learning design, facilitation, and automation.</p>
+          <div class="hero-actions">
+            <a class="btn btn-primary" href="#about">Start Scrolling</a>
+            <a class="btn btn-ghost" href="#contact">Contact</a>
+          </div>
+          <div class="hero-metrics reveal reveal-delay-1">
+            <div class="metric-card tilt-card"><strong>5+</strong><span>Years experience</span></div>
+            <div class="metric-card tilt-card"><strong>80+</strong><span>Interactive activities</span></div>
+            <div class="metric-card tilt-card"><strong>15+</strong><span>Automation workflows</span></div>
+          </div>
+        </div>
+        <div class="hero-stage reveal reveal-delay-2">
+          <div class="hero-card tilt-card cinematic-frame" data-lightbox-src="assets/pages/page-01.svg" data-lightbox-title="Portfolio Cover">
+            <div class="frame-glow"></div>
+            <img src="assets/pages/page-01.svg" alt="Portfolio cover page" />
+            <div class="asset-fallback">Drop your file here:<br><code>assets/pages/page-01.svg</code></div>
+          </div>
+        </div>
+      </div>
+      <div class="scroll-cue" aria-hidden="true"><span></span></div>
+    </section>
+
+    <section class="chapter-intro section" id="about">
+      <div class="container narrow reveal">
+        <p class="eyebrow">Chapter 01</p>
+        <h2>About Me</h2>
+      </div>
+    </section>
+
+    <section class="gallery-section section" data-label="About">
+      <div class="container gallery-layout">
+        <aside class="sticky-rail reveal">
+          <span class="rail-kicker">Section</span>
+          <h3>About</h3>
+          <p>Introduction, strengths, and education.</p>
+        </aside>
+        <div class="gallery-grid" id="aboutStack"></div>
+      </div>
+    </section>
+
+    <section class="chapter-intro section" id="experience">
+      <div class="container narrow reveal">
+        <p class="eyebrow">Chapter 02</p>
+        <h2>Experience</h2>
+      </div>
+    </section>
+
+    <section class="gallery-section section alt-surface" data-label="Experience">
+      <div class="container gallery-layout experience-layout">
+        <aside class="sticky-rail reveal">
+          <span class="rail-kicker">Section</span>
+          <h3>Experience</h3>
+          <p>Roles and selected projects across ILMS, Dicoding, and Netpolitan.</p>
+        </aside>
+        <div class="gallery-grid" id="experienceStack"></div>
+      </div>
+    </section>
+
+    <section class="chapter-intro section" id="practice">
+      <div class="container narrow reveal">
+        <p class="eyebrow">Chapter 03</p>
+        <h2>Core Skills</h2>
+      </div>
+    </section>
+
+    <section class="gallery-section section" data-label="Core Skills">
+      <div class="container gallery-layout">
+        <aside class="sticky-rail reveal">
+          <span class="rail-kicker">Section</span>
+          <h3>Core Skills</h3>
+          <p>Selected pages from core skills through automation.</p>
+        </aside>
+        <div class="gallery-grid" id="practiceStack"></div>
+      </div>
+    </section>
+
+    <section class="chapter-intro section" id="closing">
+      <div class="container narrow reveal">
+        <p class="eyebrow">Final Chapter</p>
+        <h2>Closing</h2>
+      </div>
+    </section>
+
+    <section class="gallery-section section alt-surface" data-label="Closing">
+      <div class="container gallery-layout">
+        <aside class="sticky-rail reveal">
+          <span class="rail-kicker">Section</span>
+          <h3>Closing</h3>
+          <p>Final reflection that bridges into contact.</p>
+        </aside>
+        <div class="gallery-grid" id="closingStack"></div>
+      </div>
+    </section>
+
+    <section class="contact-cta section" id="contact">
+      <div class="container reveal">
+        <div class="contact-card cinematic-frame">
+          <div class="contact-copy">
+            <p class="eyebrow">Contact</p>
+            <h2>Let’s work together.</h2>
+            <p>If learning should feel clear, engaging, and enjoyable, we’ll get along.</p>
+            <div class="contact-actions">
+              <a class="btn btn-primary" href="mailto:wahyudamarjt@gmail.com">wahyudamarjt@gmail.com</a>
+              <a class="btn btn-ghost" href="https://instagram.com/wahyudamarjt" target="_blank" rel="noreferrer">@wahyudamarjt</a>
+            </div>
+          </div>
+          <div class="contact-art">
+            <img src="assets/pages/page-29.svg" alt="Contact page" />
+            <div class="asset-fallback">Drop your final SVG here:<br><code>assets/pages/page-29.svg</code></div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <button class="back-to-top" id="backToTopBtn" type="button" aria-label="Back to top">↑</button>
+
+  <dialog id="lightbox" class="lightbox">
+    <button id="lightboxCloseBtn" class="lightbox-close" type="button" aria-label="Close">×</button>
+    <img id="lightboxImg" alt="Expanded portfolio page" />
+    <p id="lightboxCaption"></p>
+  </dialog>
+
+  <script>
+    window.PORTFOLIO_CONFIG = {
+      nav: [
+        { id: 'about', label: 'About' },
+        { id: 'experience', label: 'Experience' },
+        { id: 'practice', label: 'Core Skills' },
+        { id: 'closing', label: 'Closing' },
+        { id: 'contact', label: 'Contact' }
+      ],
+      groups: {
+        aboutStack: [
+          { src: 'assets/pages/page-02.svg', title: 'About Me' },
+          { src: 'assets/pages/page-03.svg', title: 'Personal Abilities' },
+          { src: 'assets/pages/page-04.svg', title: 'Education and Certification' },
+          { src: 'assets/pages/page-05.svg', title: 'Bachelor Degree Highlights' },
+          { src: 'assets/pages/page-06.svg', title: 'Master Degree Highlights' },
+          { src: 'assets/pages/page-07.svg', title: 'Professional Certifications' }
+        ],
+        experienceStack: [
+          { src: 'assets/pages/page-08.svg', title: 'Experience — ILMS' },
+          { src: 'assets/pages/page-09.svg', title: 'Latest Project' },
+          { src: 'assets/pages/page-10.svg', title: 'Experience — Dicoding' },
+          { src: 'assets/pages/page-11.svg', title: 'Memorable Project' },
+          { src: 'assets/pages/page-12.svg', title: 'Experience — Netpolitan' },
+          { src: 'assets/pages/page-13.svg', title: 'Learning Innovation' }
+        ],
+        practiceStack: [
+          { src: 'assets/pages/page-14.svg', title: 'Core Skills' },
+          { src: 'assets/pages/page-15.svg', title: 'Confidentiality Notice' },
+          { src: 'assets/pages/page-16.svg', title: 'Instructional Design' },
+          { src: 'assets/pages/page-17.svg', title: 'Storyboarding' },
+          { src: 'assets/pages/page-18.svg', title: 'Deck Design' },
+          { src: 'assets/pages/page-19.svg', title: 'Interactive Activities' },
+          { src: 'assets/pages/page-20.svg', title: 'Quiz & Assessment' },
+          { src: 'assets/pages/page-21.svg', title: 'Training' },
+          { src: 'assets/pages/page-22.svg', title: 'Soft Skills Training' },
+          { src: 'assets/pages/page-23.svg', title: 'Guest Speaker Session' },
+          { src: 'assets/pages/page-24.svg', title: 'Technical Workshops' },
+          { src: 'assets/pages/page-25.svg', title: 'Automation Training' },
+          { src: 'assets/pages/page-26.svg', title: 'Biggest Training Session' },
+          { src: 'assets/pages/page-27.svg', title: 'Automation' }
+        ],
+        closingStack: [
+          { src: 'assets/pages/page-28.svg', title: 'Closing Statement' }
+        ]
+      }
+    };
+  </script>
+  <script src="script.js"></script>
+</body>
+</html>
