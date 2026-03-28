@@ -3,164 +3,153 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Wahyu Damar Jati</title>
+  <title>Wahyu Damar Jati — Portfolio</title>
   <meta name="description" content="Portfolio of Wahyu Damar Jati" />
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Cormorant+Garamond:wght@500;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
-  <div class="page-noise"></div>
   <div class="ambient ambient-a"></div>
   <div class="ambient ambient-b"></div>
-  <div class="progress-wrap"><div id="progressBar"></div></div>
+  <div class="noise"></div>
+  <div class="progress-wrap"><div class="progress-bar" id="progressBar"></div></div>
 
   <header class="topbar">
-    <div class="brand">Wahyu Damar Jati</div>
+    <div class="brand">WAHYU DAMAR JATI</div>
     <nav class="topnav">
       <a href="#about">About</a>
       <a href="#experience">Experience</a>
-      <a href="#craft">Craft</a>
+      <a href="#capabilities">Capabilities</a>
       <a href="#contact">Contact</a>
     </nav>
   </header>
 
+  <aside class="chapter-rail" aria-hidden="true">
+    <span id="chapterLabel">Portfolio</span>
+  </aside>
+
   <main>
-    <section class="hero" id="home">
-      <div class="hero-intro reveal-text">
-        <div class="eyebrow">Instructional Designer</div>
-        <h1>Learning, shaped with clarity, rhythm, and presence.</h1>
-        <p>A cinematic scroll portfolio built around the flow of your work.</p>
-      </div>
-      <div class="hero-frame panel reveal-panel">
+    <section class="hero shell" id="top" data-chapter="Portfolio">
+      <div class="hero-frame big reveal-hero">
         <img src="assets/pages/page-01.png" alt="Portfolio cover" loading="eager" />
       </div>
     </section>
 
-    <section class="chapter chapter-standard" id="about">
-      <div class="chapter-head reveal-text">
-        <span class="chapter-kicker">01</span>
-        <h2>About</h2>
+    <section class="chapter shell" id="about" data-chapter="About">
+      <div class="chapter-intro reveal-text">
+        <p class="eyebrow">About</p>
+        <h2>Clear, bold, readable.</h2>
       </div>
-      <div class="stack two-up">
-        <article class="panel reveal-panel lift"><img src="assets/pages/page-02.png" alt="About me" loading="lazy" /></article>
-        <article class="panel reveal-panel lift"><img src="assets/pages/page-03.png" alt="Personal abilities" loading="lazy" /></article>
-      </div>
-      <div class="stack four-up">
-        <article class="panel reveal-panel"><img src="assets/pages/page-04.png" alt="Education and certification" loading="lazy" /></article>
-        <article class="panel reveal-panel"><img src="assets/pages/page-05.png" alt="Bachelor highlight" loading="lazy" /></article>
-        <article class="panel reveal-panel"><img src="assets/pages/page-06.png" alt="Master highlight" loading="lazy" /></article>
-        <article class="panel reveal-panel"><img src="assets/pages/page-07.png" alt="Certification highlight" loading="lazy" /></article>
+      <div class="stack stack-xl">
+        <figure class="panel full reveal-card"><img src="assets/pages/page-02.png" alt="About page 1" loading="lazy"></figure>
+        <figure class="panel full reveal-card"><img src="assets/pages/page-03.png" alt="About page 2" loading="lazy"></figure>
+        <figure class="panel full reveal-card"><img src="assets/pages/page-04.png" alt="Education and certification" loading="lazy"></figure>
+        <div class="duo duo-tall">
+          <figure class="panel reveal-card"><img src="assets/pages/page-05.png" alt="Education details 1" loading="lazy"></figure>
+          <figure class="panel reveal-card"><img src="assets/pages/page-06.png" alt="Education details 2" loading="lazy"></figure>
+        </div>
+        <figure class="panel full reveal-card"><img src="assets/pages/page-07.png" alt="Education details 3" loading="lazy"></figure>
       </div>
     </section>
 
-    <section class="chapter chapter-experience" id="experience">
-      <div class="chapter-head reveal-text">
-        <span class="chapter-kicker">02</span>
-        <h2>Experience</h2>
+    <section class="chapter shell experience-mode" id="experience" data-chapter="Experience">
+      <div class="chapter-intro reveal-text">
+        <p class="eyebrow">Experience</p>
+        <h2>Big moments, cleaner rhythm.</h2>
       </div>
 
-      <div class="experience-track">
-        <article class="experience-scene scene-a" data-scene>
-          <div class="scene-sticky">
-            <div class="scene-shell">
-              <div class="scene-meta reveal-text">
-                <span class="scene-index">01</span>
-                <h3>ILMS · The KPI Institute</h3>
-                <p>Course development, systems thinking, and scalable learning production.</p>
-              </div>
-              <div class="scene-visuals">
-                <figure class="panel hero-card reveal-panel"><img src="assets/pages/page-08.png" alt="Experience at ILMS" loading="lazy" /></figure>
-                <figure class="panel detail-card floating reveal-panel"><img src="assets/pages/page-09.png" alt="Latest project at ILMS" loading="lazy" /></figure>
-              </div>
-            </div>
+      <article class="experience-block reveal-card">
+        <div class="exp-head">
+          <span class="index">01</span>
+          <div>
+            <h3>ILMS · The KPI Institute</h3>
+            <p>Instructional Designer</p>
           </div>
-        </article>
+        </div>
+        <div class="exp-visuals single-spine">
+          <figure class="panel mega"><img src="assets/pages/page-08.png" alt="Experience ILMS 1" loading="lazy"></figure>
+          <figure class="panel mega offset"><img src="assets/pages/page-09.png" alt="Experience ILMS 2" loading="lazy"></figure>
+        </div>
+      </article>
 
-        <article class="experience-scene scene-b" data-scene>
-          <div class="scene-sticky">
-            <div class="scene-shell">
-              <div class="scene-meta reveal-text">
-                <span class="scene-index">02</span>
-                <h3>Dicoding Indonesia</h3>
-                <p>Soft skills learning design, high-scale partner programs, and memorable facilitation.</p>
-              </div>
-              <div class="scene-visuals">
-                <figure class="panel hero-card reveal-panel"><img src="assets/pages/page-10.png" alt="Experience at Dicoding" loading="lazy" /></figure>
-                <figure class="panel detail-card floating reveal-panel"><img src="assets/pages/page-11.png" alt="Memorable project at Dicoding" loading="lazy" /></figure>
-              </div>
-            </div>
+      <article class="experience-block reveal-card">
+        <div class="exp-head">
+          <span class="index">02</span>
+          <div>
+            <h3>Dicoding Indonesia</h3>
+            <p>Learning Designer</p>
           </div>
-        </article>
+        </div>
+        <div class="exp-visuals single-spine">
+          <figure class="panel mega"><img src="assets/pages/page-10.png" alt="Experience Dicoding 1" loading="lazy"></figure>
+          <figure class="panel mega offset"><img src="assets/pages/page-11.png" alt="Experience Dicoding 2" loading="lazy"></figure>
+        </div>
+      </article>
 
-        <article class="experience-scene scene-c" data-scene>
-          <div class="scene-sticky">
-            <div class="scene-shell">
-              <div class="scene-meta reveal-text">
-                <span class="scene-index">03</span>
-                <h3>Netpolitan</h3>
-                <p>Learning innovation through narrative-led formats and more expressive educational content.</p>
-              </div>
-              <div class="scene-visuals">
-                <figure class="panel hero-card reveal-panel"><img src="assets/pages/page-12.png" alt="Experience at Netpolitan" loading="lazy" /></figure>
-                <figure class="panel detail-card floating reveal-panel"><img src="assets/pages/page-13.png" alt="Learning innovation at Netpolitan" loading="lazy" /></figure>
-              </div>
-            </div>
+      <article class="experience-block reveal-card">
+        <div class="exp-head">
+          <span class="index">03</span>
+          <div>
+            <h3>Netpolitan</h3>
+            <p>Instructional Designer</p>
           </div>
-        </article>
+        </div>
+        <div class="exp-visuals single-spine">
+          <figure class="panel mega"><img src="assets/pages/page-12.png" alt="Experience Netpolitan 1" loading="lazy"></figure>
+          <figure class="panel mega offset"><img src="assets/pages/page-13.png" alt="Experience Netpolitan 2" loading="lazy"></figure>
+        </div>
+      </article>
+    </section>
+
+    <section class="chapter shell" id="capabilities" data-chapter="Capabilities">
+      <div class="chapter-intro reveal-text">
+        <p class="eyebrow">Capabilities</p>
+        <h2>Full-screen presence, less clutter.</h2>
+      </div>
+      <div class="stack stack-xl">
+        <figure class="panel full reveal-card"><img src="assets/pages/page-14.png" alt="Core skills" loading="lazy"></figure>
+        <figure class="panel full reveal-card"><img src="assets/pages/page-15.png" alt="Confidentiality notice" loading="lazy"></figure>
+
+        <div class="gallery-break reveal-text"><span>Instructional Design</span></div>
+        <figure class="panel full reveal-card"><img src="assets/pages/page-16.png" alt="Instructional design intro" loading="lazy"></figure>
+        <div class="duo duo-wide">
+          <figure class="panel reveal-card"><img src="assets/pages/page-17.png" alt="Storyboarding" loading="lazy"></figure>
+          <figure class="panel reveal-card"><img src="assets/pages/page-18.png" alt="Deck design" loading="lazy"></figure>
+        </div>
+        <div class="duo duo-wide">
+          <figure class="panel reveal-card"><img src="assets/pages/page-19.png" alt="Interactive activities" loading="lazy"></figure>
+          <figure class="panel reveal-card"><img src="assets/pages/page-20.png" alt="Quiz and assessment" loading="lazy"></figure>
+        </div>
+
+        <div class="gallery-break reveal-text"><span>Training</span></div>
+        <figure class="panel full reveal-card"><img src="assets/pages/page-21.png" alt="Training intro" loading="lazy"></figure>
+        <figure class="panel full reveal-card"><img src="assets/pages/page-22.png" alt="Soft skills training" loading="lazy"></figure>
+        <div class="duo duo-tall">
+          <figure class="panel reveal-card"><img src="assets/pages/page-23.png" alt="Guest speaker session" loading="lazy"></figure>
+          <figure class="panel reveal-card"><img src="assets/pages/page-24.png" alt="Technical workshops" loading="lazy"></figure>
+        </div>
+        <div class="duo duo-tall">
+          <figure class="panel reveal-card"><img src="assets/pages/page-25.png" alt="Automation training" loading="lazy"></figure>
+          <figure class="panel reveal-card"><img src="assets/pages/page-26.png" alt="Biggest training session" loading="lazy"></figure>
+        </div>
+
+        <div class="gallery-break reveal-text"><span>Automation</span></div>
+        <figure class="panel full reveal-card"><img src="assets/pages/page-27.png" alt="Automation" loading="lazy"></figure>
       </div>
     </section>
 
-    <section class="chapter chapter-standard" id="craft">
-      <div class="chapter-head reveal-text">
-        <span class="chapter-kicker">03</span>
-        <h2>Craft</h2>
-      </div>
-      <div class="stack two-up">
-        <article class="panel reveal-panel"><img src="assets/pages/page-14.png" alt="Core skills" loading="lazy" /></article>
-        <article class="panel reveal-panel"><img src="assets/pages/page-15.png" alt="Confidentiality notice" loading="lazy" /></article>
-      </div>
-      <div class="stack five-up">
-        <article class="panel reveal-panel"><img src="assets/pages/page-16.png" alt="Instructional design" loading="lazy" /></article>
-        <article class="panel reveal-panel"><img src="assets/pages/page-17.png" alt="Storyboarding" loading="lazy" /></article>
-        <article class="panel reveal-panel"><img src="assets/pages/page-18.png" alt="Deck design" loading="lazy" /></article>
-        <article class="panel reveal-panel"><img src="assets/pages/page-19.png" alt="Interactive activities" loading="lazy" /></article>
-        <article class="panel reveal-panel"><img src="assets/pages/page-20.png" alt="Quiz and assessment" loading="lazy" /></article>
-      </div>
-
-      <div class="stack six-up">
-        <article class="panel reveal-panel"><img src="assets/pages/page-21.png" alt="Training" loading="lazy" /></article>
-        <article class="panel reveal-panel"><img src="assets/pages/page-22.png" alt="Soft skills training" loading="lazy" /></article>
-        <article class="panel reveal-panel"><img src="assets/pages/page-23.png" alt="Guest speaker session" loading="lazy" /></article>
-        <article class="panel reveal-panel"><img src="assets/pages/page-24.png" alt="Technical workshops" loading="lazy" /></article>
-        <article class="panel reveal-panel"><img src="assets/pages/page-25.png" alt="Automation training" loading="lazy" /></article>
-        <article class="panel reveal-panel"><img src="assets/pages/page-26.png" alt="Biggest training session" loading="lazy" /></article>
-      </div>
-
-      <div class="stack solo">
-        <article class="panel reveal-panel feature-wide"><img src="assets/pages/page-27.png" alt="Automation" loading="lazy" /></article>
-      </div>
+    <section class="chapter shell chapter-closure" id="closing" data-chapter="Closing">
+      <figure class="panel full reveal-card"><img src="assets/pages/page-28.png" alt="Closing statement" loading="lazy"></figure>
     </section>
 
-    <section class="chapter chapter-closing" id="closing">
-      <div class="closing-shell">
-        <article class="panel reveal-panel closing-card"><img src="assets/pages/page-28.png" alt="Closing statement" loading="lazy" /></article>
-      </div>
-    </section>
-
-    <section class="chapter chapter-contact" id="contact">
-      <div class="chapter-head reveal-text compact-head">
-        <span class="chapter-kicker">04</span>
-        <h2>Contact</h2>
-      </div>
-      <div class="contact-shell">
-        <article class="panel reveal-panel contact-card"><img src="assets/pages/page-29.png" alt="Contact page" loading="lazy" /></article>
-      </div>
+    <section class="chapter shell chapter-contact" id="contact" data-chapter="Contact">
+      <figure class="panel full reveal-card contact-card"><img src="assets/pages/page-29.png" alt="Contact page" loading="lazy"></figure>
     </section>
   </main>
 
-  <button id="topBtn" aria-label="Back to top">↑</button>
+  <button id="topBtn" class="top-btn" aria-label="Back to top">↑</button>
 
   <script src="script.js"></script>
 </body>
