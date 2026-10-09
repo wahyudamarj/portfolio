@@ -1,0 +1,350 @@
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape" version="1.1" width="100%" height="100%" viewBox="0 0 720 405.01417">
+<defs>
+<clipPath id="clip_1">
+<path transform="matrix(1,0,0,-1,0,405.01417)" d="M0 .028H719.972V405.014H0Z" clip-rule="evenodd"/>
+</clipPath>
+<clipPath id="clip_2">
+<path transform="matrix(1,0,0,-1,0,405.01417)" d="M2.126 8.107H720V404.277H2.126Z" clip-rule="evenodd"/>
+</clipPath>
+<clipPath id="clip_4">
+<path transform="matrix(1,0,0,-1,0,405.01417)" d="M608.769 363.883H720V404.277H608.769Z" clip-rule="evenodd"/>
+</clipPath>
+<mask id="mask_5">
+<g transform="matrix(.24055591,0,0,.24052239,608.769,-120.04782)">
+<image id="image_6" width="1493" height="670" xlink:href="../../slide-images/5f4b04dff9992e4eaa34ee22b929af9ddfa816d05be877a5f7447f69f3b58c50.webp"/>
+</g>
+</mask>
+<clipPath id="clip_8">
+<path transform="matrix(1,0,0,-1,0,405.01417)" d="M2.126 8.107H720V404.277H2.126Z" clip-rule="evenodd"/>
+</clipPath>
+<clipPath id="clip_9">
+<path transform="matrix(1,0,0,-1,0,405.01417)" d="M0 .028H719.972V405.014H0Z" clip-rule="evenodd"/>
+</clipPath>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<clipPath id="clip_13">
+<path transform="matrix(1,0,0,-1,0,405.01417)" d="M319.408 103.776H687.147V326.522H319.408Z" clip-rule="evenodd"/>
+</clipPath>
+<mask id="mask_14">
+<g transform="matrix(.28353844,0,0,.28349219,271.361,38.098176)">
+<image id="image_15" width="1536" height="1024" xlink:href="../../slide-images/22da4d78b0629647868448a627200f626466ebb497f773c3787ee3efcd4516fc.webp"/>
+</g>
+</mask>
+</defs>
+<g>
+<g clip-path="url(#clip_1)">
+<path transform="matrix(1,0,0,-1,0,405.01417)" d="M0 405.014H719.972V.028H0V405.014Z" fill="#ffffff" fill-rule="evenodd"/>
+<path transform="matrix(1,0,0,-1,0,405.01417)" d="M0 405.014H720V0H0V405.014Z" fill="#ffffff" fill-rule="evenodd"/>
+</g>
+<g clip-path="url(#clip_2)">
+<g transform="matrix(.24535233,0,0,.24561271,2.126,354.38816)">
+<image id="image_3" width="386" height="173" xlink:href="../../slide-images/a5dfbe3b1c77decd98f7fa6a1c02b06be3f484df9fe02fc64b38afbcd404b341.png"/>
+</g>
+</g>
+<g clip-path="url(#clip_4)">
+<g mask="url(#mask_5)">
+<g transform="matrix(.24055591,0,0,.24052239,608.769,-120.04782)">
+<image id="image_7" width="1493" height="670" xlink:href="../../slide-images/bde87fa0743e8526948c5ff77556360678338634ef8d9d5205f3b3b71dbc7a1b.webp"/>
+</g>
+</g>
+</g>
+<g clip-path="url(#clip_8)">
+<g transform="matrix(.24535233,0,0,.24561271,2.126,354.38816)">
+<use xlink:href="#image_3" x="0" y="0" width="386" height="173"/>
+</g>
+</g>
+<g clip-path="url(#clip_9)">
+<use data-text="W" xlink:href="../../slide-glyphs.svg#gef8efccbb4ae146afcc7242d" transform="matrix(28.998,0,0,-28.998,66.274,90.00015)"/>
+<use data-text="h" xlink:href="../../slide-glyphs.svg#gf4cc69dc70c245b58f09a694" transform="matrix(28.998,0,0,-28.998,96.7799,90.00015)"/>
+<use data-text="a" xlink:href="../../slide-glyphs.svg#g1f8595787daa354f34958516" transform="matrix(28.998,0,0,-28.998,116.324558,90.00015)"/>
+<use data-text="t" xlink:href="../../slide-glyphs.svg#gf1c2ae3e105e985848ae4c08" transform="matrix(28.998,0,0,-28.998,136.01419,90.00015)"/>
+<use data-text="&#x2019;" xlink:href="../../slide-glyphs.svg#gb5e8c550dfd90a543a568cf1" transform="matrix(28.998,0,0,-28.998,147.78739,90.00015)"/>
+<use data-text="s" xlink:href="../../slide-glyphs.svg#ge01381158566bf6a10cb546b" transform="matrix(28.998,0,0,-28.998,156.89276,90.00015)"/>
+<use data-text=" " xlink:href="../../slide-glyphs.svg#gcf063d903e53138433505876" transform="matrix(28.998,0,0,-28.998,173.07364,90.00015)"/>
+<use data-text="N" xlink:href="../../slide-glyphs.svg#g62c7b89a8d3774062c688971" transform="matrix(28.998,0,0,-28.998,179.376,90.00015)" fill="#268283"/>
+<use data-text="e" xlink:href="../../slide-glyphs.svg#g7904a22cb9f26766a131de71" transform="matrix(28.998,0,0,-28.998,201.1825,90.00015)" fill="#268283"/>
+<use data-text="x" xlink:href="../../slide-glyphs.svg#gfc4111adb4a48ecbd89c65a4" transform="matrix(28.998,0,0,-28.998,219.04526,90.00015)" fill="#268283"/>
+<use data-text="t" xlink:href="../../slide-glyphs.svg#gf1c2ae3e105e985848ae4c08" transform="matrix(28.998,0,0,-28.998,236.09609,90.00015)" fill="#268283"/>
+<use data-text="?" xlink:href="../../slide-glyphs.svg#g9526ee139d8ede6c9f562ce4" transform="matrix(28.998,0,0,-28.998,247.86928,90.00015)" fill="#268283"/>
+<use data-text="N" xlink:href="../../slide-glyphs.svg#gdc98dd458f36ec2ae8fb352a" transform="matrix(13.011,0,0,-13.011,69.279,133.59717)" fill="#434343"/>
+<use data-text="o" xlink:href="../../slide-glyphs.svg#gfa7b9d27c237c2bd4dd63759" transform="matrix(13.011,0,0,-13.011,78.3867,133.59717)" fill="#434343"/>
+<use data-text="w" xlink:href="../../slide-glyphs.svg#g1cbf4f9b3221c5b5fd47ec65" transform="matrix(13.011,0,0,-13.011,86.70074,133.59717)" fill="#434343"/>
+<use data-text=" " xlink:href="../../slide-glyphs.svg#gcf063d903e53138433505876" transform="matrix(13.011,0,0,-13.011,97.31771,133.59717)" fill="#434343"/>
+<use data-text="t" xlink:href="../../slide-glyphs.svg#g9b19800f0ae4535cc1e3259c" transform="matrix(13.011,0,0,-13.011,100.77864,133.59717)" fill="#434343"/>
+<use data-text="h" xlink:href="../../slide-glyphs.svg#gc6975359facac4d79995056b" transform="matrix(13.011,0,0,-13.011,105.51465,133.59717)" fill="#434343"/>
+<use data-text="a" xlink:href="../../slide-glyphs.svg#g5e754424ed3390eb8229e33f" transform="matrix(13.011,0,0,-13.011,113.82868,133.59717)" fill="#434343"/>
+<use data-text="t" xlink:href="../../slide-glyphs.svg#g9b19800f0ae4535cc1e3259c" transform="matrix(13.011,0,0,-13.011,122.59809,133.59717)" fill="#434343"/>
+<use data-text=" " xlink:href="../../slide-glyphs.svg#gcf063d903e53138433505876" transform="matrix(13.011,0,0,-13.011,127.308078,133.59717)" fill="#434343"/>
+<use data-text="y" xlink:href="../../slide-glyphs.svg#g66c0ccef391f82855d3393ee" transform="matrix(13.011,0,0,-13.011,130.769,133.59717)" fill="#434343"/>
+<use data-text="o" xlink:href="../../slide-glyphs.svg#gfa7b9d27c237c2bd4dd63759" transform="matrix(13.011,0,0,-13.011,138.05516,133.59717)" fill="#434343"/>
+<use data-text="u" xlink:href="../../slide-glyphs.svg#gade1b039987601e7ac87faa1" transform="matrix(13.011,0,0,-13.011,146.36919,133.59717)" fill="#434343"/>
+<use data-text=" " xlink:href="../../slide-glyphs.svg#gcf063d903e53138433505876" transform="matrix(13.011,0,0,-13.011,154.68321,133.59717)" fill="#434343"/>
+<use data-text="h" xlink:href="../../slide-glyphs.svg#gc6975359facac4d79995056b" transform="matrix(13.011,0,0,-13.011,158.14414,133.59717)" fill="#434343"/>
+<use data-text="a" xlink:href="../../slide-glyphs.svg#g5e754424ed3390eb8229e33f" transform="matrix(13.011,0,0,-13.011,166.43215,133.59717)" fill="#434343"/>
+<use data-text="v" xlink:href="../../slide-glyphs.svg#gb3a049d8fba366fe7038c9d2" transform="matrix(13.011,0,0,-13.011,175.20157,133.59717)" fill="#434343"/>
+<use data-text="e" xlink:href="../../slide-glyphs.svg#gc6a71adbd58bdf50665a5d53" transform="matrix(13.011,0,0,-13.011,182.48772,133.59717)" fill="#434343"/>
+<use data-text=" " xlink:href="../../slide-glyphs.svg#gcf063d903e53138433505876" transform="matrix(13.011,0,0,-13.011,190.5155,133.59717)" fill="#434343"/>
+<use data-text="y" xlink:href="../../slide-glyphs.svg#g66c0ccef391f82855d3393ee" transform="matrix(13.011,0,0,-13.011,193.97643,133.59717)" fill="#434343"/>
+<use data-text="o" xlink:href="../../slide-glyphs.svg#gfa7b9d27c237c2bd4dd63759" transform="matrix(13.011,0,0,-13.011,201.30162,133.59717)" fill="#434343"/>
+<use data-text="u" xlink:href="../../slide-glyphs.svg#gade1b039987601e7ac87faa1" transform="matrix(13.011,0,0,-13.011,209.58963,133.59717)" fill="#434343"/>
+<use data-text="r" xlink:href="../../slide-glyphs.svg#g883ab16e553a277842b99550" transform="matrix(13.011,0,0,-13.011,217.90366,133.59717)" fill="#434343"/>
+<use data-text=" " xlink:href="../../slide-glyphs.svg#gcf063d903e53138433505876" transform="matrix(13.011,0,0,-13.011,222.75676,133.59717)" fill="#434343"/>
+<use data-text="m" xlink:href="../../slide-glyphs.svg#g1e86662feb6287ca4dc71062" transform="matrix(13.011,0,0,-13.011,226.21768,133.59717)" fill="#434343"/>
+<use data-text="i" xlink:href="../../slide-glyphs.svg#g8e0e59eaf01fdce6856fdd7b" transform="matrix(13.011,0,0,-13.011,239.57999,133.59717)" fill="#434343"/>
+<use data-text="s" xlink:href="../../slide-glyphs.svg#gd9347de58aa9ec8974b45d00" transform="matrix(13.011,0,0,-13.011,242.75467,133.59717)" fill="#434343"/>
+<use data-text="s" xlink:href="../../slide-glyphs.svg#gd9347de58aa9ec8974b45d00" transform="matrix(13.011,0,0,-13.011,249.5334,133.59717)" fill="#434343"/>
+<use data-text="i" xlink:href="../../slide-glyphs.svg#g8e0e59eaf01fdce6856fdd7b" transform="matrix(13.011,0,0,-13.011,256.2861,133.59717)" fill="#434343"/>
+<use data-text="o" xlink:href="../../slide-glyphs.svg#gfa7b9d27c237c2bd4dd63759" transform="matrix(13.011,0,0,-13.011,259.48683,133.59717)" fill="#434343"/>
+<use data-text="n" xlink:href="../../slide-glyphs.svg#g93ac8661b83ea790de63e786" transform="matrix(13.011,0,0,-13.011,267.7748,133.59717)" fill="#434343"/>
+<use data-text=" " xlink:href="../../slide-glyphs.svg#gcf063d903e53138433505876" transform="matrix(13.011,0,0,-13.011,276.08885,133.59717)" fill="#434343"/>
+<use data-text="i" xlink:href="../../slide-glyphs.svg#g8e0e59eaf01fdce6856fdd7b" transform="matrix(13.011,0,0,-13.011,279.54978,133.59717)" fill="#434343"/>
+<use data-text="s" xlink:href="../../slide-glyphs.svg#gd9347de58aa9ec8974b45d00" transform="matrix(13.011,0,0,-13.011,282.7505,133.59717)" fill="#434343"/>
+<use data-text=" " xlink:href="../../slide-glyphs.svg#gcf063d903e53138433505876" transform="matrix(13.011,0,0,-13.011,289.5032,133.59717)" fill="#434343"/>
+<use data-text="a" xlink:href="../../slide-glyphs.svg#g5e754424ed3390eb8229e33f" transform="matrix(13.011,0,0,-13.011,69.279,151.54016)" fill="#434343"/>
+<use data-text="l" xlink:href="../../slide-glyphs.svg#g494fa3dd8d13521d7b366687" transform="matrix(13.011,0,0,-13.011,78.04841,151.54016)" fill="#434343"/>
+<use data-text="i" xlink:href="../../slide-glyphs.svg#g8e0e59eaf01fdce6856fdd7b" transform="matrix(13.011,0,0,-13.011,81.22309,151.54016)" fill="#434343"/>
+<use data-text="g" xlink:href="../../slide-glyphs.svg#g6696d950cec4358be3feaf10" transform="matrix(13.011,0,0,-13.011,84.4238,151.54016)" fill="#434343"/>
+<use data-text="n" xlink:href="../../slide-glyphs.svg#g93ac8661b83ea790de63e786" transform="matrix(13.011,0,0,-13.011,93.193218,151.54016)" fill="#434343"/>
+<use data-text="e" xlink:href="../../slide-glyphs.svg#gc6a71adbd58bdf50665a5d53" transform="matrix(13.011,0,0,-13.011,101.481227,151.54016)" fill="#434343"/>
+<use data-text="d" xlink:href="../../slide-glyphs.svg#gd9856f3cbe7d188435070e63" transform="matrix(13.011,0,0,-13.011,109.535037,151.54016)" fill="#434343"/>
+<use data-text=" " xlink:href="../../slide-glyphs.svg#gcf063d903e53138433505876" transform="matrix(13.011,0,0,-13.011,118.30445,151.54016)" fill="#434343"/>
+<use data-text="w" xlink:href="../../slide-glyphs.svg#g1cbf4f9b3221c5b5fd47ec65" transform="matrix(13.011,0,0,-13.011,121.76538,151.54016)" fill="#434343"/>
+<use data-text="i" xlink:href="../../slide-glyphs.svg#g8e0e59eaf01fdce6856fdd7b" transform="matrix(13.011,0,0,-13.011,132.40839,151.54016)" fill="#434343"/>
+<use data-text="t" xlink:href="../../slide-glyphs.svg#g9b19800f0ae4535cc1e3259c" transform="matrix(13.011,0,0,-13.011,135.58307,151.54016)" fill="#434343"/>
+<use data-text="h" xlink:href="../../slide-glyphs.svg#gc6975359facac4d79995056b" transform="matrix(13.011,0,0,-13.011,140.31908,151.54016)" fill="#434343"/>
+<use data-text=" " xlink:href="../../slide-glyphs.svg#gcf063d903e53138433505876" transform="matrix(13.011,0,0,-13.011,148.60709,151.54016)" fill="#434343"/>
+<use data-text="y" xlink:href="../../slide-glyphs.svg#g66c0ccef391f82855d3393ee" transform="matrix(13.011,0,0,-13.011,152.06801,151.54016)" fill="#434343"/>
+<use data-text="o" xlink:href="../../slide-glyphs.svg#gfa7b9d27c237c2bd4dd63759" transform="matrix(13.011,0,0,-13.011,159.3932,151.54016)" fill="#434343"/>
+<use data-text="u" xlink:href="../../slide-glyphs.svg#gade1b039987601e7ac87faa1" transform="matrix(13.011,0,0,-13.011,167.68122,151.54016)" fill="#434343"/>
+<use data-text="r" xlink:href="../../slide-glyphs.svg#g883ab16e553a277842b99550" transform="matrix(13.011,0,0,-13.011,175.99524,151.54016)" fill="#434343"/>
+<use data-text=" " xlink:href="../../slide-glyphs.svg#gcf063d903e53138433505876" transform="matrix(13.011,0,0,-13.011,180.82233,151.54016)" fill="#434343"/>
+<use data-text="s" xlink:href="../../slide-glyphs.svg#gd9347de58aa9ec8974b45d00" transform="matrix(13.011,0,0,-13.011,184.28325,151.54016)" fill="#434343"/>
+<use data-text="t" xlink:href="../../slide-glyphs.svg#g9b19800f0ae4535cc1e3259c" transform="matrix(13.011,0,0,-13.011,191.06198,151.54016)" fill="#434343"/>
+<use data-text="a" xlink:href="../../slide-glyphs.svg#g5e754424ed3390eb8229e33f" transform="matrix(13.011,0,0,-13.011,195.79799,151.54016)" fill="#434343"/>
+<use data-text="r" xlink:href="../../slide-glyphs.svg#g883ab16e553a277842b99550" transform="matrix(13.011,0,0,-13.011,204.56742,151.54016)" fill="#434343"/>
+<use data-text="t" xlink:href="../../slide-glyphs.svg#g9b19800f0ae4535cc1e3259c" transform="matrix(13.011,0,0,-13.011,209.3945,151.54016)" fill="#434343"/>
+<use data-text="u" xlink:href="../../slide-glyphs.svg#gade1b039987601e7ac87faa1" transform="matrix(13.011,0,0,-13.011,214.13051,151.54016)" fill="#434343"/>
+<use data-text="p" xlink:href="../../slide-glyphs.svg#g7ba995096087d31a75c36c62" transform="matrix(13.011,0,0,-13.011,222.41852,151.54016)" fill="#434343"/>
+<use data-text=" " xlink:href="../../slide-glyphs.svg#gcf063d903e53138433505876" transform="matrix(13.011,0,0,-13.011,231.18795,151.54016)" fill="#434343"/>
+<use data-text="i" xlink:href="../../slide-glyphs.svg#g8e0e59eaf01fdce6856fdd7b" transform="matrix(13.011,0,0,-13.011,234.64887,151.54016)" fill="#434343"/>
+<use data-text="d" xlink:href="../../slide-glyphs.svg#gd9856f3cbe7d188435070e63" transform="matrix(13.011,0,0,-13.011,237.84957,151.54016)" fill="#434343"/>
+<use data-text="e" xlink:href="../../slide-glyphs.svg#gc6a71adbd58bdf50665a5d53" transform="matrix(13.011,0,0,-13.011,246.61899,151.54016)" fill="#434343"/>
+<use data-text="a" xlink:href="../../slide-glyphs.svg#g5e754424ed3390eb8229e33f" transform="matrix(13.011,0,0,-13.011,254.64678,151.54016)" fill="#434343"/>
+<use data-text="," xlink:href="../../slide-glyphs.svg#g6d434fa1703c7ed10ff65002" transform="matrix(13.011,0,0,-13.011,263.41618,151.54016)" fill="#434343"/>
+<use data-text=" " xlink:href="../../slide-glyphs.svg#gcf063d903e53138433505876" transform="matrix(13.011,0,0,-13.011,265.99235,151.54016)" fill="#434343"/>
+<use data-text="g" xlink:href="../../slide-glyphs.svg#g5a08be4dfc15a195e649adbe" transform="matrix(13.011,0,0,-13.011,269.291,151.54016)" fill="#434343"/>
+<use data-text="e" xlink:href="../../slide-glyphs.svg#g7904a22cb9f26766a131de71" transform="matrix(13.011,0,0,-13.011,278.08644,151.54016)" fill="#434343"/>
+<use data-text="t" xlink:href="../../slide-glyphs.svg#gf1c2ae3e105e985848ae4c08" transform="matrix(13.011,0,0,-13.011,286.0882,151.54016)" fill="#434343"/>
+<use data-text=" " xlink:href="../../slide-glyphs.svg#gcf063d903e53138433505876" transform="matrix(13.011,0,0,-13.011,291.33164,151.54016)" fill="#434343"/>
+<use data-text="r" xlink:href="../../slide-glyphs.svg#gc956b5707e4523252658e846" transform="matrix(13.011,0,0,-13.011,69.279,169.48316)" fill="#434343"/>
+<use data-text="e" xlink:href="../../slide-glyphs.svg#g7904a22cb9f26766a131de71" transform="matrix(13.011,0,0,-13.011,74.80868,169.48316)" fill="#434343"/>
+<use data-text="a" xlink:href="../../slide-glyphs.svg#g1f8595787daa354f34958516" transform="matrix(13.011,0,0,-13.011,82.81045,169.48316)" fill="#434343"/>
+<use data-text="d" xlink:href="../../slide-glyphs.svg#g23f8bac688508a557b99ff65" transform="matrix(13.011,0,0,-13.011,91.60588,169.48316)" fill="#434343"/>
+<use data-text="y" xlink:href="../../slide-glyphs.svg#g355d756a0a40018e2048a050" transform="matrix(13.011,0,0,-13.011,100.427349,169.48316)" fill="#434343"/>
+<use data-text=" " xlink:href="../../slide-glyphs.svg#gcf063d903e53138433505876" transform="matrix(13.011,0,0,-13.011,108.624279,169.48316)" fill="#434343"/>
+<use data-text="f" xlink:href="../../slide-glyphs.svg#g6bf0d7db4d2bb16cebbfadc6" transform="matrix(13.011,0,0,-13.011,111.38261,169.48316)" fill="#434343"/>
+<use data-text="o" xlink:href="../../slide-glyphs.svg#gf0012022ca61f3dcef9f6fba" transform="matrix(13.011,0,0,-13.011,116.04054,169.48316)" fill="#434343"/>
+<use data-text="r" xlink:href="../../slide-glyphs.svg#gc956b5707e4523252658e846" transform="matrix(13.011,0,0,-13.011,124.30253,169.48316)" fill="#434343"/>
+<use data-text=" " xlink:href="../../slide-glyphs.svg#gcf063d903e53138433505876" transform="matrix(13.011,0,0,-13.011,129.85822,169.48316)" fill="#434343"/>
+<use data-text="t" xlink:href="../../slide-glyphs.svg#gf1c2ae3e105e985848ae4c08" transform="matrix(13.011,0,0,-13.011,132.61655,169.48316)" fill="#434343"/>
+<use data-text="h" xlink:href="../../slide-glyphs.svg#gf4cc69dc70c245b58f09a694" transform="matrix(13.011,0,0,-13.011,137.89902,169.48316)" fill="#434343"/>
+<use data-text="e" xlink:href="../../slide-glyphs.svg#g7904a22cb9f26766a131de71" transform="matrix(13.011,0,0,-13.011,146.64241,169.48316)" fill="#434343"/>
+<use data-text=" " xlink:href="../../slide-glyphs.svg#gcf063d903e53138433505876" transform="matrix(13.011,0,0,-13.011,154.61815,169.48316)" fill="#434343"/>
+<use data-text="n" xlink:href="../../slide-glyphs.svg#g1fe7535e10f309dadab9703c" transform="matrix(13.011,0,0,-13.011,157.37648,169.48316)" fill="#434343"/>
+<use data-text="e" xlink:href="../../slide-glyphs.svg#g7904a22cb9f26766a131de71" transform="matrix(13.011,0,0,-13.011,166.11988,169.48316)" fill="#434343"/>
+<use data-text="x" xlink:href="../../slide-glyphs.svg#gfc4111adb4a48ecbd89c65a4" transform="matrix(13.011,0,0,-13.011,174.12163,169.48316)" fill="#434343"/>
+<use data-text="t" xlink:href="../../slide-glyphs.svg#gf1c2ae3e105e985848ae4c08" transform="matrix(13.011,0,0,-13.011,181.75908,169.48316)" fill="#434343"/>
+<use data-text=" " xlink:href="../../slide-glyphs.svg#gcf063d903e53138433505876" transform="matrix(13.011,0,0,-13.011,187.04155,169.48316)" fill="#434343"/>
+<use data-text="s" xlink:href="../../slide-glyphs.svg#ge01381158566bf6a10cb546b" transform="matrix(13.011,0,0,-13.011,189.79988,169.48316)" fill="#434343"/>
+<use data-text="e" xlink:href="../../slide-glyphs.svg#g7904a22cb9f26766a131de71" transform="matrix(13.011,0,0,-13.011,197.034,169.48316)" fill="#434343"/>
+<use data-text="s" xlink:href="../../slide-glyphs.svg#ge01381158566bf6a10cb546b" transform="matrix(13.011,0,0,-13.011,205.00974,169.48316)" fill="#434343"/>
+<use data-text="s" xlink:href="../../slide-glyphs.svg#ge01381158566bf6a10cb546b" transform="matrix(13.011,0,0,-13.011,212.24385,169.48316)" fill="#434343"/>
+<use data-text="i" xlink:href="../../slide-glyphs.svg#g361fa2e5d5cb423388d13334" transform="matrix(13.011,0,0,-13.011,219.50399,169.48316)" fill="#434343"/>
+<use data-text="o" xlink:href="../../slide-glyphs.svg#gf0012022ca61f3dcef9f6fba" transform="matrix(13.011,0,0,-13.011,223.30319,169.48316)" fill="#434343"/>
+<use data-text="n" xlink:href="../../slide-glyphs.svg#g1fe7535e10f309dadab9703c" transform="matrix(13.011,0,0,-13.011,231.5912,169.48316)" fill="#434343"/>
+<use data-text="." xlink:href="../../slide-glyphs.svg#g922dbdb68fac6ac11a765fd6" transform="matrix(13.011,0,0,-13.011,240.3346,169.48316)" fill="#434343"/>
+<path transform="matrix(1,0,0,-1,0,405.01417)" d="M69.25 189.893H209.65V208.233H69.25Z" fill="#cfe2f3" fill-rule="evenodd"/>
+<use data-text="A" xlink:href="../../slide-glyphs.svg#g9a4840dab41fea03696d23b7" transform="matrix(13.011,0,0,-13.011,69.25,210.47216)" fill="#434343"/>
+<use data-text="l" xlink:href="../../slide-glyphs.svg#g494fa3dd8d13521d7b366687" transform="matrix(13.011,0,0,-13.011,77.99339,210.47216)" fill="#434343"/>
+<use data-text="w" xlink:href="../../slide-glyphs.svg#g1cbf4f9b3221c5b5fd47ec65" transform="matrix(13.011,0,0,-13.011,81.168079,210.47216)" fill="#434343"/>
+<use data-text="a" xlink:href="../../slide-glyphs.svg#g5e754424ed3390eb8229e33f" transform="matrix(13.011,0,0,-13.011,91.81107,210.47216)" fill="#434343"/>
+<use data-text="y" xlink:href="../../slide-glyphs.svg#g66c0ccef391f82855d3393ee" transform="matrix(13.011,0,0,-13.011,100.58048,210.47216)" fill="#434343"/>
+<use data-text="s" xlink:href="../../slide-glyphs.svg#gd9347de58aa9ec8974b45d00" transform="matrix(13.011,0,0,-13.011,107.866649,210.47216)" fill="#434343"/>
+<use data-text=" " xlink:href="../../slide-glyphs.svg#gcf063d903e53138433505876" transform="matrix(13.011,0,0,-13.011,114.64538,210.47216)" fill="#434343"/>
+<use data-text="e" xlink:href="../../slide-glyphs.svg#gc6a71adbd58bdf50665a5d53" transform="matrix(13.011,0,0,-13.011,118.10631,210.47216)" fill="#434343"/>
+<use data-text="v" xlink:href="../../slide-glyphs.svg#gb3a049d8fba366fe7038c9d2" transform="matrix(13.011,0,0,-13.011,126.16012,210.47216)" fill="#434343"/>
+<use data-text="o" xlink:href="../../slide-glyphs.svg#gfa7b9d27c237c2bd4dd63759" transform="matrix(13.011,0,0,-13.011,133.42026,210.47216)" fill="#434343"/>
+<use data-text="l" xlink:href="../../slide-glyphs.svg#g494fa3dd8d13521d7b366687" transform="matrix(13.011,0,0,-13.011,141.73429,210.47216)" fill="#434343"/>
+<use data-text="v" xlink:href="../../slide-glyphs.svg#gb3a049d8fba366fe7038c9d2" transform="matrix(13.011,0,0,-13.011,144.90897,210.47216)" fill="#434343"/>
+<use data-text="e" xlink:href="../../slide-glyphs.svg#gc6a71adbd58bdf50665a5d53" transform="matrix(13.011,0,0,-13.011,152.19512,210.47216)" fill="#434343"/>
+<use data-text=" " xlink:href="../../slide-glyphs.svg#gcf063d903e53138433505876" transform="matrix(13.011,0,0,-13.011,160.2229,210.47216)" fill="#434343"/>
+<use data-text="a" xlink:href="../../slide-glyphs.svg#g5e754424ed3390eb8229e33f" transform="matrix(13.011,0,0,-13.011,163.68383,210.47216)" fill="#434343"/>
+<use data-text="n" xlink:href="../../slide-glyphs.svg#g93ac8661b83ea790de63e786" transform="matrix(13.011,0,0,-13.011,172.45325,210.47216)" fill="#434343"/>
+<use data-text="d" xlink:href="../../slide-glyphs.svg#gd9856f3cbe7d188435070e63" transform="matrix(13.011,0,0,-13.011,180.76728,210.47216)" fill="#434343"/>
+<use data-text=" " xlink:href="../../slide-glyphs.svg#gcf063d903e53138433505876" transform="matrix(13.011,0,0,-13.011,189.5367,210.47216)" fill="#434343"/>
+<use data-text="b" xlink:href="../../slide-glyphs.svg#ga2c27b1c8acce35d75ad8a2a" transform="matrix(13.011,0,0,-13.011,192.99762,210.47216)" fill="#434343"/>
+<use data-text="e" xlink:href="../../slide-glyphs.svg#gc6a71adbd58bdf50665a5d53" transform="matrix(13.011,0,0,-13.011,201.76705,210.47216)" fill="#434343"/>
+<use data-text=" " xlink:href="../../slide-glyphs.svg#gcf063d903e53138433505876" transform="matrix(13.011,0,0,-13.011,209.82085,210.47216)" fill="#434343"/>
+<path transform="matrix(1,0,0,-1,0,405.01417)" d="M69.25 171.949H161.744V190.289H69.25Z" fill="#cfe2f3" fill-rule="evenodd"/>
+<use data-text="r" xlink:href="../../slide-glyphs.svg#g883ab16e553a277842b99550" transform="matrix(13.011,0,0,-13.011,69.25,228.41616)" fill="#434343"/>
+<use data-text="e" xlink:href="../../slide-glyphs.svg#gc6a71adbd58bdf50665a5d53" transform="matrix(13.011,0,0,-13.011,74.07708,228.41616)" fill="#434343"/>
+<use data-text="a" xlink:href="../../slide-glyphs.svg#g5e754424ed3390eb8229e33f" transform="matrix(13.011,0,0,-13.011,82.104869,228.41616)" fill="#434343"/>
+<use data-text="d" xlink:href="../../slide-glyphs.svg#gd9856f3cbe7d188435070e63" transform="matrix(13.011,0,0,-13.011,90.9003,228.41616)" fill="#434343"/>
+<use data-text="y" xlink:href="../../slide-glyphs.svg#g66c0ccef391f82855d3393ee" transform="matrix(13.011,0,0,-13.011,99.669719,228.41616)" fill="#434343"/>
+<use data-text=" " xlink:href="../../slide-glyphs.svg#gcf063d903e53138433505876" transform="matrix(13.011,0,0,-13.011,106.95588,228.41616)" fill="#434343"/>
+<use data-text="t" xlink:href="../../slide-glyphs.svg#g9b19800f0ae4535cc1e3259c" transform="matrix(13.011,0,0,-13.011,110.41681,228.41616)" fill="#434343"/>
+<use data-text="o" xlink:href="../../slide-glyphs.svg#gfa7b9d27c237c2bd4dd63759" transform="matrix(13.011,0,0,-13.011,115.15282,228.41616)" fill="#434343"/>
+<use data-text=" " xlink:href="../../slide-glyphs.svg#gcf063d903e53138433505876" transform="matrix(13.011,0,0,-13.011,123.44083,228.41616)" fill="#434343"/>
+<use data-text="p" xlink:href="../../slide-glyphs.svg#g7ba995096087d31a75c36c62" transform="matrix(13.011,0,0,-13.011,126.90176,228.41616)" fill="#434343"/>
+<use data-text="i" xlink:href="../../slide-glyphs.svg#g8e0e59eaf01fdce6856fdd7b" transform="matrix(13.011,0,0,-13.011,135.67118,228.41616)" fill="#434343"/>
+<use data-text="v" xlink:href="../../slide-glyphs.svg#gb3a049d8fba366fe7038c9d2" transform="matrix(13.011,0,0,-13.011,138.87187,228.41616)" fill="#434343"/>
+<use data-text="o" xlink:href="../../slide-glyphs.svg#gfa7b9d27c237c2bd4dd63759" transform="matrix(13.011,0,0,-13.011,146.13202,228.41616)" fill="#434343"/>
+<use data-text="t" xlink:href="../../slide-glyphs.svg#g9b19800f0ae4535cc1e3259c" transform="matrix(13.011,0,0,-13.011,154.44605,228.41616)" fill="#434343"/>
+<use data-text="." xlink:href="../../slide-glyphs.svg#g798ec600ac5daf13d0e4b2fd" transform="matrix(13.011,0,0,-13.011,159.15604,228.41616)" fill="#434343"/>
+<use data-text="U" xlink:href="../../slide-glyphs.svg#geba3cc6606f254814d57e97e" transform="matrix(13.011,0,0,-13.011,69.279,269.23518)" fill="#434343"/>
+<use data-text="s" xlink:href="../../slide-glyphs.svg#ge01381158566bf6a10cb546b" transform="matrix(13.011,0,0,-13.011,78.41272,269.23518)" fill="#434343"/>
+<use data-text="e" xlink:href="../../slide-glyphs.svg#g7904a22cb9f26766a131de71" transform="matrix(13.011,0,0,-13.011,85.646839,269.23518)" fill="#434343"/>
+<use data-text=" " xlink:href="../../slide-glyphs.svg#gcf063d903e53138433505876" transform="matrix(13.011,0,0,-13.011,93.648609,269.23518)" fill="#434343"/>
+<use data-text="A" xlink:href="../../slide-glyphs.svg#gc62b7d444f70574efb6c49f4" transform="matrix(13.011,0,0,-13.011,96.40694,269.23518)" fill="#434343"/>
+<use data-text="I" xlink:href="../../slide-glyphs.svg#g65276716038a81061ceca20b" transform="matrix(13.011,0,0,-13.011,105.944,269.23518)" fill="#434343"/>
+<use data-text=" " xlink:href="../../slide-glyphs.svg#gcf063d903e53138433505876" transform="matrix(13.011,0,0,-13.011,109.76923,269.23518)" fill="#434343"/>
+<use data-text="t" xlink:href="../../slide-glyphs.svg#gf1c2ae3e105e985848ae4c08" transform="matrix(13.011,0,0,-13.011,112.527568,269.23518)" fill="#434343"/>
+<use data-text="o" xlink:href="../../slide-glyphs.svg#gf0012022ca61f3dcef9f6fba" transform="matrix(13.011,0,0,-13.011,117.81003,269.23518)" fill="#434343"/>
+<use data-text="o" xlink:href="../../slide-glyphs.svg#gf0012022ca61f3dcef9f6fba" transform="matrix(13.011,0,0,-13.011,126.072017,269.23518)" fill="#434343"/>
+<use data-text="l" xlink:href="../../slide-glyphs.svg#g433c1758f1490a8d4e2dd4c5" transform="matrix(13.011,0,0,-13.011,134.334,269.23518)" fill="#434343"/>
+<use data-text="s" xlink:href="../../slide-glyphs.svg#ge01381158566bf6a10cb546b" transform="matrix(13.011,0,0,-13.011,138.15923,269.23518)" fill="#434343"/>
+<use data-text=" " xlink:href="../../slide-glyphs.svg#gcf063d903e53138433505876" transform="matrix(13.011,0,0,-13.011,145.39334,269.23518)" fill="#434343"/>
+<use data-text="o" xlink:href="../../slide-glyphs.svg#gf0012022ca61f3dcef9f6fba" transform="matrix(13.011,0,0,-13.011,148.15167,269.23518)" fill="#434343"/>
+<use data-text="r" xlink:href="../../slide-glyphs.svg#gc956b5707e4523252658e846" transform="matrix(13.011,0,0,-13.011,156.43968,269.23518)" fill="#434343"/>
+<use data-text=" " xlink:href="../../slide-glyphs.svg#gcf063d903e53138433505876" transform="matrix(13.011,0,0,-13.011,161.96936,269.23518)" fill="#434343"/>
+<use data-text="p" xlink:href="../../slide-glyphs.svg#g1fab4a1e4c016453f2a140cf" transform="matrix(13.011,0,0,-13.011,164.72769,269.23518)" fill="#434343"/>
+<use data-text="e" xlink:href="../../slide-glyphs.svg#g7904a22cb9f26766a131de71" transform="matrix(13.011,0,0,-13.011,173.54915,269.23518)" fill="#434343"/>
+<use data-text="e" xlink:href="../../slide-glyphs.svg#g7904a22cb9f26766a131de71" transform="matrix(13.011,0,0,-13.011,181.52489,269.23518)" fill="#434343"/>
+<use data-text="r" xlink:href="../../slide-glyphs.svg#gc956b5707e4523252658e846" transform="matrix(13.011,0,0,-13.011,189.52664,269.23518)" fill="#434343"/>
+<use data-text=" " xlink:href="../../slide-glyphs.svg#gcf063d903e53138433505876" transform="matrix(13.011,0,0,-13.011,195.08234,269.23518)" fill="#434343"/>
+<use data-text="f" xlink:href="../../slide-glyphs.svg#g6bf0d7db4d2bb16cebbfadc6" transform="matrix(13.011,0,0,-13.011,197.80164,269.23518)" fill="#434343"/>
+<use data-text="e" xlink:href="../../slide-glyphs.svg#g7904a22cb9f26766a131de71" transform="matrix(13.011,0,0,-13.011,202.4856,269.23518)" fill="#434343"/>
+<use data-text="e" xlink:href="../../slide-glyphs.svg#g7904a22cb9f26766a131de71" transform="matrix(13.011,0,0,-13.011,210.48735,269.23518)" fill="#434343"/>
+<use data-text="d" xlink:href="../../slide-glyphs.svg#g23f8bac688508a557b99ff65" transform="matrix(13.011,0,0,-13.011,218.46309,269.23518)" fill="#434343"/>
+<use data-text="b" xlink:href="../../slide-glyphs.svg#g0558d91eccd328215320098d" transform="matrix(13.011,0,0,-13.011,227.28455,269.23518)" fill="#434343"/>
+<use data-text="a" xlink:href="../../slide-glyphs.svg#g1f8595787daa354f34958516" transform="matrix(13.011,0,0,-13.011,236.07999,269.23518)" fill="#434343"/>
+<use data-text="c" xlink:href="../../slide-glyphs.svg#g492d12d9c1fee562ebeef144" transform="matrix(13.011,0,0,-13.011,244.90145,269.23518)" fill="#434343"/>
+<use data-text="k" xlink:href="../../slide-glyphs.svg#g244830644bed25f459e7c601" transform="matrix(13.011,0,0,-13.011,252.73407,269.23518)" fill="#434343"/>
+<use data-text=" " xlink:href="../../slide-glyphs.svg#gcf063d903e53138433505876" transform="matrix(13.011,0,0,-13.011,260.561,269.23518)" fill="#434343"/>
+<use data-text="t" xlink:href="../../slide-glyphs.svg#g9b19800f0ae4535cc1e3259c" transform="matrix(13.011,0,0,-13.011,264.02195,269.23518)" fill="#434343"/>
+<use data-text="o" xlink:href="../../slide-glyphs.svg#gfa7b9d27c237c2bd4dd63759" transform="matrix(13.011,0,0,-13.011,268.7319,269.23518)" fill="#434343"/>
+<use data-text=" " xlink:href="../../slide-glyphs.svg#gcf063d903e53138433505876" transform="matrix(13.011,0,0,-13.011,277.04594,269.23518)" fill="#434343"/>
+<use data-text="i" xlink:href="../../slide-glyphs.svg#g8e0e59eaf01fdce6856fdd7b" transform="matrix(13.011,0,0,-13.011,69.279,287.17817)" fill="#434343"/>
+<use data-text="d" xlink:href="../../slide-glyphs.svg#gd9856f3cbe7d188435070e63" transform="matrix(13.011,0,0,-13.011,72.45368,287.17817)" fill="#434343"/>
+<use data-text="e" xlink:href="../../slide-glyphs.svg#gc6a71adbd58bdf50665a5d53" transform="matrix(13.011,0,0,-13.011,81.22309,287.17817)" fill="#434343"/>
+<use data-text="n" xlink:href="../../slide-glyphs.svg#g93ac8661b83ea790de63e786" transform="matrix(13.011,0,0,-13.011,89.2769,287.17817)" fill="#434343"/>
+<use data-text="t" xlink:href="../../slide-glyphs.svg#g9b19800f0ae4535cc1e3259c" transform="matrix(13.011,0,0,-13.011,97.56491,287.17817)" fill="#434343"/>
+<use data-text="i" xlink:href="../../slide-glyphs.svg#g8e0e59eaf01fdce6856fdd7b" transform="matrix(13.011,0,0,-13.011,102.30092,287.17817)" fill="#434343"/>
+<use data-text="f" xlink:href="../../slide-glyphs.svg#g1e38420ceaf505fe5cb6461f" transform="matrix(13.011,0,0,-13.011,105.4756,287.17817)" fill="#434343"/>
+<use data-text="y" xlink:href="../../slide-glyphs.svg#g66c0ccef391f82855d3393ee" transform="matrix(13.011,0,0,-13.011,109.730197,287.17817)" fill="#434343"/>
+<use data-text=" " xlink:href="../../slide-glyphs.svg#gcf063d903e53138433505876" transform="matrix(13.011,0,0,-13.011,117.05539,287.17817)" fill="#434343"/>
+<use data-text="w" xlink:href="../../slide-glyphs.svg#g1cbf4f9b3221c5b5fd47ec65" transform="matrix(13.011,0,0,-13.011,120.51632,287.17817)" fill="#434343"/>
+<use data-text="a" xlink:href="../../slide-glyphs.svg#g5e754424ed3390eb8229e33f" transform="matrix(13.011,0,0,-13.011,131.15932,287.17817)" fill="#434343"/>
+<use data-text="y" xlink:href="../../slide-glyphs.svg#g66c0ccef391f82855d3393ee" transform="matrix(13.011,0,0,-13.011,139.92874,287.17817)" fill="#434343"/>
+<use data-text="s" xlink:href="../../slide-glyphs.svg#gd9347de58aa9ec8974b45d00" transform="matrix(13.011,0,0,-13.011,147.2149,287.17817)" fill="#434343"/>
+<use data-text=" " xlink:href="../../slide-glyphs.svg#gcf063d903e53138433505876" transform="matrix(13.011,0,0,-13.011,153.99364,287.17817)" fill="#434343"/>
+<use data-text="t" xlink:href="../../slide-glyphs.svg#g9b19800f0ae4535cc1e3259c" transform="matrix(13.011,0,0,-13.011,157.45456,287.17817)" fill="#434343"/>
+<use data-text="o" xlink:href="../../slide-glyphs.svg#gfa7b9d27c237c2bd4dd63759" transform="matrix(13.011,0,0,-13.011,162.16455,287.17817)" fill="#434343"/>
+<use data-text=" " xlink:href="../../slide-glyphs.svg#gcf063d903e53138433505876" transform="matrix(13.011,0,0,-13.011,170.47858,287.17817)" fill="#434343"/>
+<use data-text="m" xlink:href="../../slide-glyphs.svg#g1e86662feb6287ca4dc71062" transform="matrix(13.011,0,0,-13.011,173.9395,287.17817)" fill="#434343"/>
+<use data-text="a" xlink:href="../../slide-glyphs.svg#g5e754424ed3390eb8229e33f" transform="matrix(13.011,0,0,-13.011,187.3018,287.17817)" fill="#434343"/>
+<use data-text="k" xlink:href="../../slide-glyphs.svg#g7a965e1a3757b7549ceebdd3" transform="matrix(13.011,0,0,-13.011,196.07123,287.17817)" fill="#434343"/>
+<use data-text="e" xlink:href="../../slide-glyphs.svg#gc6a71adbd58bdf50665a5d53" transform="matrix(13.011,0,0,-13.011,202.7719,287.17817)" fill="#434343"/>
+<use data-text=" " xlink:href="../../slide-glyphs.svg#gcf063d903e53138433505876" transform="matrix(13.011,0,0,-13.011,210.79969,287.17817)" fill="#434343"/>
+<use data-text="y" xlink:href="../../slide-glyphs.svg#g66c0ccef391f82855d3393ee" transform="matrix(13.011,0,0,-13.011,214.2606,287.17817)" fill="#434343"/>
+<use data-text="o" xlink:href="../../slide-glyphs.svg#gfa7b9d27c237c2bd4dd63759" transform="matrix(13.011,0,0,-13.011,221.54677,287.17817)" fill="#434343"/>
+<use data-text="u" xlink:href="../../slide-glyphs.svg#gade1b039987601e7ac87faa1" transform="matrix(13.011,0,0,-13.011,229.8608,287.17817)" fill="#434343"/>
+<use data-text="r" xlink:href="../../slide-glyphs.svg#g883ab16e553a277842b99550" transform="matrix(13.011,0,0,-13.011,238.17482,287.17817)" fill="#434343"/>
+<use data-text=" " xlink:href="../../slide-glyphs.svg#gcf063d903e53138433505876" transform="matrix(13.011,0,0,-13.011,243.0019,287.17817)" fill="#434343"/>
+<use data-text="s" xlink:href="../../slide-glyphs.svg#gd9347de58aa9ec8974b45d00" transform="matrix(13.011,0,0,-13.011,246.46283,287.17817)" fill="#434343"/>
+<use data-text="o" xlink:href="../../slide-glyphs.svg#gfa7b9d27c237c2bd4dd63759" transform="matrix(13.011,0,0,-13.011,253.24156,287.17817)" fill="#434343"/>
+<use data-text="l" xlink:href="../../slide-glyphs.svg#g494fa3dd8d13521d7b366687" transform="matrix(13.011,0,0,-13.011,261.5556,287.17817)" fill="#434343"/>
+<use data-text="u" xlink:href="../../slide-glyphs.svg#gade1b039987601e7ac87faa1" transform="matrix(13.011,0,0,-13.011,264.7303,287.17817)" fill="#434343"/>
+<use data-text="t" xlink:href="../../slide-glyphs.svg#g9b19800f0ae4535cc1e3259c" transform="matrix(13.011,0,0,-13.011,273.0443,287.17817)" fill="#434343"/>
+<use data-text="i" xlink:href="../../slide-glyphs.svg#g8e0e59eaf01fdce6856fdd7b" transform="matrix(13.011,0,0,-13.011,277.75428,287.17817)" fill="#434343"/>
+<use data-text="o" xlink:href="../../slide-glyphs.svg#gfa7b9d27c237c2bd4dd63759" transform="matrix(13.011,0,0,-13.011,280.955,287.17817)" fill="#434343"/>
+<use data-text="n" xlink:href="../../slide-glyphs.svg#g93ac8661b83ea790de63e786" transform="matrix(13.011,0,0,-13.011,289.24299,287.17817)" fill="#434343"/>
+<use data-text=" " xlink:href="../../slide-glyphs.svg#gcf063d903e53138433505876" transform="matrix(13.011,0,0,-13.011,297.557,287.17817)" fill="#434343"/>
+<use data-text="s" xlink:href="../../slide-glyphs.svg#gd9347de58aa9ec8974b45d00" transform="matrix(13.011,0,0,-13.011,69.279,305.12117)" fill="#434343"/>
+<use data-text="t" xlink:href="../../slide-glyphs.svg#g9b19800f0ae4535cc1e3259c" transform="matrix(13.011,0,0,-13.011,76.03171,305.12117)" fill="#434343"/>
+<use data-text="r" xlink:href="../../slide-glyphs.svg#g883ab16e553a277842b99550" transform="matrix(13.011,0,0,-13.011,80.767719,305.12117)" fill="#434343"/>
+<use data-text="o" xlink:href="../../slide-glyphs.svg#gfa7b9d27c237c2bd4dd63759" transform="matrix(13.011,0,0,-13.011,85.594799,305.12117)" fill="#434343"/>
+<use data-text="n" xlink:href="../../slide-glyphs.svg#g93ac8661b83ea790de63e786" transform="matrix(13.011,0,0,-13.011,93.90883,305.12117)" fill="#434343"/>
+<use data-text="g" xlink:href="../../slide-glyphs.svg#g6696d950cec4358be3feaf10" transform="matrix(13.011,0,0,-13.011,102.19684,305.12117)" fill="#434343"/>
+<use data-text="e" xlink:href="../../slide-glyphs.svg#gc6a71adbd58bdf50665a5d53" transform="matrix(13.011,0,0,-13.011,110.966259,305.12117)" fill="#434343"/>
+<use data-text="r" xlink:href="../../slide-glyphs.svg#g883ab16e553a277842b99550" transform="matrix(13.011,0,0,-13.011,119.020069,305.12117)" fill="#434343"/>
+<use data-text="." xlink:href="../../slide-glyphs.svg#g798ec600ac5daf13d0e4b2fd" transform="matrix(13.011,0,0,-13.011,123.847148,305.12117)" fill="#434343"/>
+</g>
+<g clip-path="url(#clip_13)">
+<g mask="url(#mask_14)">
+<g transform="matrix(.28353844,0,0,.28349219,271.361,38.098176)">
+<image id="image_16" width="1536" height="1024" xlink:href="../../slide-images/acdcac2fa3dacb79adbd8b2485abf947dae97e946383ac1865ab5825f7b0bab7.webp"/>
+</g>
+</g>
+</g>
+</g>
+</svg>

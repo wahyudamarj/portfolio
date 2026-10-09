@@ -1,0 +1,1972 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>Where Is the AI? · G8 · M1 · S1</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@500;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+/* ============================================================
+   SO… WHERE IS THE AI?  -  X-Ray Tech Editorial
+   Grade 8 · Module 1 · Session 1
+   ============================================================ */
+
+:root{
+  /* --- Palette --- */
+  --teal:#008080;
+  --sand:#FCF8F0;
+  --navy:#1A3847;
+  --apricot:#F49E58;
+  --terracotta:#E86849;
+  --deep-navy:#10222C;
+  --sage:#93A8AC;
+  --aqua:#25D0D8;              /* soft aqua glow: data / active processing */
+  --aqua-soft:rgba(37,208,216,.28);
+
+  --ink:#1A3847;
+  --ink-soft:#4a6472;
+
+  /* --- Typography scale (font +/- multiplies this) --- */
+  --fs:1;
+
+  --chrome-h:clamp(58px,7.2vh,74px);
+}
+
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%;overflow:hidden}
+body{
+  font-family:'Inter',system-ui,-apple-system,sans-serif;
+  color:var(--ink);
+  background:var(--sand);
+  -webkit-font-smoothing:antialiased;
+  text-rendering:optimizeLegibility;
+}
+
+/* ---------- Z0 Atmosphere ---------- */
+#atmos{
+  position:fixed;inset:0;z-index:0;pointer-events:none;
+  background:
+    radial-gradient(1500px 1100px at 88% -14%, rgba(244,158,88,.12), transparent 62%),
+    radial-gradient(1400px 1200px at 4% 112%, rgba(0,128,128,.09), transparent 62%),
+    var(--sand);
+}
+#atmos::after{ /* micro grain - very faint, background only */
+  content:"";position:absolute;inset:0;opacity:.28;mix-blend-mode:multiply;
+  background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='160' height='160'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/><feColorMatrix type='saturate' values='0'/></filter><rect width='100%25' height='100%25' filter='url(%23n)' opacity='0.035'/></svg>");
+}
+
+/* ---------- App shell ---------- */
+#app{position:fixed;inset:0;z-index:1}
+
+/* ---------- Scenes ---------- */
+.scene{
+  position:absolute;inset:0;
+  display:none;
+  flex-direction:column;
+  padding:clamp(14px,2.4vh,30px) clamp(24px,4vw,72px) calc(var(--chrome-h) + clamp(6px,1.1vh,14px));
+  animation:sceneIn .5s ease both;
+  overflow:hidden;
+}
+.scene.active{display:flex}
+@keyframes sceneIn{from{opacity:0}to{opacity:1}}
+
+/* Header (title + instruction), top-left */
+.head{max-width:min(760px,60vw);z-index:6;flex:0 0 auto}
+.head.wide{max-width:min(1100px,92vw)}
+.eyebrow{
+  font-family:'Poppins',sans-serif;font-weight:700;
+  font-size:calc(clamp(12px,1.05vw,15px) * var(--fs));
+  letter-spacing:.22em;text-transform:uppercase;color:var(--teal);
+  display:flex;align-items:center;gap:.6em;margin-bottom:.5em;
+}
+.eyebrow .dot{width:.6em;height:.6em;border-radius:50%;background:var(--apricot);display:inline-block}
+.title{
+  font-family:'Poppins',sans-serif;font-weight:700;line-height:1.02;color:var(--navy);
+  font-size:calc(clamp(34px,4.5vw,66px) * var(--fs));
+  letter-spacing:-.015em;
+}
+.instruct{
+  margin-top:.55em;color:var(--ink-soft);font-weight:500;line-height:1.32;
+  font-size:calc(clamp(17px,1.85vw,26px) * var(--fs));
+  max-width:36em;
+}
+.instruct b,.instruct .verb{color:var(--terracotta);font-weight:600}
+
+/* Main region */
+.main{position:relative;flex:1 1 auto;min-height:0;display:flex;z-index:2}
+
+/* Supporting line + reveal words */
+.support{
+  font-size:calc(clamp(17px,1.6vw,24px) * var(--fs));
+  color:var(--navy);font-weight:500;line-height:1.35;max-width:22em;
+}
+.support .hl{color:var(--teal);font-weight:600}
+.reveal-word{
+  font-family:'Poppins',sans-serif;font-weight:800;color:var(--teal);
+  letter-spacing:.02em;line-height:1;
+  font-size:calc(clamp(38px,6vw,88px) * var(--fs));
+}
+.bridge{
+  font-family:'Poppins',sans-serif;font-weight:600;color:var(--navy);
+  font-size:calc(clamp(17px,1.75vw,25px) * var(--fs));
+  opacity:.92;
+}
+.bridge .q{color:var(--terracotta)}
+
+/* ============================================================
+   CHROME  (nav / logo / copyright) - Z4, glass
+   ============================================================ */
+#progress{position:fixed;top:0;left:0;height:4px;width:0;z-index:40;
+  background:linear-gradient(90deg,var(--teal),var(--aqua));transition:width .5s ease;border-radius:0 3px 3px 0}
+#chrome{
+  position:fixed;left:0;right:0;bottom:0;height:var(--chrome-h);z-index:35;
+  display:grid;grid-template-columns:1fr auto 1fr;align-items:center;
+  gap:12px;padding:0 clamp(14px,2.4vw,26px);
+  background:rgba(252,248,240,.72);
+  backdrop-filter:blur(14px) saturate(1.2);-webkit-backdrop-filter:blur(14px) saturate(1.2);
+  border-top:1px solid rgba(26,56,71,.10);
+}
+.brand{display:flex;align-items:center;gap:10px;justify-self:start;min-width:0}
+.brand .logobox{background:#fff;border-radius:10px;padding:6px 11px;display:flex;align-items:center;
+  box-shadow:0 2px 10px rgba(16,34,44,.10)}
+.brand .logobox img{height:clamp(15px,1.9vh,20px);display:block}
+.copyright{justify-self:center;font-size:clamp(10px,1.15vw,13px);color:var(--ink-soft);white-space:nowrap;font-weight:500}
+
+.nav{display:flex;align-items:center;gap:8px;justify-self:end}
+.navbtn{
+  font-family:'Inter',sans-serif;border:1px solid rgba(26,56,71,.14);
+  background:rgba(255,255,255,.65);color:var(--navy);cursor:pointer;
+  border-radius:11px;font-weight:600;display:inline-flex;align-items:center;gap:7px;
+  height:clamp(38px,4.7vh,46px);padding:0 clamp(12px,1.5vw,18px);
+  font-size:clamp(13px,1.25vw,16px);transition:transform .12s ease,background .15s ease,box-shadow .15s ease;
+}
+.navbtn:hover{background:#fff;box-shadow:0 4px 14px rgba(16,34,44,.12)}
+.navbtn:active{transform:translateY(1px)}
+.navbtn:disabled{opacity:.34;cursor:not-allowed;box-shadow:none}
+.navbtn.primary{background:var(--teal);color:#fff;border-color:transparent}
+.navbtn.primary:hover{background:#0a6f6f}
+.navbtn.icon{width:clamp(38px,4.7vh,46px);padding:0;justify-content:center;font-size:clamp(15px,1.5vw,19px);font-weight:700}
+.navbtn:focus-visible,button:focus-visible,[tabindex]:focus-visible{outline:3px solid var(--apricot);outline-offset:2px}
+.fontgroup{display:flex;gap:5px}
+@media(max-width:720px){
+  .copyright{display:none}
+  #chrome{grid-template-columns:auto 1fr}
+  .brand{grid-column:1}
+  .nav{grid-column:2}
+}
+
+/* ============================================================
+   IMAGERY
+   ============================================================ */
+.cine{border-radius:22px;overflow:hidden;box-shadow:0 26px 60px -30px rgba(16,34,44,.45);max-width:100%;max-height:100%;line-height:0}
+.cine img{display:block;width:auto;height:auto;max-width:100%;max-height:100%;object-fit:contain}
+.dissolve{
+  -webkit-mask-image:linear-gradient(180deg,#000 68%,transparent 99%),radial-gradient(120% 120% at 50% 40%,#000 74%,transparent 100%);
+  mask-image:linear-gradient(180deg,#000 68%,transparent 99%),radial-gradient(120% 120% at 50% 40%,#000 74%,transparent 100%);
+  -webkit-mask-composite:source-in;mask-composite:intersect;box-shadow:none;
+}
+
+/* Aurora focus glow - softer, smoother falloff */
+.aura{position:absolute;border-radius:50%;filter:blur(70px);pointer-events:none;z-index:0;
+  background:radial-gradient(circle at 50% 45%,
+    rgba(37,208,216,.22) 0%, rgba(37,208,216,.12) 38%, rgba(37,208,216,.04) 64%, transparent 82%)}
+
+/* ============================================================
+   SCENE-SPECIFIC LAYOUTS
+   ============================================================ */
+
+/* Split: copy left, visual right */
+.split .main{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.15fr);gap:clamp(18px,3vw,48px);align-items:center}
+.split .visual{position:relative;height:100%;display:flex;align-items:center;justify-content:center;min-height:0}
+.stack{display:flex;flex-direction:column;justify-content:center;gap:clamp(14px,2.4vh,26px);min-width:0}
+
+/* Stage: header top, big object centered */
+.stage .main{flex-direction:column;align-items:center;justify-content:center;gap:clamp(12px,2vh,22px)}
+.objwrap{position:relative;flex:1 1 auto;min-height:0;width:100%;display:flex;align-items:center;justify-content:center;overflow:hidden}
+
+@media(max-width:900px){
+  .split .main{grid-template-columns:1fr;gap:14px}
+  .split .visual{order:2}
+  .head{max-width:100%}
+  .instruct{max-width:100%}
+  /* Scene 5b compaction: predictions are the focus; phone is supporting */
+  #s5b .glowimg{max-width:min(26vh,220px)!important}
+  #s5b .predrow{padding:10px 14px}
+  #s5b .stack{gap:10px}
+}
+@media(max-width:900px) and (max-height:820px){
+  #s5b .visual{display:none}
+}
+
+/* ============================================================
+   HERO (1,7,27)
+   ============================================================ */
+.hero .main{display:grid;grid-template-columns:1.05fr 1.25fr;align-items:center;gap:clamp(10px,2vw,40px)}
+.hero-copy{display:flex;flex-direction:column;justify-content:center;gap:.7em;z-index:5}
+.hero .title{font-size:calc(clamp(40px,6.2vw,92px) * var(--fs));line-height:.98}
+.hero-visual{position:relative;height:100%;display:flex;align-items:center;justify-content:center}
+@media(max-width:900px){.hero .main{grid-template-columns:1fr;gap:8px}.hero-visual{order:2;min-height:0}}
+
+/* ============================================================
+   CHAPTER DIVIDERS (3,8,14,19,25)
+   ============================================================ */
+.chapter{align-items:center;justify-content:center;text-align:center;padding-top:0}
+.chapter .numeral{
+  position:absolute;top:50%;left:50%;transform:translate(-50%,-54%);
+  font-family:'Poppins',sans-serif;font-weight:800;color:var(--navy);
+  font-size:min(62vh,52vw);line-height:1;opacity:.07;z-index:0;pointer-events:none;letter-spacing:-.03em;
+}
+.chapter .cwrap{position:relative;z-index:5;display:flex;flex-direction:column;align-items:center;gap:.35em}
+.chapter .clabel{font-family:'Poppins',sans-serif;font-weight:700;letter-spacing:.28em;color:var(--teal);
+  font-size:calc(clamp(13px,1.3vw,18px)*var(--fs));text-transform:uppercase}
+.chapter .ctitle{font-family:'Poppins',sans-serif;font-weight:800;color:var(--navy);line-height:.96;
+  font-size:calc(clamp(46px,9vw,128px)*var(--fs));letter-spacing:-.02em}
+.chapter .cinstruct{color:var(--ink-soft);font-weight:500;margin-top:.3em;
+  font-size:calc(clamp(16px,1.7vw,25px)*var(--fs));max-width:26em}
+.chapshape{position:absolute;z-index:1;pointer-events:none}
+
+/* ============================================================
+   INTERACTIVE BOARDS (13,18,23,24) - solid surface
+   ============================================================ */
+.board{
+  background:linear-gradient(180deg,#fffdf9,#fbf5ea);
+  border:1px solid rgba(26,56,71,.12);border-radius:24px;
+  box-shadow:0 10px 30px -22px rgba(16,34,44,.4);
+  padding:clamp(16px,2.6vh,30px);
+}
+
+/* Chips / tiles */
+.tile{
+  background:#fff;border:2px solid rgba(26,56,71,.12);border-radius:16px;cursor:pointer;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;
+  transition:transform .14s ease,box-shadow .16s ease,border-color .16s ease;
+  user-select:none;position:relative;
+}
+.tile:hover{transform:translateY(-3px);box-shadow:0 12px 24px -14px rgba(16,34,44,.45);border-color:var(--teal)}
+.tile:active{transform:translateY(0)}
+.tile img{max-width:100%;max-height:100%;width:auto;height:auto;object-fit:contain;pointer-events:none}
+.tile .lab{font-family:'Poppins',sans-serif;font-weight:700;color:var(--navy);font-size:calc(13px*var(--fs));letter-spacing:.02em}
+.tile.picked{opacity:.35;pointer-events:none}
+.tile.selected{border-color:var(--apricot);box-shadow:0 0 0 4px rgba(244,158,88,.25)}
+
+/* Answer choice buttons */
+.choice{
+  font-family:'Poppins',sans-serif;font-weight:700;color:var(--navy);
+  background:#fff;border:2px solid rgba(26,56,71,.14);border-radius:16px;cursor:pointer;
+  padding:calc(16px*var(--fs)) calc(18px*var(--fs));font-size:calc(clamp(16px,1.5vw,21px)*var(--fs));
+  display:flex;align-items:center;justify-content:center;gap:.5em;
+  transition:transform .13s ease,box-shadow .16s ease,border-color .16s,background .16s;
+}
+.choice:hover{transform:translateY(-2px);border-color:var(--teal);box-shadow:0 10px 22px -14px rgba(16,34,44,.4)}
+.choice.correct{background:#e6f5f0;border-color:var(--teal);color:#0a6f6f}
+.choice.wrong{background:#fdece6;border-color:var(--terracotta);color:#b8442b}
+.choice.dim{opacity:.45}
+
+.feedback{
+  border-radius:14px;padding:calc(13px*var(--fs)) calc(17px*var(--fs));font-weight:500;
+  font-size:calc(clamp(15px,1.45vw,20px)*var(--fs));line-height:1.35;display:none;
+}
+.feedback.show{display:block;animation:popIn .35s ease both}
+.feedback.ok{background:#e6f5f0;color:#0a6f6f;border:1px solid rgba(0,128,128,.3)}
+.feedback.no{background:#fdefe9;color:#b8442b;border:1px solid rgba(232,104,73,.3)}
+@keyframes popIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+
+/* Flow slot */
+.slot{
+  border:2.5px dashed var(--sage);border-radius:18px;background:rgba(147,168,172,.10);
+  display:flex;align-items:center;justify-content:center;color:var(--sage);
+  font-family:'Poppins',sans-serif;font-weight:700;transition:all .2s ease;
+}
+.slot.over{border-color:var(--apricot);background:rgba(244,158,88,.12)}
+.slot.filled{border-style:solid;border-color:var(--teal);background:#fff;color:var(--navy)}
+
+.arrow-v{color:var(--teal);font-size:calc(28px*var(--fs));font-weight:800;line-height:1}
+.arrow-h{color:var(--teal);font-size:calc(30px*var(--fs));font-weight:800}
+
+/* ============================================================
+   PILL / TOGGLE (scene 5)
+   ============================================================ */
+.pill{display:inline-flex;background:rgba(147,168,172,.18);border-radius:999px;padding:4px;gap:4px}
+.pill button{
+  border:none;background:transparent;cursor:pointer;border-radius:999px;
+  font-family:'Poppins',sans-serif;font-weight:600;color:var(--ink-soft);
+  padding:calc(9px*var(--fs)) calc(15px*var(--fs));font-size:calc(14px*var(--fs));transition:all .15s ease;white-space:nowrap;
+}
+.pill button.on{background:#fff;color:var(--navy);box-shadow:0 3px 10px -4px rgba(16,34,44,.35)}
+.pill button.on[data-v="off"]{color:var(--terracotta)}
+.pill button.on[data-v="on"]{color:var(--teal)}
+
+.predrow{display:flex;align-items:center;justify-content:space-between;gap:14px;
+  background:#fff;border:1px solid rgba(26,56,71,.10);border-radius:16px;
+  padding:calc(12px*var(--fs)) calc(16px*var(--fs));box-shadow:0 6px 18px -14px rgba(16,34,44,.4)}
+.predrow .fname{font-family:'Poppins',sans-serif;font-weight:700;color:var(--navy);font-size:calc(clamp(15px,1.4vw,20px)*var(--fs))}
+
+/* connectivity toggles */
+.conn{display:flex;flex-direction:column;gap:10px}
+.connrow{display:flex;align-items:center;justify-content:space-between;gap:14px;
+  background:rgba(16,34,44,.9);color:#fff;border-radius:14px;padding:10px 14px;min-width:220px}
+.connrow .cn{display:flex;align-items:center;gap:9px;font-weight:600;font-size:calc(14px*var(--fs))}
+.sw{width:46px;height:26px;border-radius:999px;background:#3aa66f;position:relative;cursor:pointer;transition:background .2s;border:none;flex:0 0 auto}
+.sw::after{content:"";position:absolute;top:3px;left:3px;width:20px;height:20px;border-radius:50%;background:#fff;transition:transform .2s}
+.sw.off{background:#5b6b74}
+.sw.off::after{transform:translateX(20px)}
+.sw.airplane.off{background:#5b6b74}
+.sw.airplane.on{background:var(--apricot)}
+.sw.airplane.on::after{transform:translateX(20px)}
+
+/* ============================================================
+   TEST STAGE (scene 6)
+   ============================================================ */
+.testgrid{display:grid;grid-template-columns:repeat(4,1fr);gap:clamp(12px,1.6vw,20px);width:100%;max-width:1000px}
+.testcard{background:#fff;border:1px solid rgba(26,56,71,.1);border-radius:18px;padding:clamp(14px,2vh,22px);
+  display:flex;flex-direction:column;align-items:center;gap:10px;box-shadow:0 8px 22px -16px rgba(16,34,44,.4);
+  position:relative;overflow:hidden}
+.testcard .ico{font-size:calc(clamp(30px,3.4vw,44px)*var(--fs))}
+.testcard .tname{font-family:'Poppins',sans-serif;font-weight:700;color:var(--navy);text-align:center;font-size:calc(clamp(13px,1.25vw,17px)*var(--fs))}
+.testcard .res{font-family:'Poppins',sans-serif;font-weight:800;font-size:calc(clamp(12px,1.15vw,15px)*var(--fs));
+  padding:5px 11px;border-radius:999px;opacity:0;transform:scale(.7);transition:all .4s ease}
+.testcard.done .res{opacity:1;transform:scale(1)}
+.res.works{background:#e6f5f0;color:#0a6f6f}
+.res.needs{background:#fdefe9;color:#b8442b}
+.testcard.spot{box-shadow:0 0 0 3px var(--aqua),0 16px 30px -14px rgba(37,208,216,.6)}
+.testcard.done.works{border-color:rgba(0,128,128,.4)}
+.testcard.done.needs{border-color:rgba(232,104,73,.4)}
+
+/* ============================================================
+   ANIMATED FLOW PIPELINE (scenes 10,11,12)
+   ============================================================ */
+.pipe{display:flex;align-items:center;justify-content:center;gap:clamp(10px,2vw,30px);flex-wrap:nowrap}
+.node{display:flex;flex-direction:column;align-items:center;gap:10px}
+.node img{width:clamp(90px,13vw,168px);height:auto;filter:drop-shadow(0 16px 26px rgba(16,34,44,.22))}
+.node .nlab{font-family:'Poppins',sans-serif;font-weight:800;color:var(--teal);font-size:calc(clamp(15px,1.6vw,24px)*var(--fs));letter-spacing:.03em}
+.node .nsub{color:var(--ink-soft);font-weight:500;font-size:calc(clamp(12px,1.1vw,15px)*var(--fs))}
+
+.orbimg{filter:drop-shadow(0 0 26px rgba(37,208,216,.55))}
+
+/* focus spotlight helper for staged reveals */
+.dimmed{opacity:.28;filter:saturate(.6);transition:opacity .5s,filter .5s}
+.lit{opacity:1;filter:none;transition:opacity .5s,filter .5s}
+
+/* ============================================================
+   SYSTEM STAGE (scenes 15,16,17) - shared coordinates
+   ============================================================ */
+/* Large box: visual on the left, text on the right */
+.sysbox{position:relative;display:grid;grid-template-columns:1.04fr .96fr;align-items:stretch;
+  gap:clamp(16px,3vw,46px);width:min(100%,1180px);height:100%;margin:0 auto;
+  border-radius:38px;padding:clamp(14px,2.4vh,32px) clamp(22px,3vw,46px);
+  background:linear-gradient(180deg,rgba(255,255,255,.62),rgba(250,245,236,.48));
+  border:1px solid rgba(26,56,71,.07);
+  box-shadow:0 55px 110px -65px rgba(16,34,44,.42), inset 0 1px 0 rgba(255,255,255,.7);}
+.sysstage{position:relative;width:100%;height:100%;min-height:0}
+.sys-phone{position:absolute;left:6%;bottom:6%;height:62%;width:auto;
+  filter:drop-shadow(0 20px 34px rgba(16,34,44,.32));z-index:3}
+.sys-halo{position:absolute;left:0%;bottom:0%;width:44%;height:64%;border-radius:50%;
+  background:radial-gradient(circle,rgba(0,128,128,.3),transparent 70%);filter:blur(34px);z-index:1}
+.sys-orb{position:absolute;z-index:4;filter:drop-shadow(0 0 20px rgba(37,208,216,.6))}
+.sys-cloud{position:absolute;right:0%;top:10%;width:46%;z-index:2;
+  filter:drop-shadow(0 16px 30px rgba(16,34,44,.25))}
+.sys-net{position:absolute;right:20%;top:36%;width:52%;z-index:2}
+.systext{display:flex;flex-direction:column;justify-content:center;gap:clamp(9px,1.7vh,20px);min-width:0}
+.syslab{font-family:'Poppins',sans-serif;font-weight:800;color:var(--teal);line-height:1.02;letter-spacing:.02em;
+  font-size:calc(clamp(30px,3.7vw,56px)*var(--fs))}
+.systext .support{max-width:100%;text-align:left;margin:0}
+.systext .bridge{text-align:left}
+@media(max-width:900px){
+  .sysbox{grid-template-columns:1fr;gap:8px;padding:14px 18px}
+  .sysbox .sysstage{min-height:34vh}
+  .systext{align-items:center;text-align:center}
+  .systext .support,.systext .bridge{text-align:center}
+}
+
+/* ============================================================
+   XRAY (scenes 20,21)
+   ============================================================ */
+.scanline{position:absolute;left:0;right:0;height:5px;z-index:8;pointer-events:none;
+  background:linear-gradient(90deg,transparent,var(--aqua),transparent);
+  box-shadow:0 0 22px 6px var(--aqua-soft);opacity:0}
+
+/* ============================================================
+   BUILDER (scene 23) & REPAIR (24)
+   ============================================================ */
+.tray{display:flex;gap:clamp(8px,1.1vw,14px);flex-wrap:wrap;justify-content:center}
+.tray .tile{width:clamp(84px,9.4vw,124px);height:clamp(92px,13vh,124px);padding:8px 6px}
+.tray .tile img{max-height:clamp(44px,5.6vw,68px);max-width:92%;width:auto;height:auto;object-fit:contain}
+.chain{display:flex;align-items:center;gap:clamp(4px,.8vw,12px);flex-wrap:nowrap;justify-content:center;min-height:clamp(90px,15vh,150px);flex-wrap:wrap}
+.chainslot{width:clamp(78px,9vw,116px);height:clamp(84px,13.5vh,132px);flex:0 0 auto;
+  border:2.5px dashed var(--sage);border-radius:16px;display:flex;flex-direction:column;align-items:center;justify-content:center;
+  color:var(--sage);gap:4px;background:rgba(147,168,172,.08);transition:all .18s}
+.chainslot.filled{border-style:solid;border-color:var(--teal);background:#fff}
+.chainslot.over{border-color:var(--apricot);background:rgba(244,158,88,.12)}
+.chainslot img{max-height:clamp(38px,5vw,58px);max-width:86%;width:auto;height:auto;object-fit:contain}
+.chainslot .cl{font-family:'Poppins',sans-serif;font-weight:700;font-size:calc(11px*var(--fs));color:var(--navy)}
+.chain .arrow-h{align-self:center}
+
+/* dragging ghost */
+.dragging{opacity:.5}
+#ghost{position:fixed;z-index:200;pointer-events:none;opacity:.92;transform:translate(-50%,-50%);
+  filter:drop-shadow(0 10px 20px rgba(16,34,44,.4));display:none}
+#ghost img{height:70px;width:auto}
+
+/* Reflection (26) */
+.reflect{display:flex;flex-direction:column;gap:clamp(14px,2.4vh,26px);max-width:820px;width:100%}
+.reflect .qline{font-family:'Poppins',sans-serif;font-weight:700;color:var(--teal);
+  font-size:calc(clamp(18px,1.9vw,27px)*var(--fs));margin-bottom:.4em}
+.reflect textarea{
+  width:100%;border:2px solid rgba(26,56,71,.15);border-radius:16px;background:#fff;
+  padding:calc(14px*var(--fs)) calc(18px*var(--fs));font-family:'Inter',sans-serif;
+  font-size:calc(clamp(16px,1.5vw,22px)*var(--fs));color:var(--navy);resize:none;line-height:1.4;
+  min-height:calc(clamp(64px,11vh,110px));transition:border-color .18s}
+.reflect textarea:focus{outline:none;border-color:var(--teal);box-shadow:0 0 0 4px rgba(0,128,128,.12)}
+
+/* ============================================================
+   VIDEO
+   ============================================================ */
+.videowrap{position:relative;border-radius:22px;overflow:hidden;max-width:100%;max-height:100%;
+  box-shadow:0 26px 60px -30px rgba(16,34,44,.5);background:#0e1c24}
+.videowrap video{display:block;width:100%;height:100%;object-fit:cover;max-height:100%}
+.playbtn{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;cursor:pointer;
+  background:linear-gradient(180deg,rgba(16,34,44,.15),rgba(16,34,44,.45));border:none;z-index:3;color:#fff}
+.playbtn .circ{width:clamp(64px,7vw,92px);height:clamp(64px,7vw,92px);border-radius:50%;
+  background:rgba(255,255,255,.94);display:flex;align-items:center;justify-content:center;
+  box-shadow:0 12px 30px rgba(0,0,0,.35);transition:transform .15s}
+.playbtn:hover .circ{transform:scale(1.06)}
+.playbtn .tri{width:0;height:0;border-top:15px solid transparent;border-bottom:15px solid transparent;
+  border-left:26px solid var(--teal);margin-left:6px}
+
+/* ============================================================
+   OBJECTIVES (scene 2)
+   ============================================================ */
+.objlist{display:flex;flex-direction:column;gap:clamp(10px,2vh,22px);width:100%;max-width:1000px;margin:auto}
+.objrow{display:flex;align-items:center;gap:clamp(16px,2.5vw,34px);
+  opacity:0;transform:translateX(-24px);animation:objIn .6s ease forwards}
+.objrow:nth-child(1){animation-delay:.15s}
+.objrow:nth-child(2){animation-delay:.5s}
+.objrow:nth-child(3){animation-delay:.85s}
+@keyframes objIn{to{opacity:1;transform:none}}
+.objrow .sym{font-size:calc(clamp(40px,5.5vw,82px)*var(--fs));line-height:1;flex:0 0 auto;filter:drop-shadow(0 8px 14px rgba(16,34,44,.15))}
+.objrow .otxt b{font-family:'Poppins',sans-serif;font-weight:800;color:var(--navy);
+  font-size:calc(clamp(24px,3vw,46px)*var(--fs));display:block;line-height:1.02}
+.objrow .otxt span{color:var(--ink-soft);font-weight:500;font-size:calc(clamp(15px,1.5vw,22px)*var(--fs))}
+.objrow .num{font-family:'Poppins',sans-serif;font-weight:800;color:var(--apricot);opacity:.5;
+  font-size:calc(clamp(22px,2.6vw,40px)*var(--fs))}
+
+/* small helper chips (surface tag etc) */
+.tag{display:inline-flex;align-items:center;gap:.5em;background:rgba(0,128,128,.10);color:var(--teal);
+  font-family:'Poppins',sans-serif;font-weight:700;border-radius:999px;
+  padding:.5em 1em;font-size:calc(clamp(13px,1.3vw,18px)*var(--fs));width:max-content}
+
+/* misc */
+.center{align-items:center;justify-content:center;text-align:center}
+.fade-seq{opacity:0;animation:fadeUp .7s ease forwards}
+@keyframes fadeUp{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+.hidden{display:none!important}
+
+/* pulse used for active data */
+@keyframes pulseGlow{0%,100%{filter:drop-shadow(0 0 16px rgba(37,208,216,.4))}50%{filter:drop-shadow(0 0 30px rgba(37,208,216,.85))}}
+
+/* ============================================================
+   ADDED: centered light panel, frame, players, roadmap, etc.
+   ============================================================ */
+
+/* Centered soft stage panel - grounds central objects (Z1) */
+.objwrap.panel::before{content:"";position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);
+  width:min(96%,1080px);height:min(99%,620px);border-radius:40px;z-index:0;pointer-events:none;
+  background:
+    radial-gradient(135% 120% at 50% 18%, rgba(255,255,255,.7), rgba(255,255,255,0) 72%),
+    linear-gradient(180deg, rgba(255,255,255,.6), rgba(250,245,236,.46));
+  border:1px solid rgba(26,56,71,.06);
+  box-shadow:0 55px 110px -65px rgba(16,34,44,.42), inset 0 1px 0 rgba(255,255,255,.7);}
+.objwrap.panel>*{position:relative;z-index:1}
+
+/* Aesthetic frame (cover) */
+.frame{position:relative;border-radius:26px;padding:clamp(9px,1.2vw,16px);z-index:2;
+  background:linear-gradient(155deg, rgba(255,255,255,.94), rgba(250,245,236,.74));
+  border:1px solid rgba(26,56,71,.10);
+  box-shadow:0 45px 95px -50px rgba(16,34,44,.5), inset 0 1px 0 rgba(255,255,255,.75);}
+.frame::after{content:"";position:absolute;inset:clamp(9px,1.2vw,16px);border-radius:16px;
+  box-shadow:inset 0 0 0 1px rgba(255,255,255,.4);pointer-events:none}
+.frame img{display:block;width:100%;height:auto;border-radius:16px}
+.constellation{position:absolute;inset:0;width:100%;height:100%;z-index:0;pointer-events:none}
+
+/* Gaussian-blur-edge image (soft aesthetic) */
+.glowimg{position:relative;display:inline-block;line-height:0;max-width:100%}
+.glowimg img{display:block;max-width:100%;height:auto}
+.glowimg .blur{position:absolute;inset:0;width:100%;height:100%;filter:blur(22px) saturate(1.12);
+  opacity:.5;transform:scale(1.06);z-index:0}
+.glowimg .sharp{position:relative;z-index:1;border-radius:24px;
+  -webkit-mask-image:radial-gradient(125% 125% at 50% 50%, #000 58%, transparent 92%);
+  mask-image:radial-gradient(125% 125% at 50% 50%, #000 58%, transparent 92%)}
+
+/* Connectivity toggles v2 (scene 5) */
+.toggles{display:flex;flex-direction:column;gap:clamp(12px,2.2vh,20px);width:min(100%,440px)}
+.tgl{display:flex;align-items:center;justify-content:space-between;gap:16px;
+  background:#fff;border:1px solid rgba(26,56,71,.10);border-radius:18px;
+  padding:clamp(12px,1.9vh,18px) clamp(16px,2vw,24px);
+  box-shadow:0 12px 28px -18px rgba(16,34,44,.45);transition:transform .2s ease, box-shadow .2s ease}
+.tgl.done{transform:translateX(0)}
+.tgl .tn{display:flex;align-items:center;gap:11px;font-family:'Poppins';font-weight:700;color:var(--navy);
+  font-size:calc(clamp(16px,1.6vw,22px)*var(--fs))}
+.tgl .tn .ic{font-size:1.35em;line-height:1}
+.swbig{width:72px;height:38px;border-radius:999px;background:#2aa563;position:relative;cursor:pointer;border:none;
+  flex:0 0 auto;transition:background .3s cubic-bezier(.3,.7,.3,1)}
+.swbig::after{content:"";position:absolute;top:4px;left:4px;width:30px;height:30px;border-radius:50%;
+  background:#fff;box-shadow:0 2px 6px rgba(0,0,0,.28);transition:transform .3s cubic-bezier(.3,.7,.3,1)}
+.swbig.off{background:#c3ccd0}
+.swbig.off::after{transform:translateX(34px)}
+.swbig .lo,.swbig .lf{position:absolute;top:50%;transform:translateY(-50%);font-family:'Poppins';
+  font-weight:800;font-size:10px;letter-spacing:.06em;transition:opacity .2s}
+.swbig .lo{left:11px;color:#fff;opacity:1}
+.swbig .lf{right:11px;color:#5b6b74;opacity:0}
+.swbig.off .lo{opacity:0}.swbig.off .lf{opacity:1}
+.offline-badge{display:inline-flex;align-items:center;gap:.5em;font-family:'Poppins';font-weight:800;
+  color:var(--terracotta);background:rgba(232,104,73,.12);border:1px solid rgba(232,104,73,.32);
+  border-radius:999px;padding:.55em 1.15em;font-size:calc(clamp(15px,1.5vw,21px)*var(--fs))}
+#s5stage{display:flex;align-items:center;justify-content:center;gap:0;width:100%}
+#s5offline{display:flex;flex-direction:column;align-items:center;gap:14px;max-width:0;opacity:0;overflow:hidden;
+  transition:max-width .7s cubic-bezier(.4,0,.2,1), opacity .55s ease}
+#s5stage.done{gap:clamp(20px,4vw,64px)}
+#s5stage.done #s5offline{max-width:min(42vh,360px);opacity:1}
+@media(max-width:820px){
+  #s5stage.done{flex-direction:column;gap:18px}
+  #s5stage.done #s5offline{max-width:min(30vh,240px)}
+}
+
+/* Video player mockup (scene 21) */
+.player{position:relative;border-radius:16px;overflow:hidden;background:#0c1922;max-width:100%;
+  box-shadow:0 42px 92px -46px rgba(16,34,44,.75);border:1px solid rgba(255,255,255,.07)}
+.player .ptop{display:flex;align-items:center;gap:7px;padding:9px 14px;background:#0a151d}
+.player .ptop .d{width:11px;height:11px;border-radius:50%}
+.player .ptop .fn{margin-left:8px;color:#8ea6b0;font-size:12px;font-weight:600;font-family:'Inter'}
+.player .screen{position:relative;line-height:0;background:#000}
+.player .screen video{display:block;width:100%;height:auto;max-height:52vh;object-fit:cover}
+.player .pbar{display:flex;align-items:center;gap:13px;padding:11px 16px;background:#0a151d;color:#cfe0e6}
+.player .pbar button{background:none;border:none;color:#e5f0f3;cursor:pointer;font-size:15px;display:flex;
+  align-items:center;justify-content:center;width:26px;height:26px;border-radius:6px;transition:background .15s}
+.player .pbar button:hover{background:rgba(255,255,255,.12)}
+.player .track{flex:1;height:5px;border-radius:999px;background:rgba(255,255,255,.16);position:relative;overflow:hidden;cursor:default}
+.player .track .fill{position:absolute;left:0;top:0;bottom:0;width:0;background:linear-gradient(90deg,var(--teal),var(--aqua));border-radius:999px;transition:width .2s linear}
+.player .time{font-size:12px;font-variant-numeric:tabular-nums;color:#8ea6b0;min-width:74px;text-align:right}
+
+/* Roadmap objectives (scene 2) */
+.lead{font-family:'Poppins';font-weight:700;color:var(--navy);
+  font-size:calc(clamp(18px,2vw,28px)*var(--fs));margin-top:.15em}
+.lead .accent{color:var(--teal)}
+.roadmap{position:relative;display:flex;justify-content:center;align-items:stretch;
+  gap:clamp(16px,2.4vw,40px);width:100%;max-width:1140px;margin:auto;padding-top:40px}
+.roadmap::before{content:"";position:absolute;top:19px;left:7%;right:7%;height:4px;z-index:0;border-radius:999px;
+  background:linear-gradient(90deg,var(--teal),var(--sage) 55%,var(--apricot));opacity:.85;
+  transform-origin:left center;animation:drawPath 1s ease .05s both;
+  -webkit-mask:repeating-linear-gradient(90deg,#000 0 10px,transparent 10px 20px);
+  mask:repeating-linear-gradient(90deg,#000 0 10px,transparent 10px 20px)}
+@keyframes drawPath{from{transform:scaleX(0)}to{transform:scaleX(1)}}
+.rmarker{position:absolute;top:9px;z-index:2;font-family:'Poppins';font-weight:800;background:var(--sand);
+  letter-spacing:.14em;color:var(--sage);font-size:calc(12px*var(--fs));padding:0 .45em}
+.rmarker.start{left:3.5%}
+.rmarker.goal{right:3.5%;top:-2px;font-size:calc(24px*var(--fs));letter-spacing:0;padding:0 .2em}
+.rstop{position:relative;z-index:1;flex:1 1 0;display:flex;flex-direction:column;align-items:center;gap:9px;text-align:center;
+  background:linear-gradient(180deg,#fff,#fdf9f2);border:1px solid rgba(26,56,71,.10);border-radius:22px;
+  padding:clamp(18px,2.8vh,32px) clamp(12px,1.6vw,22px) clamp(16px,2.6vh,26px);
+  box-shadow:0 20px 44px -30px rgba(16,34,44,.45);
+  opacity:0;transform:translateY(22px);animation:objIn .6s ease forwards}
+.rstop:nth-of-type(1){animation-delay:.35s}.rstop:nth-of-type(2){animation-delay:.6s}.rstop:nth-of-type(3){animation-delay:.85s}
+.rnode{position:absolute;top:-20px;width:40px;height:40px;border-radius:50%;background:var(--teal);color:#fff;
+  display:flex;align-items:center;justify-content:center;font-family:'Poppins';font-weight:800;font-size:17px;
+  box-shadow:0 7px 16px -6px rgba(0,128,128,.7);border:3px solid var(--sand);
+  transform:scale(0);animation:nodePop .5s cubic-bezier(.2,1.5,.4,1) forwards}
+.rstop:nth-of-type(1) .rnode{animation-delay:.45s}
+.rstop:nth-of-type(2) .rnode{animation-delay:.7s;background:var(--navy);box-shadow:0 7px 16px -6px rgba(26,56,71,.6)}
+.rstop:nth-of-type(3) .rnode{animation-delay:.95s;background:var(--apricot);box-shadow:0 7px 16px -6px rgba(244,158,88,.7)}
+@keyframes nodePop{to{transform:scale(1)}}
+.rstop .rico{margin-top:14px;font-size:calc(clamp(34px,4vw,58px)*var(--fs));line-height:1;filter:drop-shadow(0 8px 12px rgba(16,34,44,.14))}
+.rstop b{font-family:'Poppins';font-weight:800;color:var(--navy);line-height:1.06;
+  font-size:calc(clamp(17px,1.7vw,25px)*var(--fs))}
+.rstop span{color:var(--ink-soft);font-weight:500;font-size:calc(clamp(13px,1.35vw,18px)*var(--fs))}
+
+/* Test scan sweep (scene 6) */
+.testwrap{position:relative;width:100%;max-width:1000px;display:flex;justify-content:center}
+.scan-sweep{position:absolute;top:-6px;bottom:-6px;left:0;width:160px;z-index:6;pointer-events:none;opacity:0;
+  background:linear-gradient(90deg,transparent,rgba(37,208,216,.18),rgba(37,208,216,.5),rgba(37,208,216,.18),transparent);
+  filter:blur(3px);border-radius:40px}
+
+/* Chain data pulse (scene 23) */
+@keyframes energize{0%{box-shadow:0 0 0 0 rgba(37,208,216,0);transform:translateY(0)}
+  45%{box-shadow:0 0 0 4px rgba(37,208,216,.5),0 14px 30px -10px rgba(37,208,216,.7);transform:translateY(-8px)}
+  100%{box-shadow:0 0 0 0 rgba(37,208,216,0);transform:translateY(0)}}
+.chainslot.energize{animation:energize .55s ease}
+
+/* ============================================================
+   ADDED (revision 3): balanced wrapping, bottom panels,
+   chapter title animation, device mock, toggle entrance,
+   prediction board, test board, modern nodes/ring
+   ============================================================ */
+.instruct,.support,.cinstruct,.lead{text-wrap:balance}
+
+/* Bottom-center text on a soft readable panel */
+.bbar{display:flex;justify-content:center;align-items:center;flex:0 0 auto;margin-top:clamp(6px,1.2vh,14px)}
+.bbar>.bridge,.bbar>.reveal-word{display:inline-block;text-wrap:balance}
+.bbar>.bridge{background:rgba(255,255,255,.82);border:1px solid rgba(26,56,71,.09);border-radius:999px;
+  padding:.5em 1.4em;box-shadow:0 14px 32px -20px rgba(16,34,44,.5)}
+.bbar>.bridge.strong{background:var(--navy);color:#fff;border-color:transparent;padding:.6em 1.6em;
+  box-shadow:0 18px 40px -18px rgba(16,34,44,.6)}
+.bbar>.bridge.strong .q{color:var(--apricot)}
+
+/* Chapter title: typographic entrance */
+.chapter.active .ctitle{animation:chapTitle 1s cubic-bezier(.2,.75,.2,1) both}
+@keyframes chapTitle{0%{opacity:0;letter-spacing:.42em;transform:translateY(24px);filter:blur(7px)}
+  55%{opacity:1;filter:blur(0)}100%{opacity:1;letter-spacing:-.02em;transform:none}}
+.chapter.active .clabel{animation:fadeUp .7s ease .12s both}
+
+/* Device (monitor) mockup - scene 4 */
+.tvmock{position:relative;border-radius:22px;padding:clamp(10px,1.3vw,18px);
+  background:linear-gradient(180deg,#243742,#152530);border:1px solid rgba(255,255,255,.06);
+  box-shadow:0 50px 100px -55px rgba(16,34,44,.8), inset 0 1px 0 rgba(255,255,255,.07);max-width:100%}
+.tvmock::before{content:"";position:absolute;top:9px;left:50%;transform:translateX(-50%);
+  width:7px;height:7px;border-radius:50%;background:#40606f;box-shadow:0 0 0 2px rgba(255,255,255,.04)}
+.tvmock .tvscreen{border-radius:12px;overflow:hidden;line-height:0;background:#000;margin-top:6px}
+.tvmock video{display:block;width:100%;height:auto;max-height:54vh;object-fit:cover;pointer-events:none}
+.tvmock .stand{position:absolute;left:50%;bottom:-16px;transform:translateX(-50%);width:26%;height:16px;
+  background:linear-gradient(180deg,#243742,#182a34);border-radius:0 0 12px 12px;z-index:-1}
+.tvmock .stand::after{content:"";position:absolute;left:50%;bottom:-9px;transform:translateX(-50%);
+  width:150%;height:9px;background:#1b2c36;border-radius:999px}
+
+/* Scene 5: toggle entrance + proportional */
+#s5.active #s5toggles .tgl{opacity:0;animation:togIn .6s cubic-bezier(.2,.8,.2,1) forwards}
+#s5.active #s5toggles .tgl:nth-child(1){animation-delay:.18s}
+#s5.active #s5toggles .tgl:nth-child(2){animation-delay:.36s}
+#s5.active #s5toggles .tgl:nth-child(3){animation-delay:.54s}
+@keyframes togIn{0%{opacity:0;transform:translateY(28px) scale(.93)}100%{opacity:1;transform:none}}
+
+/* Scene 5b: cropped image board with blurred left edge */
+.predboard{position:relative;width:100%;height:100%;min-height:clamp(220px,42vh,460px);
+  border-radius:26px;overflow:hidden;box-shadow:0 34px 76px -42px rgba(16,34,44,.55)}
+.predboard>img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:60% center}
+.predboard::after{content:"";position:absolute;left:0;top:0;bottom:0;width:42%;z-index:2;pointer-events:none;
+  backdrop-filter:blur(9px);-webkit-backdrop-filter:blur(9px);
+  -webkit-mask:linear-gradient(90deg,#000 0%,#000 30%,transparent 100%);
+  mask:linear-gradient(90deg,#000 0%,#000 30%,transparent 100%)}
+.predboard::before{content:"";position:absolute;inset:0;z-index:3;pointer-events:none;
+  background:linear-gradient(90deg, var(--sand) 0%, rgba(252,248,240,0) 34%)}
+
+/* Scene 6: test board */
+.testboard{position:relative;width:min(100%,1040px);background:linear-gradient(180deg,#fffdf9,#fbf5ea);
+  border:1px solid rgba(26,56,71,.1);border-radius:28px;box-shadow:0 30px 66px -42px rgba(16,34,44,.5);
+  padding:clamp(16px,2.4vh,28px);display:flex;flex-direction:column;gap:clamp(12px,2vh,20px);overflow:hidden}
+.testboard .thead{display:flex;align-items:center;justify-content:center;gap:10px;
+  font-family:'Poppins';font-weight:700;color:var(--ink-soft);font-size:calc(clamp(13px,1.3vw,17px)*var(--fs))}
+.testboard .chip{display:inline-flex;align-items:center;gap:.4em;background:rgba(232,104,73,.12);
+  color:var(--terracotta);border:1px solid rgba(232,104,73,.3);border-radius:999px;padding:.35em .9em;
+  font-weight:800;font-size:calc(clamp(12px,1.2vw,15px)*var(--fs))}
+
+/* Modern pipeline nodes (scene 12) + AI-model ring (scene 11) */
+.pipe .node{background:linear-gradient(180deg,#fff,#fdf9f2);border:1px solid rgba(26,56,71,.1);
+  border-radius:20px;padding:clamp(12px,1.8vh,20px) clamp(12px,1.4vw,20px);
+  box-shadow:0 20px 44px -30px rgba(16,34,44,.42)}
+.pipe .arrow-h{color:var(--teal);opacity:.8}
+.orbwrap{position:relative;display:flex;align-items:center;justify-content:center}
+.orbring{position:absolute;inset:-9%;border-radius:50%;border:2px dashed rgba(0,128,128,.38);
+  animation:spin 16s linear infinite}
+.orbring.r2{inset:2%;border-color:rgba(37,208,216,.3);animation-duration:11s;animation-direction:reverse}
+@keyframes spin{to{transform:rotate(360deg)}}
+.flowline{height:4px;width:clamp(46px,9vw,130px);border-radius:999px;
+  background:repeating-linear-gradient(90deg,var(--teal) 0 9px,transparent 9px 18px);opacity:.55;
+  -webkit-mask:linear-gradient(90deg,transparent,#000 20%,#000 80%,transparent);mask:linear-gradient(90deg,transparent,#000 20%,#000 80%,transparent)}
+.modelchip{font-family:'Poppins',sans-serif;font-weight:800;color:#fff;background:var(--teal);
+  border-radius:14px;padding:.3em .95em;letter-spacing:.03em;line-height:1;
+  font-size:calc(clamp(22px,3.2vw,44px)*var(--fs));box-shadow:0 14px 30px -14px rgba(0,128,128,.7)}
+
+/* Step numbers (scene 12) */
+.stepnum{width:clamp(28px,2.8vw,38px);height:clamp(28px,2.8vw,38px);border-radius:50%;
+  background:linear-gradient(180deg,#0a9a9a,var(--teal));color:#fff;display:flex;align-items:center;justify-content:center;
+  font-family:'Poppins',sans-serif;font-weight:800;font-size:calc(clamp(14px,1.4vw,19px)*var(--fs));
+  box-shadow:0 8px 18px -8px rgba(0,128,128,.75), inset 0 1px 0 rgba(255,255,255,.4);
+  border:2px solid var(--sand);flex:0 0 auto}
+
+/* INPUT word clear-zone halo so nothing overlaps it (scene 10) */
+.inputword{position:relative;z-index:6;padding:.05em .3em}
+.inputword::before{content:"";position:absolute;inset:-45% -28%;z-index:-1;pointer-events:none;
+  background:radial-gradient(closest-side, rgba(252,248,240,.95), rgba(252,248,240,.62) 55%, rgba(252,248,240,0) 82%);
+  filter:blur(3px)}
+.inputitem{display:flex;flex-direction:column;align-items:center;gap:clamp(6px,1vh,10px)}
+.inputitem img{width:100%;height:auto;display:block;filter:drop-shadow(0 12px 20px rgba(16,34,44,.18))}
+.inlabel{font-family:'Poppins',sans-serif;font-weight:700;color:var(--navy);white-space:nowrap;
+  background:#fff;border:1px solid rgba(26,56,71,.1);border-radius:999px;padding:.32em .85em;
+  font-size:calc(clamp(12px,1.2vw,16px)*var(--fs));box-shadow:0 8px 18px -12px rgba(16,34,44,.45)}
+
+/* Test card: real-world brand example on hover / tap / focus (scene 6) */
+.testcard{cursor:pointer}
+.tex{position:absolute;inset:0;border-radius:18px;background:rgba(16,34,44,.94);color:#fff;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;gap:.35em;text-align:center;
+  padding:.7em;font-family:'Poppins',sans-serif;font-weight:700;line-height:1.25;
+  font-size:calc(clamp(12px,1.2vw,16px)*var(--fs));
+  opacity:0;transform:scale(.96);transition:opacity .2s ease,transform .2s ease;pointer-events:none;z-index:5}
+.tex b{color:var(--aqua)}
+.tex small{font-family:'Inter',sans-serif;font-weight:500;opacity:.82;font-size:.8em}
+.testcard:hover .tex,.testcard:focus .tex,.testcard.show .tex{opacity:1;transform:scale(1)}
+.testboard .hint{font-family:'Inter',sans-serif;font-weight:500;color:var(--ink-soft);opacity:.75;
+  font-size:calc(clamp(11px,1.05vw,13px)*var(--fs))}
+
+/* reduced motion */
+@media(prefers-reduced-motion:reduce){
+  *{animation-duration:.001ms!important;animation-delay:0ms!important;transition-duration:.09s!important}
+  .scene{animation:none}
+}
+</style>
+</head>
+<body>
+<div id="atmos"></div>
+<div id="progress"></div>
+
+<main id="app">
+
+<!-- =================================================================
+     SCENE 1 - COVER
+================================================================== -->
+<section class="scene hero" id="s1" data-chapter="0">
+  <div class="head" style="visibility:hidden">.</div>
+  <div class="main">
+    <div class="hero-copy">
+      <div class="eyebrow"><span class="dot"></span>Grade 8 · Module 1 · Session 1</div>
+      <h1 class="title">Where Is&nbsp;the AI?</h1>
+      <p class="instruct" style="margin-top:.7em"><span class="verb">Look closely</span>. What's behind the screen?</p>
+    </div>
+    <div class="hero-visual">
+      <canvas class="constellation" id="cover-net"></canvas>
+      <div class="aura" style="width:66%;height:66%;left:19%;top:16%"></div>
+      <div class="frame" style="width:100%">
+        <img src="assets/5961e5a82124d1fefd15accb.webp" alt="A smartphone glowing with AI cues around it: a voice waveform, a face-recognition frame, a chat bubble and a translation icon.">
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- =================================================================
+     SCENE 2 - OBJECTIVES
+================================================================== -->
+<section class="scene stage" id="s2" data-chapter="0">
+  <div class="head">
+    <div class="eyebrow"><span class="dot"></span>Your Roadmap</div>
+    <h1 class="title">Objectives</h1>
+    <p class="lead">By the end of this session, <span class="accent">I can…</span></p>
+  </div>
+  <div class="main center">
+    <div class="roadmap">
+      <span class="rmarker start">START</span>
+      <div class="rstop"><div class="rnode">1</div><div class="rico">🔍</div><b>Identify the hidden parts</b><span>behind an AI-powered feature</span></div>
+      <div class="rstop"><div class="rnode">2</div><div class="rico">📱☁️</div><b>Distinguish where AI works</b><span>on a device, in the cloud, or both</span></div>
+      <div class="rstop"><div class="rnode">3</div><div class="rico">🗺️</div><b>Map a simple AI system</b><span>from what goes in to what comes out</span></div>
+      <span class="rmarker goal">🏁</span>
+    </div>
+  </div>
+</section>
+
+<!-- =================================================================
+     SCENE 3 - CHAPTER 01 DIVIDER
+================================================================== -->
+<section class="scene chapter" id="s3" data-chapter="1">
+  <div class="numeral">01</div>
+  <svg class="chapshape" width="58vmin" height="58vmin" viewBox="0 0 200 200" style="opacity:.9">
+    <circle cx="100" cy="100" r="86" fill="none" stroke="#1A3847" stroke-width="1.5"
+      stroke-dasharray="405 135" stroke-linecap="round" transform="rotate(-90 100 100)" opacity=".16"/>
+    <circle cx="100" cy="100" r="60" fill="none" stroke="#008080" stroke-width="1.5"
+      stroke-dasharray="220 160" stroke-linecap="round" opacity=".22"/>
+  </svg>
+  <div class="cwrap">
+    <div class="clabel">Chapter One</div>
+    <div class="ctitle">THE MYSTERY</div>
+  </div>
+</section>
+
+<!-- =================================================================
+     SCENE 4 - AI IS ALREADY AROUND YOU  (video 1)
+================================================================== -->
+<section class="scene stage" id="s4" data-chapter="1">
+  <div class="head wide">
+    <div class="eyebrow"><span class="dot"></span>Observe</div>
+    <h1 class="title">AI Is Already Around You</h1>
+    <p class="instruct"><span class="verb">Look around</span>. How many AI features can you spot?</p>
+  </div>
+  <div class="main center">
+    <div class="tvmock" style="width:min(100%,1000px)">
+      <div class="tvscreen">
+        <video id="vid4" playsinline muted loop autoplay preload="auto" tabindex="-1" disablepictureinpicture
+          poster="assets/6a2ca0f1d4bc28432b402ecc.webp">
+          <source src="assets/7d49d2ce6f1d32bc3e1dbd48.mp4" type="video/mp4">
+        </video>
+      </div>
+      <div class="stand"></div>
+    </div>
+  </div>
+  <div class="bbar"><span class="bridge strong" data-bridge4 style="opacity:0;transition:opacity .5s">But do all of these need <span class="q">the internet?</span></span></div>
+</section>
+
+<!-- =================================================================
+     SCENE 5 - KILL THE INTERNET
+================================================================== -->
+<section class="scene stage" id="s5" data-chapter="1">
+  <div class="head wide">
+    <div class="eyebrow"><span class="dot"></span>Do It</div>
+    <h1 class="title">Kill the Internet</h1>
+    <p class="instruct">Your turn. <span class="verb">Switch off</span> all three connections.</p>
+  </div>
+  <div class="main center">
+    <div class="objwrap panel">
+      <div id="s5stage">
+        <div class="toggles" id="s5toggles">
+          <div class="tgl"><span class="tn"><span class="ic">📶</span>Wi-Fi</span><button class="swbig" data-tgl aria-label="Toggle Wi-Fi"><span class="lo">ON</span><span class="lf">OFF</span></button></div>
+          <div class="tgl"><span class="tn"><span class="ic">📡</span>Mobile Data</span><button class="swbig" data-tgl aria-label="Toggle Mobile Data"><span class="lo">ON</span><span class="lf">OFF</span></button></div>
+          <div class="tgl"><span class="tn"><span class="ic">☁️</span>Cloud Sync</span><button class="swbig" data-tgl aria-label="Toggle Cloud Sync"><span class="lo">ON</span><span class="lf">OFF</span></button></div>
+        </div>
+        <div id="s5offline">
+          <div class="glowimg" style="max-width:min(36vh,320px)">
+            <img class="blur" src="assets/a6c01a075472bdaeebf90e15.webp" alt="">
+            <img class="sharp" src="assets/a6c01a075472bdaeebf90e15.webp" alt="A phone still glowing while every connection is switched off.">
+          </div>
+          <div class="offline-badge">🚫 You're offline</div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="bbar"><span class="bridge" data-bridge5 style="opacity:0;transition:opacity .5s">You're offline. <span class="q">So what still works?</span></span></div>
+</section>
+
+<!-- =================================================================
+     SCENE 5B - MAKE YOUR PREDICTION
+================================================================== -->
+<section class="scene split" id="s5b" data-chapter="1">
+  <div class="head">
+    <div class="eyebrow"><span class="dot"></span>Predict</div>
+    <h1 class="title">Make Your Prediction</h1>
+    <p class="instruct">You're offline now. <span class="verb">Which ones</span> do you think still work?</p>
+  </div>
+  <div class="main">
+    <div class="stack">
+      <div class="predrow" data-feature="Object Finder">
+        <span class="fname">🔎 Object Finder</span>
+        <div class="pill"><button data-v="on">Still works</button><button data-v="off">Needs internet</button></div>
+      </div>
+      <div class="predrow" data-feature="Pocket Translator">
+        <span class="fname">🌐 Pocket Translator</span>
+        <div class="pill"><button data-v="on">Still works</button><button data-v="off">Needs internet</button></div>
+      </div>
+      <div class="predrow" data-feature="Mega Chat">
+        <span class="fname">💬 Mega Chat</span>
+        <div class="pill"><button data-v="on">Still works</button><button data-v="off">Needs internet</button></div>
+      </div>
+      <div class="predrow" data-feature="Voice Notes">
+        <span class="fname">🎙️ Voice Notes</span>
+        <div class="pill"><button data-v="on">Still works</button><button data-v="off">Needs internet</button></div>
+      </div>
+    </div>
+    <div class="visual">
+      <div class="predboard">
+        <img src="assets/a6c01a075472bdaeebf90e15.webp" alt="A phone that is fully offline, still running its AI features.">
+      </div>
+    </div>
+  </div>
+  <div class="bbar"><span class="bridge" data-bridge5b style="opacity:0;transition:opacity .5s">Predictions locked. <span style="color:var(--teal)">Now test them.</span></span></div>
+</section>
+
+<!-- =================================================================
+     SCENE 6 - TEST IT
+================================================================== -->
+<section class="scene stage" id="s6" data-chapter="1">
+  <div class="head wide">
+    <div class="eyebrow"><span class="dot"></span>Test</div>
+    <h1 class="title">Test It</h1>
+    <p class="instruct"><span class="verb">Run</span> the test. What keeps working offline?</p>
+  </div>
+  <div class="main center">
+    <div class="testboard">
+      <div class="scan-sweep" id="s6scan"></div>
+      <div class="thead"><span class="chip">✈️ Offline</span> Which features keep working? <span class="hint">tap a card to see a real app</span></div>
+      <div class="testgrid" id="testgrid">
+        <div class="testcard" data-res="works" tabindex="0"><div class="tex">Like <b>Google Lens</b><small>runs on your phone</small></div><div class="ico">🔎</div><div class="tname">Object Finder</div><div class="res works">WORKS ✓</div></div>
+        <div class="testcard" data-res="works" tabindex="0"><div class="tex">Like <b>Google Translate</b><small>has an offline mode</small></div><div class="ico">🌐</div><div class="tname">Pocket Translator</div><div class="res works">WORKS ✓</div></div>
+        <div class="testcard" data-res="needs" tabindex="0"><div class="tex">Like <b>ChatGPT</b> or <b>Gemini</b><small>lives in the cloud</small></div><div class="ico">💬</div><div class="tname">Mega Chat</div><div class="res needs">NEEDS CONNECTION</div></div>
+        <div class="testcard" data-res="works" tabindex="0"><div class="tex">Like <b>Apple Voice Memos</b><small>records on device</small></div><div class="ico">🎙️</div><div class="tname">Voice Notes</div><div class="res works">WORKS ✓</div></div>
+      </div>
+    </div>
+    <button class="navbtn primary" id="testbtn" style="margin-top:clamp(10px,1.6vh,18px);height:auto;padding:14px 34px;font-size:calc(18px*var(--fs));font-family:'Poppins';font-weight:700">TEST ▶</button>
+  </div>
+  <div class="bbar"><span class="bridge" data-bridge6 style="opacity:0;transition:opacity .5s">Something <span class="q">strange</span> just happened.</span></div>
+</section>
+
+<!-- =================================================================
+     SCENE 7 - WAIT… IT SURVIVED?
+================================================================== -->
+<section class="scene hero" id="s7" data-chapter="1">
+  <div class="head" style="visibility:hidden">.</div>
+  <div class="main">
+    <div class="hero-copy">
+      <div class="eyebrow"><span class="dot"></span>Notice</div>
+      <h1 class="title">Wait… It Survived?</h1>
+      <p class="instruct" style="margin-top:.6em"><span class="verb">Look</span>. Where's the AI working now?</p>
+    </div>
+    <div class="hero-visual">
+      <div class="cine dissolve" style="width:100%"><img src="assets/7020df2c2260f046376fc601.webp" alt="On the left a crossed-out Wi-Fi symbol in shadow; on the right a glowing phone still running its AI assistant."></div>
+    </div>
+  </div>
+  <div class="bbar"><span class="bridge fade-seq" style="animation-delay:.9s">To answer that, we need to <span style="color:var(--teal)">look underneath.</span></span></div>
+</section>
+
+<!-- =================================================================
+     SCENE 8 - CHAPTER 02 DIVIDER
+================================================================== -->
+<section class="scene chapter" id="s8" data-chapter="2">
+  <div class="numeral">02</div>
+  <svg class="chapshape" width="60vmin" height="60vmin" viewBox="0 0 200 200" style="opacity:.9">
+    <circle cx="100" cy="82" r="72" fill="none" stroke="#1A3847" stroke-width="1.5" stroke-dasharray="330 120" stroke-linecap="round" opacity=".18"/>
+    <circle cx="100" cy="106" r="72" fill="none" stroke="#008080" stroke-width="1.5" stroke-dasharray="330 120" stroke-linecap="round" opacity=".2"/>
+    <circle cx="100" cy="128" r="72" fill="none" stroke="#93A8AC" stroke-width="1.5" stroke-dasharray="330 120" stroke-linecap="round" opacity=".22"/>
+  </svg>
+  <div class="cwrap">
+    <div class="clabel">Chapter Two</div>
+    <div class="ctitle">UNDER THE SCREEN</div>
+  </div>
+</section>
+
+<!-- =================================================================
+     SCENE 9 - WHAT YOU SEE
+================================================================== -->
+<section class="scene stage" id="s9" data-chapter="2">
+  <div class="head">
+    <div class="eyebrow"><span class="dot"></span>Look</div>
+    <h1 class="title">What You See</h1>
+    <p class="instruct"><span class="verb">Look</span> only at what you can see and tap.</p>
+  </div>
+  <div class="main center">
+    <div style="display:flex;flex-direction:column;align-items:center;gap:clamp(12px,2.2vh,22px)">
+      <div class="frame" style="width:min(72vh,820px);max-width:100%">
+        <img src="assets/ad63be3a1502306547c22824.webp" alt="A translator app: two message bubbles and a microphone button, the visible interface only.">
+      </div>
+      <span class="tag" style="font-size:calc(clamp(15px,1.5vw,21px)*var(--fs))">This screen is only the <b style="color:var(--teal);font-weight:800">surface</b></span>
+    </div>
+  </div>
+  <div class="bbar"><span class="bridge fade-seq" style="animation-delay:.7s">Before anything can happen, <span class="q">something has to enter.</span></span></div>
+</section>
+
+<!-- =================================================================
+     SCENE 10 - SOMETHING GOES IN  (INPUT)
+================================================================== -->
+<section class="scene stage" id="s10" data-chapter="2">
+  <div class="head wide">
+    <div class="eyebrow"><span class="dot"></span>Follow</div>
+    <h1 class="title">Something Goes In</h1>
+    <p class="instruct"><span class="verb">Follow</span> each one in. What goes into the system?</p>
+  </div>
+  <div class="main center">
+    <div class="objwrap panel">
+      <div style="position:relative;width:min(100%,940px);height:100%;display:flex;align-items:center;justify-content:center">
+        <div class="ani-in inputitem" data-i="0" style="position:absolute;left:3%;top:4%;width:clamp(80px,11vw,150px);opacity:0">
+          <img src="assets/1398ee89881fee031c1c32e8.webp" alt="A microphone for audio input">
+          <div class="inlabel">🎤 Your voice</div>
+        </div>
+        <div class="ani-in inputitem" data-i="1" style="position:absolute;right:3%;top:4%;width:clamp(86px,12vw,166px);opacity:0">
+          <img src="assets/0eed575d65bab844a6a26988.webp" alt="A photo and camera for image input">
+          <div class="inlabel">📷 A photo</div>
+        </div>
+        <div class="ani-in inputitem" data-i="2" style="position:absolute;left:20%;bottom:3%;width:clamp(86px,12vw,166px);opacity:0">
+          <img src="assets/7a2b3df669b58670735e005b.webp" alt="A keyboard and text field for text input">
+          <div class="inlabel">⌨️ Typed words</div>
+        </div>
+        <div class="reveal-word ani-word inputword" style="opacity:0;text-align:center">INPUT</div>
+      </div>
+    </div>
+    <p class="support ani-support" style="text-align:center;max-width:26em;opacity:0">A photo, a voice, some text… what do they share? They all go <span class="hl">in</span>.</p>
+  </div>
+  <div class="bbar"><span class="bridge ani-bridge" style="opacity:0">But input alone can't <span class="q">create a result.</span></span></div>
+</section>
+
+<!-- =================================================================
+     SCENE 11 - SOMETHING DOES THE AI WORK  (AI MODEL)
+================================================================== -->
+<section class="scene stage" id="s11" data-chapter="2">
+  <div class="head wide">
+    <div class="eyebrow"><span class="dot"></span>Follow</div>
+    <h1 class="title">Something Does the AI Work</h1>
+    <p class="instruct"><span class="verb">Follow</span> the input. What actually does the AI work?</p>
+  </div>
+  <div class="main center">
+    <div class="objwrap panel">
+      <div style="position:relative;display:flex;align-items:center;justify-content:center;gap:clamp(12px,2.6vw,48px);height:100%">
+        <img class="s11-in" src="assets/1398ee89881fee031c1c32e8.webp" alt="Audio input entering the model" style="width:clamp(60px,8vw,110px)">
+        <div class="flowline s11-arrow" style="opacity:0"></div>
+        <div style="position:relative;display:flex;flex-direction:column;align-items:center;gap:clamp(10px,1.8vh,18px)">
+          <div class="orbwrap">
+            <div class="aura" style="width:160%;height:160%;left:-30%;top:-30%"></div>
+            <div class="orbring"></div>
+            <div class="orbring r2"></div>
+            <img class="s11-orb orbimg" src="assets/84994e42c5bfb729301cd589.webp" alt="A glowing teal AI model orb" style="width:clamp(130px,18vw,240px);animation:pulseGlow 3s ease-in-out infinite">
+          </div>
+          <span class="modelchip s11-word" style="opacity:0">AI MODEL</span>
+        </div>
+      </div>
+    </div>
+    <p class="support s11-support" style="text-align:center;max-width:30em;opacity:0">So how does it know what to do? It leans on <span class="hl">patterns it has learned.</span></p>
+  </div>
+  <div class="bbar"><span class="bridge s11-bridge" style="opacity:0">So what happens <span class="q">after the model handles it?</span></span></div>
+</section>
+
+<!-- =================================================================
+     SCENE 12 - SOMETHING COMES OUT  (OUTPUT)
+================================================================== -->
+<section class="scene stage" id="s12" data-chapter="2">
+  <div class="head wide">
+    <div class="eyebrow"><span class="dot"></span>Trace</div>
+    <h1 class="title">Something Comes Out</h1>
+    <p class="instruct"><span class="verb">Trace</span> the whole path, from start to finish.</p>
+  </div>
+  <div class="main center">
+    <div class="objwrap panel">
+      <div class="pipe">
+        <div class="node p-in dimmed"><div class="stepnum">1</div><img src="assets/1398ee89881fee031c1c32e8.webp" alt="Input"><div class="nlab">INPUT</div><div class="nsub">goes in</div></div>
+        <span class="arrow-h">➜</span>
+        <div class="node p-model dimmed"><div class="stepnum">2</div><img class="orbimg" src="assets/84994e42c5bfb729301cd589.webp" alt="AI model"><div class="nlab">MODEL</div><div class="nsub">handles it</div></div>
+        <span class="arrow-h">➜</span>
+        <div class="node p-out dimmed"><div class="stepnum">3</div><img src="assets/92d74e5144131dfe5d8a99ef.webp" alt="Output result"><div class="nlab">OUTPUT</div><div class="nsub">comes out</div></div>
+      </div>
+    </div>
+    <p class="support" style="text-align:center;max-width:34em">Something goes in. The model handles it. <span class="hl">A result comes out.</span></p>
+  </div>
+</section>
+
+<!-- =================================================================
+     SCENE 13 - MINI CHECK 1 - FIX THE FLOW
+================================================================== -->
+<section class="scene stage" id="s13" data-chapter="2">
+  <div class="head wide">
+    <div class="eyebrow"><span class="dot"></span>Mini-Check 1</div>
+    <h1 class="title">Fix the Flow</h1>
+    <p class="instruct">Drag the missing piece where it belongs.</p>
+  </div>
+  <div class="main center">
+    <div class="board" style="width:min(100%,860px);display:flex;flex-direction:column;gap:clamp(14px,2.4vh,26px);align-items:center">
+      <div style="display:flex;align-items:center;gap:clamp(14px,3vw,40px)">
+        <div style="display:flex;flex-direction:column;align-items:center;gap:6px">
+          <div style="font-size:calc(clamp(40px,5vw,66px)*var(--fs))">📸</div>
+          <div style="font-family:Poppins;font-weight:700;color:var(--ink-soft);font-size:calc(13px*var(--fs))">photo goes in</div>
+        </div>
+        <span class="arrow-h">➜</span>
+        <div class="slot" id="s13slot" style="width:clamp(120px,16vw,190px);height:clamp(96px,15vh,140px);font-size:calc(15px*var(--fs))">?</div>
+        <span class="arrow-h">➜</span>
+        <div style="display:flex;flex-direction:column;align-items:center;gap:6px">
+          <div style="font-size:calc(clamp(40px,5vw,66px)*var(--fs))">🐕</div>
+          <div style="font-family:Poppins;font-weight:700;color:var(--ink-soft);font-size:calc(13px*var(--fs))">"a dog" result</div>
+        </div>
+      </div>
+      <div style="display:flex;gap:clamp(10px,1.6vw,20px);flex-wrap:wrap;justify-content:center" id="s13choices">
+        <button class="choice" data-c="INPUT" draggable="true">INPUT</button>
+        <button class="choice" data-c="AI MODEL" draggable="true">AI MODEL</button>
+        <button class="choice" data-c="OUTPUT" draggable="true">OUTPUT</button>
+      </div>
+      <div class="feedback" id="s13fb"></div>
+    </div>
+  </div>
+</section>
+
+<!-- =================================================================
+     SCENE 14 - CHAPTER 03 DIVIDER
+================================================================== -->
+<section class="scene chapter" id="s14" data-chapter="3">
+  <div class="numeral">03</div>
+  <svg class="chapshape" width="68vmin" height="50vmin" viewBox="0 0 260 200" style="opacity:.9">
+    <path d="M60 100 Q130 100 200 50" fill="none" stroke="#1A3847" stroke-width="1.5" stroke-dasharray="5 9" stroke-linecap="round" opacity=".2"/>
+    <path d="M60 100 Q130 100 200 150" fill="none" stroke="#1A3847" stroke-width="1.5" stroke-dasharray="5 9" stroke-linecap="round" opacity=".2"/>
+    <circle cx="60" cy="100" r="15" fill="none" stroke="#008080" stroke-width="1.5" opacity=".3"/>
+    <circle cx="200" cy="50" r="10" fill="none" stroke="#008080" stroke-width="1.5" opacity=".28"/>
+    <circle cx="200" cy="150" r="10" fill="none" stroke="#93A8AC" stroke-width="1.5" opacity=".3"/>
+  </svg>
+  <div class="cwrap">
+    <div class="clabel">Chapter Three</div>
+    <div class="ctitle">FIND THE AI</div>
+  </div>
+</section>
+
+<!-- =================================================================
+     SCENE 15 - IT CAN WORK HERE  (ON DEVICE)
+================================================================== -->
+<section class="scene stage" id="s15" data-chapter="3">
+  <div class="head wide">
+    <div class="eyebrow"><span class="dot"></span>Watch</div>
+    <h1 class="title">It Can Work Here</h1>
+    <p class="instruct"><span class="verb">Watch</span> where the model goes. Where's the AI working?</p>
+  </div>
+  <div class="main center">
+    <div class="sysbox">
+      <div class="sysstage">
+        <div class="sys-halo"></div>
+        <img class="sys-phone" src="assets/10b7ac73c7b70f75e20c74ee.webp" alt="A smartphone">
+        <img class="sys-orb orbimg" id="orb15" src="assets/84994e42c5bfb729301cd589.webp" alt="AI model orb moving into the phone">
+      </div>
+      <div class="systext">
+        <span class="syslab" id="lab15" style="opacity:0">ON DEVICE</span>
+        <p class="support">The AI model runs <span class="hl">on the device.</span></p>
+        <span class="bridge fade-seq" style="animation-delay:1.9s">But the model doesn't always <span class="q">stay here.</span></span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- =================================================================
+     SCENE 16 - IT CAN WORK THERE  (CLOUD)
+================================================================== -->
+<section class="scene stage" id="s16" data-chapter="3">
+  <div class="head wide">
+    <div class="eyebrow"><span class="dot"></span>Follow</div>
+    <h1 class="title">It Can Work There</h1>
+    <p class="instruct"><span class="verb">Follow</span> the trail. Where's the model running now?</p>
+  </div>
+  <div class="main center">
+    <div class="sysbox">
+      <div class="sysstage">
+        <div class="sys-halo" style="opacity:.5"></div>
+        <img class="sys-phone" src="assets/10b7ac73c7b70f75e20c74ee.webp" alt="A smartphone">
+        <img class="sys-net" id="net16" src="assets/17407b4efaa5938c1c51861e.webp" alt="A glowing network trail from the phone" style="opacity:0">
+        <img class="sys-cloud" id="cloud16" src="assets/3493d0c3d91a573ecf84ef1c.webp" alt="Cloud servers" style="opacity:0">
+        <img class="sys-orb orbimg" id="orb16" src="assets/84994e42c5bfb729301cd589.webp" alt="AI model orb travelling to the cloud">
+      </div>
+      <div class="systext">
+        <span class="syslab" id="lab16" style="opacity:0">CLOUD</span>
+        <p class="support">The phone barely lifts a finger. So who's doing the work? <span class="hl">Computers far away.</span></p>
+        <span class="bridge fade-seq" style="animation-delay:2s">Do we always have to <span class="q">choose only one?</span></span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- =================================================================
+     SCENE 17 - OR THE JOB CAN BE SHARED  (HYBRID)
+================================================================== -->
+<section class="scene stage" id="s17" data-chapter="3">
+  <div class="head wide">
+    <div class="eyebrow"><span class="dot"></span>Follow both</div>
+    <h1 class="title">Or the Job Can Be Shared</h1>
+    <p class="instruct"><span class="verb">Follow</span> both paths. See how the work gets shared?</p>
+  </div>
+  <div class="main center">
+    <div class="sysbox">
+      <div class="sysstage">
+        <div class="sys-halo" style="animation:pulseGlow 2.6s infinite"></div>
+        <img class="sys-phone" src="assets/10b7ac73c7b70f75e20c74ee.webp" alt="A smartphone">
+        <img class="sys-orb orbimg" src="assets/84994e42c5bfb729301cd589.webp" alt="A small model on the device"
+             style="left:14%;bottom:34%;width:clamp(42px,5vw,72px);animation:pulseGlow 3s infinite">
+        <img class="sys-net" src="assets/17407b4efaa5938c1c51861e.webp" alt="A network trail linking device and cloud" style="opacity:.9;animation:pulseGlow 2.4s infinite">
+        <img class="sys-cloud" src="assets/3493d0c3d91a573ecf84ef1c.webp" alt="Cloud servers sharing the work" style="opacity:1">
+      </div>
+      <div class="systext">
+        <span class="syslab" style="opacity:0;animation:fadeUp .7s ease .8s forwards">BOTH · HYBRID</span>
+        <p class="support">Sometimes the job is <span class="hl">shared.</span></p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- =================================================================
+     SCENE 18 - MINI CHECK 2 - WHERE IS THE WORK?
+================================================================== -->
+<section class="scene stage" id="s18" data-chapter="3">
+  <div class="head wide">
+    <div class="eyebrow"><span class="dot"></span>Mini-Check 2 · <span id="s18count">Scenario 1 of 3</span></div>
+    <h1 class="title">Where Is the Work?</h1>
+    <p class="instruct">Read each one. Where does the AI work happen?</p>
+  </div>
+  <div class="main center">
+    <div class="board" style="width:min(100%,860px);display:flex;flex-direction:column;gap:clamp(16px,2.6vh,28px);align-items:center">
+      <p id="s18scenario" style="font-family:Poppins;font-weight:700;color:var(--navy);text-align:center;
+        font-size:calc(clamp(19px,2vw,30px)*var(--fs));line-height:1.3;max-width:20em"></p>
+      <div style="display:flex;gap:clamp(10px,1.8vw,20px);flex-wrap:wrap;justify-content:center" id="s18choices">
+        <button class="choice" data-loc="DEVICE">📱 DEVICE</button>
+        <button class="choice" data-loc="CLOUD">☁️ CLOUD</button>
+        <button class="choice" data-loc="BOTH">🔀 BOTH</button>
+      </div>
+      <div class="feedback" id="s18fb"></div>
+      <button class="navbtn primary hidden" id="s18next" style="font-family:Poppins;font-weight:700">Next scenario ›</button>
+    </div>
+  </div>
+</section>
+
+<!-- =================================================================
+     SCENE 19 - CHAPTER 04 DIVIDER
+================================================================== -->
+<section class="scene chapter" id="s19" data-chapter="4">
+  <div class="numeral">04</div>
+  <svg class="chapshape" width="64vmin" height="50vmin" viewBox="0 0 260 200" style="opacity:.9">
+    <circle cx="108" cy="100" r="70" fill="#1A3847" opacity=".05"/>
+    <circle cx="152" cy="100" r="70" fill="#008080" opacity=".06"/>
+    <circle cx="108" cy="100" r="70" fill="none" stroke="#1A3847" stroke-width="1.5" opacity=".2"/>
+    <circle cx="152" cy="100" r="70" fill="none" stroke="#008080" stroke-width="1.5" opacity=".22"/>
+  </svg>
+  <div class="cwrap">
+    <div class="clabel">Chapter Four</div>
+    <div class="ctitle">X-RAY THE SYSTEM</div>
+  </div>
+</section>
+
+<!-- =================================================================
+     SCENE 20 - THEY LOOK THE SAME
+================================================================== -->
+<section class="scene stage" id="s20" data-chapter="4">
+  <div class="head wide">
+    <div class="eyebrow"><span class="dot"></span>Compare</div>
+    <h1 class="title">They Look the Same</h1>
+    <p class="instruct"><span class="verb">Compare</span> the two screens. Spot any difference?</p>
+  </div>
+  <div class="main center">
+    <div class="cine" style="max-height:60vh"><img src="assets/1d37281e6694e6a13dc97405.webp" alt="Two identical-looking smartphones side by side with matching interfaces." style="max-height:60vh;width:auto"></div>
+  </div>
+  <div class="bbar"><span class="bridge fade-seq" style="animation-delay:.7s">You can't tell from the surface. <span class="q">Let's look underneath.</span></span></div>
+</section>
+
+<!-- =================================================================
+     SCENE 21 - X-RAY THEM  (video 2)
+================================================================== -->
+<section class="scene stage" id="s21" data-chapter="4">
+  <div class="head wide">
+    <div class="eyebrow"><span class="dot"></span>Reveal</div>
+    <h1 class="title">X-Ray Them</h1>
+    <p class="instruct"><span class="verb">Watch</span> closely. Where's the AI hiding in each one?</p>
+  </div>
+  <div class="main center">
+    <div class="player" id="s21player" style="width:min(100%,880px)">
+      <div class="ptop">
+        <span class="d" style="background:#ff5f57"></span><span class="d" style="background:#febc2e"></span><span class="d" style="background:#28c840"></span>
+        <span class="fn">x-ray-scan.mp4</span>
+      </div>
+      <div class="screen">
+        <div class="scanline" id="scan21"></div>
+        <video id="vid21" playsinline muted preload="metadata"
+          poster="assets/aad00d80ef9beeed8a7b062b.webp">
+          <source src="assets/06521f9f2862c32ef57489b9.mp4" type="video/mp4">
+        </video>
+        <button class="playbtn" data-play aria-label="Play the X-ray video"><span class="circ"><span class="tri"></span></span></button>
+      </div>
+      <div class="pbar">
+        <button id="s21pp" aria-label="Play or pause">❚❚</button>
+        <div class="track"><div class="fill" id="s21fill"></div></div>
+        <span class="time" id="s21time">0:00 / 0:00</span>
+        <button id="s21mute" aria-label="Mute or unmute sound">🔊</button>
+      </div>
+    </div>
+  </div>
+  <div class="bbar"><span class="bridge strong" data-reveal21 style="opacity:0;transition:opacity .6s;font-size:calc(clamp(19px,2.4vw,34px)*var(--fs))">Same feature. <span style="color:var(--apricot)">Different hidden system.</span></span></div>
+</section>
+
+<!-- =================================================================
+     SCENE 22 - AN AI FEATURE IS A SYSTEM
+================================================================== -->
+<section class="scene stage" id="s22" data-chapter="4">
+  <div class="head wide">
+    <div class="eyebrow"><span class="dot"></span>Notice</div>
+    <h1 class="title">An AI Feature Is a System</h1>
+    <p class="instruct"><span class="verb">Follow</span> the parts. How do they work together?</p>
+  </div>
+  <div class="main center">
+    <div class="cine" style="max-height:44vh"><img src="assets/63a3530142859ee3a230f595.webp" alt="A connected map: input, phone, AI model, network and cloud, ending in a result." style="max-height:44vh;width:auto"></div>
+    <div class="reveal-word fade-seq" style="animation-delay:.5s;margin-top:.1em;font-size:calc(clamp(30px,4vw,58px)*var(--fs))">SYSTEM</div>
+    <p class="support" style="text-align:center;max-width:none;white-space:nowrap">A system is <span class="hl">connected parts working together.</span></p>
+  </div>
+  <div class="bbar"><span class="bridge fade-seq" style="animation-delay:.9s">Now stop looking at one. <span class="q">Build one.</span></span></div>
+</section>
+
+<!-- =================================================================
+     SCENE 23 - BUILD THE HIDDEN SYSTEM
+================================================================== -->
+<section class="scene stage" id="s23" data-chapter="4">
+  <div class="head wide">
+    <div class="eyebrow"><span class="dot"></span>Build</div>
+    <h1 class="title">Build the Hidden System</h1>
+    <p class="instruct"><span class="verb">Connect</span> the pieces into a system that works.</p>
+  </div>
+  <div class="main center">
+    <div class="board" style="width:min(100%,1150px);display:flex;flex-direction:column;gap:clamp(12px,2vh,20px)">
+      <div class="chain" id="s23chain" aria-label="Your system. Tap pieces below to add them in order"></div>
+      <div style="display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap">
+        <div class="tray" id="s23tray" style="flex:1"></div>
+        <div style="display:flex;gap:8px">
+          <button class="navbtn" id="s23clear">↺ Clear</button>
+          <button class="navbtn primary" id="s23run" style="font-family:Poppins;font-weight:700">Run system ▶</button>
+        </div>
+      </div>
+      <div class="feedback" id="s23fb"></div>
+    </div>
+  </div>
+</section>
+
+<!-- =================================================================
+     SCENE 24 - MINI CHECK 3 - REPAIR THE SYSTEM
+================================================================== -->
+<section class="scene stage" id="s24" data-chapter="4">
+  <div class="head wide">
+    <div class="eyebrow"><span class="dot"></span>Mini-Check 3</div>
+    <h1 class="title">Repair the System</h1>
+    <p class="instruct">Something's <span class="verb">missing</span>. Drag in the piece that fixes it.</p>
+  </div>
+  <div class="main center">
+    <div class="board" style="width:min(100%,980px);display:flex;flex-direction:column;gap:clamp(16px,2.6vh,30px);align-items:center">
+      <div class="chain" style="min-height:auto">
+        <div class="chainslot filled"><img src="assets/1398ee89881fee031c1c32e8.webp" alt="Input"><div class="cl">INPUT</div></div>
+        <span class="arrow-h">➜</span>
+        <div class="chainslot filled"><img src="assets/10b7ac73c7b70f75e20c74ee.webp" alt="Device"><div class="cl">DEVICE</div></div>
+        <span class="arrow-h">➜</span>
+        <div class="chainslot" id="s24gap" style="border-color:var(--terracotta)"><div class="cl" style="color:var(--terracotta)">? MISSING</div></div>
+        <span class="arrow-h">➜</span>
+        <div class="chainslot filled"><img src="assets/92d74e5144131dfe5d8a99ef.webp" alt="Result"><div class="cl">RESULT</div></div>
+      </div>
+      <div style="font-family:'Poppins';font-weight:600;color:var(--ink-soft);font-size:calc(clamp(14px,1.4vw,19px)*var(--fs))">Which piece does the AI work? Drag it in.</div>
+      <div class="tray" id="s24tray">
+        <button class="tile s24opt" data-ok="0" aria-label="Battery"><span style="font-size:clamp(38px,5vw,60px)">🔋</span><span class="lab">BATTERY</span></button>
+        <button class="tile s24opt" data-ok="1" aria-label="AI model"><img src="assets/84994e42c5bfb729301cd589.webp" alt=""><span class="lab">AI MODEL</span></button>
+        <button class="tile s24opt" data-ok="0" aria-label="Speaker"><span style="font-size:clamp(38px,5vw,60px)">🔊</span><span class="lab">SPEAKER</span></button>
+      </div>
+      <div class="feedback" id="s24fb"></div>
+    </div>
+  </div>
+</section>
+
+<!-- =================================================================
+     SCENE 25 - CHAPTER 05 DIVIDER
+================================================================== -->
+<section class="scene chapter" id="s25" data-chapter="5">
+  <div class="numeral">05</div>
+  <svg class="chapshape" width="74vmin" height="50vmin" viewBox="0 0 300 200" style="opacity:.9">
+    <line x1="40" y1="120" x2="95" y2="70" stroke="#93A8AC" stroke-width="1.2" opacity=".35"/>
+    <line x1="95" y1="70" x2="150" y2="110" stroke="#93A8AC" stroke-width="1.2" opacity=".35"/>
+    <line x1="150" y1="110" x2="205" y2="60" stroke="#93A8AC" stroke-width="1.2" opacity=".35"/>
+    <line x1="205" y1="60" x2="260" y2="120" stroke="#93A8AC" stroke-width="1.2" opacity=".35"/>
+    <circle cx="40" cy="120" r="7" fill="#1A3847" opacity=".28"/><circle cx="95" cy="70" r="8" fill="#008080" opacity=".28"/>
+    <circle cx="150" cy="110" r="9" fill="#1A3847" opacity=".3"/><circle cx="205" cy="60" r="7" fill="#008080" opacity=".28"/>
+    <circle cx="260" cy="120" r="7" fill="#93A8AC" opacity=".34"/>
+  </svg>
+  <div class="cwrap">
+    <div class="clabel">Chapter Five</div>
+    <div class="ctitle">CONNECT THE DOTS</div>
+  </div>
+</section>
+
+<!-- =================================================================
+     SCENE 26 - WHAT CHANGED IN YOUR HEAD?
+================================================================== -->
+<section class="scene stage" id="s26" data-chapter="5">
+  <div class="head wide">
+    <div class="eyebrow"><span class="dot"></span>Reflect</div>
+    <h1 class="title">What Changed in Your Head?</h1>
+    <p class="instruct"><span class="verb">Finish</span> the sentences. What changed most in your head?</p>
+  </div>
+  <div class="main center">
+    <div class="reflect">
+      <div>
+        <div class="qline">Before today, I thought AI was…</div>
+        <textarea id="ref-before" data-ref="before" placeholder="Type a few words…" rows="2"></textarea>
+      </div>
+      <div>
+        <div class="qline">Now I think AI is…</div>
+        <textarea id="ref-now" data-ref="now" placeholder="Type a few words…" rows="2"></textarea>
+      </div>
+    </div>
+  </div>
+  <div class="bbar"><span class="bridge fade-seq" style="animation-delay:.5s">We've found where the AI can work. But one mystery is <span class="q">still open.</span></span></div>
+</section>
+
+<!-- =================================================================
+     SCENE 27 - THE NEXT MYSTERY
+================================================================== -->
+<section class="scene hero" id="s27" data-chapter="5">
+  <div class="head" style="visibility:hidden">.</div>
+  <div class="main">
+    <div class="hero-copy">
+      <div class="eyebrow"><span class="dot"></span>Trace</div>
+      <h1 class="title">The Next Mystery</h1>
+      <p class="instruct" style="margin-top:.35em"><span class="verb">Trace</span> the path from Send to Result.</p>
+      <div style="margin-top:.75em;display:flex;flex-direction:column;gap:.35em">
+        <span class="reveal-word fade-seq" style="animation-delay:.6s;font-size:calc(clamp(19px,2.1vw,30px)*var(--fs));color:var(--navy)">We found <span style="color:var(--teal)">WHERE</span> the AI can work.</span>
+        <span class="bridge fade-seq" style="animation-delay:1.3s;font-size:calc(clamp(17px,1.7vw,23px)*var(--fs))">But what happens after you tap <span class="q">Send?</span></span>
+      </div>
+      <div class="fade-seq" style="animation-delay:2s;margin-top:.9em">
+        <span class="tag" style="background:var(--navy);color:#fff;font-size:calc(clamp(14px,1.5vw,20px)*var(--fs))">NEXT: What Happens After You Tap Send?</span>
+      </div>
+    </div>
+    <div class="hero-visual">
+      <div class="cine dissolve" style="width:100%"><img src="assets/7216cca937ca958f1b43eaf2.webp" alt="A darkened system with a single glowing light travelling from Send toward Result, stopping in the middle."></div>
+    </div>
+  </div>
+</section>
+
+</main>
+
+<!-- =================================================================
+     CHROME
+================================================================== -->
+<footer id="chrome">
+  <div class="brand">
+    <div class="logobox"><img src="assets/b58472f5ad534bdba750eac6.webp" alt="aiSTART"></div>
+  </div>
+  <div class="copyright">© 2026 Slangit Technologies FZCO</div>
+  <nav class="nav" aria-label="Lesson navigation">
+    <div class="fontgroup">
+      <button class="navbtn icon" id="fdec" aria-label="Decrease text size" title="Smaller text">A−</button>
+      <button class="navbtn icon" id="finc" aria-label="Increase text size" title="Larger text">A+</button>
+    </div>
+    <button class="navbtn icon" id="reset" aria-label="Reset session" title="Reset session">↺</button>
+    <button class="navbtn" id="back" aria-label="Previous scene">‹ Back</button>
+    <button class="navbtn primary" id="nextbtn" aria-label="Next scene">Next ›</button>
+  </nav>
+</footer>
+
+<div id="ghost"></div>
+
+<script>
+(function(){
+  "use strict";
+  const scenes=[...document.querySelectorAll('.scene')];
+  const total=scenes.length;
+  const STORE='g8m1s1';
+  let idx=0;
+  let coverRAF=0;
+
+  /* ---------- state ---------- */
+  const state=JSON.parse(localStorage.getItem(STORE)||'{}');
+  state.pred=state.pred||{};
+  state.ref=state.ref||{};
+  function save(){localStorage.setItem(STORE,JSON.stringify(state));}
+
+  /* ---------- font scale ---------- */
+  let fs=state.fs||1;
+  function applyFs(){document.documentElement.style.setProperty('--fs',fs);}
+  applyFs();
+  document.getElementById('finc').onclick=()=>{fs=Math.min(1.2,+(fs+0.08).toFixed(2));state.fs=fs;save();applyFs();};
+  document.getElementById('fdec').onclick=()=>{fs=Math.max(0.85,+(fs-0.08).toFixed(2));state.fs=fs;save();applyFs();};
+
+  /* ---------- navigation ---------- */
+  const backBtn=document.getElementById('back');
+  const nextBtn=document.getElementById('nextbtn');
+  const prog=document.getElementById('progress');
+
+  function show(i){
+    i=Math.max(0,Math.min(total-1,i));
+    scenes[idx].classList.remove('active');
+    cancelAnimationFrame(coverRAF);
+    idx=i;
+    const s=scenes[idx];
+    s.classList.add('active');
+    backBtn.disabled=(idx===0);
+    nextBtn.textContent=(idx===total-1)?'Finish':'Next ›';
+    prog.style.width=((idx)/(total-1)*100)+'%';
+    if(onEnter[s.id])onEnter[s.id](s);
+  }
+  nextBtn.onclick=()=>show(idx+1);
+  backBtn.onclick=()=>show(idx-1);
+  document.addEventListener('keydown',e=>{
+    if(e.target.tagName==='TEXTAREA')return;
+    if(e.key==='ArrowRight'||e.key==='PageDown'){show(idx+1);}
+    if(e.key==='ArrowLeft'||e.key==='PageUp'){show(idx-1);}
+  });
+
+  /* ---------- reset ---------- */
+  document.getElementById('reset').onclick=()=>{
+    if(!confirm('Reset the whole session? This clears your predictions, answers and notes.'))return;
+    localStorage.removeItem(STORE);
+    location.reload();
+  };
+
+  /* =================================================================
+     ONENTER handlers (per scene) - reset transient reveals so replays are clean
+  ================================================================== */
+  const onEnter={};
+
+  /* ---- Scene 4: video bridge ---- */
+  onEnter['s4']=(s)=>{const b=s.querySelector('[data-bridge4]');if(b)b.style.opacity=0;};
+
+  /* ---- Scene 5: kill-the-internet toggles (all start ON → turn all OFF) ---- */
+  (function(){
+    const s=document.getElementById('s5'),stage=document.getElementById('s5stage');
+    const sws=[...s.querySelectorAll('.swbig')];
+    const br=s.querySelector('[data-bridge5]');
+    function check(){
+      if(sws.every(x=>x.classList.contains('off'))){
+        stage.classList.add('done');
+        if(br)br.style.opacity=1;
+      }
+    }
+    sws.forEach(sw=>sw.addEventListener('click',()=>{sw.classList.toggle('off');check();}));
+    onEnter['s5']=()=>{
+      stage.classList.remove('done');
+      sws.forEach(x=>x.classList.remove('off'));
+      if(br)br.style.opacity=0;
+    };
+  })();
+
+  /* ---- Scene 5b: predictions ---- */
+  onEnter['s5b']=(s)=>{
+    s.querySelectorAll('[data-feature]').forEach(row=>{
+      const f=row.dataset.feature;
+      row.querySelectorAll('.pill button').forEach(b=>b.classList.toggle('on',state.pred[f]===b.dataset.v));
+    });
+    updateBridge5b();
+  };
+  function updateBridge5b(){
+    const s=document.getElementById('s5b');
+    const done=[...s.querySelectorAll('[data-feature]')].every(r=>state.pred[r.dataset.feature]);
+    const b=s.querySelector('[data-bridge5b]');if(b)b.style.opacity=done?1:0;
+  }
+  document.querySelectorAll('#s5b [data-feature]').forEach(row=>{
+    const f=row.dataset.feature;
+    row.querySelectorAll('.pill button').forEach(b=>{
+      b.onclick=()=>{
+        state.pred[f]=b.dataset.v;save();
+        row.querySelectorAll('.pill button').forEach(x=>x.classList.toggle('on',x===b));
+        updateBridge5b();
+      };
+    });
+  });
+
+  /* ---- Scene 6: TEST reveals ---- */
+  const testOrder=[0,1,2,3];
+  let s6sweep=null;
+  function stopSweep(){const scan=document.getElementById('s6scan');if(s6sweep){s6sweep.cancel();s6sweep=null;}if(scan)scan.style.opacity=0;}
+  function resetTest(){
+    document.querySelectorAll('#s6 .testcard').forEach(c=>c.classList.remove('done','spot','works','needs','show'));
+    const b=document.querySelector('[data-bridge6]');if(b)b.style.opacity=0;
+    document.getElementById('testbtn').disabled=false;
+    document.getElementById('testbtn').textContent='TEST ▶';
+    stopSweep();
+  }
+  onEnter['s6']=resetTest;
+  /* tap a card to reveal its real-world example */
+  document.querySelectorAll('#s6 .testcard').forEach(c=>{
+    c.addEventListener('click',()=>{
+      const on=c.classList.contains('show');
+      document.querySelectorAll('#s6 .testcard').forEach(x=>x.classList.remove('show'));
+      if(!on)c.classList.add('show');
+    });
+    c.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();c.click();}});
+  });
+  document.getElementById('testbtn').onclick=function(){
+    const cards=[...document.querySelectorAll('#s6 .testcard')];
+    this.disabled=true;this.textContent='Scanning…';
+    /* scanning sweep across the grid */
+    const scan=document.getElementById('s6scan'),wrap=scan.parentElement;
+    scan.style.opacity=1;
+    s6sweep=scan.animate(
+      [{transform:'translateX(-180px)'},{transform:'translateX('+(wrap.offsetWidth+20)+'px)'}],
+      {duration:1150,iterations:Infinity,easing:'linear'});
+    let n=0;
+    const step=()=>{
+      cards.forEach(c=>c.classList.remove('spot'));
+      if(n>0){cards[testOrder[n-1]].classList.add('done',cards[testOrder[n-1]].dataset.res);}
+      if(n<cards.length){
+        cards[testOrder[n]].classList.add('spot');
+        n++;setTimeout(step,900);
+      }else{
+        stopSweep();
+        document.querySelector('[data-bridge6]').style.opacity=1;
+        this.textContent='Done';
+      }
+    };
+    setTimeout(step,500);
+  };
+
+  /* =================================================================
+     Scenes 10,11: staged reveals via JS (so they replay & sequence)
+  ================================================================== */
+  function seq(items){ /* items:[{el,delay,cls}] */
+    items.forEach(it=>{
+      it.el && setTimeout(()=>{it.el.style.opacity=1;it.el.style.transform='none';if(it.cls)it.el.classList.add(it.cls);},it.delay);
+    });
+  }
+  onEnter['s10']=(s)=>{
+    const ins=[...s.querySelectorAll('.ani-in')];
+    ins.forEach(i=>{i.style.opacity=0;i.style.transform='translateY(18px) scale(.9)';i.style.transition='opacity .6s ease, transform .6s ease';});
+    const word=s.querySelector('.ani-word'),sup=s.querySelector('.ani-support'),br=s.querySelector('.ani-bridge');
+    [word,sup,br].forEach(e=>{e.style.opacity=0;e.style.transition='opacity .6s ease';});
+    seq([
+      {el:ins[0],delay:250},{el:ins[1],delay:850},{el:ins[2],delay:1450},
+      {el:word,delay:2150},{el:sup,delay:2600},{el:br,delay:3100}
+    ]);
+  };
+  onEnter['s11']=(s)=>{
+    const arrow=s.querySelector('.s11-arrow'),word=s.querySelector('.s11-word'),
+          sup=s.querySelector('.s11-support'),br=s.querySelector('.s11-bridge'),inp=s.querySelector('.s11-in');
+    [arrow,word,sup,br].forEach(e=>{e.style.opacity=0;e.style.transition='opacity .6s ease';});
+    inp.style.transition='transform 1s ease';inp.style.transform='translateX(0)';
+    setTimeout(()=>{inp.style.transform='translateX(18px)';},200);
+    seq([{el:arrow,delay:500},{el:word,delay:1400},{el:sup,delay:1900},{el:br,delay:2500}]);
+  };
+  /* Scene 12: spotlight sequence input->model->output */
+  onEnter['s12']=(s)=>{
+    const nodes=[s.querySelector('.p-in'),s.querySelector('.p-model'),s.querySelector('.p-out')];
+    nodes.forEach(n=>{n.classList.add('dimmed');n.classList.remove('lit');});
+    let n=0;
+    const step=()=>{
+      if(n>0)nodes[n-1].classList.remove('lit');
+      if(n<nodes.length){nodes[n].classList.remove('dimmed');nodes[n].classList.add('lit');n++;setTimeout(step,850);}
+      else{nodes.forEach(x=>{x.classList.remove('dimmed');x.classList.remove('lit');});}
+    };
+    setTimeout(step,300);
+  };
+
+  /* =================================================================
+     Scenes 15,16: orb travel animations
+  ================================================================== */
+  onEnter['s15']=(s)=>{
+    const orb=document.getElementById('orb15'),lab=document.getElementById('lab15');
+    orb.style.transition='none';
+    orb.style.left='0%';orb.style.top='16%';orb.style.width='clamp(66px,8vw,116px)';orb.style.opacity='1';
+    lab.style.opacity=0;
+    // force reflow
+    void orb.offsetWidth;
+    orb.style.transition='all 1.6s cubic-bezier(.5,.1,.3,1)';
+    setTimeout(()=>{
+      orb.style.left='16%';orb.style.top='50%';orb.style.width='clamp(46px,5.4vw,82px)';orb.style.opacity='.94';
+    },350);
+    setTimeout(()=>{lab.style.transition='opacity .6s ease';lab.style.opacity=1;},1700);
+  };
+  onEnter['s16']=(s)=>{
+    const orb=document.getElementById('orb16'),lab=document.getElementById('lab16'),
+          net=document.getElementById('net16'),cloud=document.getElementById('cloud16');
+    orb.style.transition='none';
+    orb.style.left='16%';orb.style.top='50%';orb.style.width='clamp(46px,5.4vw,82px)';orb.style.opacity='1';
+    net.style.opacity=0;cloud.style.opacity=0;lab.style.opacity=0;
+    void orb.offsetWidth;
+    setTimeout(()=>{net.style.transition='opacity .6s';net.style.opacity=.95;},300);
+    setTimeout(()=>{cloud.style.transition='opacity .6s';cloud.style.opacity=1;},600);
+    orb.style.transition='all 1.7s cubic-bezier(.45,.05,.3,1)';
+    setTimeout(()=>{orb.style.left='62%';orb.style.top='24%';orb.style.width='clamp(40px,4.8vw,72px)';},700);
+    setTimeout(()=>{orb.style.opacity=.35;lab.style.transition='opacity .6s';lab.style.opacity=1;},2100);
+  };
+
+  /* =================================================================
+     Scene 13: Mini-check 1 (drag or tap)
+  ================================================================== */
+  (function(){
+    const slot=document.getElementById('s13slot');
+    const fb=document.getElementById('s13fb');
+    const choices=[...document.querySelectorAll('#s13choices .choice')];
+    function place(val,btn){
+      slot.classList.add('filled');slot.textContent=val;
+      const ok=(val==='AI MODEL');
+      fb.className='feedback show '+(ok?'ok':'no');
+      if(ok){
+        fb.innerHTML='<b>Correct.</b> Yes. The model handles the input to make the result.';
+        choices.forEach(c=>{c.disabled=true;c.classList.add(c===btn?'correct':'dim');});
+      }else{
+        fb.innerHTML='Look at the flow again. What needs to work <b>on the input</b> before a result appears?';
+        btn.classList.add('wrong');
+        setTimeout(()=>{slot.classList.remove('filled');slot.textContent='?';btn.classList.remove('wrong');},1100);
+      }
+    }
+    choices.forEach(b=>{
+      b.onclick=()=>{if(!b.disabled)place(b.dataset.c,b);};
+      b.addEventListener('dragstart',e=>{e.dataTransfer.setData('text',b.dataset.c);b.classList.add('dragging');});
+      b.addEventListener('dragend',()=>b.classList.remove('dragging'));
+    });
+    slot.addEventListener('dragover',e=>{e.preventDefault();slot.classList.add('over');});
+    slot.addEventListener('dragleave',()=>slot.classList.remove('over'));
+    slot.addEventListener('drop',e=>{
+      e.preventDefault();slot.classList.remove('over');
+      const val=e.dataTransfer.getData('text');
+      const btn=choices.find(c=>c.dataset.c===val);
+      if(btn&&!btn.disabled)place(val,btn);
+    });
+    onEnter['s13']=()=>{
+      slot.classList.remove('filled');slot.textContent='?';
+      fb.className='feedback';fb.innerHTML='';
+      choices.forEach(c=>{c.disabled=false;c.className='choice';c.draggable=true;});
+    };
+  })();
+
+  /* =================================================================
+     Scene 18: Mini-check 2 - 3 scenarios
+  ================================================================== */
+  (function(){
+    const data=[
+      {t:'The model runs inside the tablet.',a:'DEVICE',
+       ok:'Right. The work stays on the device, and nothing is sent away.',
+       ex:{DEVICE:'',CLOUD:'Not quite. Nothing is sent away, so it all runs <b>on the device</b> itself.',BOTH:'Only one place is doing the work here. Just the <b>device</b>.'}},
+      {t:'The phone sends the task to a remote AI computer.',a:'CLOUD',
+       ok:'Right. The task travels away to run in the cloud.',
+       ex:{DEVICE:'The task leaves the phone, so it runs <b>in the cloud</b>, not on the device.',CLOUD:'',BOTH:'Just one place here. The work happens <b>in the cloud</b>.'}},
+      {t:'Part runs locally. Part runs remotely.',a:'BOTH',
+       ok:'Right. The work is shared across device and cloud.',
+       ex:{DEVICE:'Some of it runs remotely too, so it\'s <b>both</b>.',CLOUD:'Some of it runs on the device too, so it\'s <b>both</b>.',BOTH:''}}
+    ];
+    let step=0;
+    const scEl=document.getElementById('s18scenario'),fb=document.getElementById('s18fb'),
+          count=document.getElementById('s18count'),nextS=document.getElementById('s18next'),
+          choices=[...document.querySelectorAll('#s18choices .choice')];
+    function render(){
+      count.textContent='Scenario '+(step+1)+' of '+data.length;
+      scEl.textContent=data[step].t;
+      fb.className='feedback';fb.innerHTML='';
+      nextS.classList.add('hidden');
+      choices.forEach(c=>{c.disabled=false;c.className='choice';});
+      nextS.textContent=(step===data.length-1)?'Finish check ›':'Next scenario ›';
+    }
+    choices.forEach(c=>{
+      c.onclick=()=>{
+        const d=data[step],pick=c.dataset.loc,ok=(pick===d.a);
+        choices.forEach(x=>{
+          x.disabled=true;
+          if(x.dataset.loc===d.a)x.classList.add('correct');
+          else if(x===c)x.classList.add('wrong');
+          else x.classList.add('dim');
+        });
+        fb.className='feedback show '+(ok?'ok':'no');
+        fb.innerHTML=ok?('<b>'+d.a+'.</b> '+d.ok):d.ex[pick];
+        nextS.classList.remove('hidden');
+      };
+    });
+    nextS.onclick=()=>{
+      if(step<data.length-1){step++;render();}
+      else{show(idx+1);}
+    };
+    onEnter['s18']=()=>{step=0;render();};
+  })();
+
+  /* =================================================================
+     Drag helper (pointer-based) for builder & repair (mouse+touch),
+     with tap fallback.
+  ================================================================== */
+  const ghost=document.getElementById('ghost');
+  function makeDraggable(el,imgSrc,onDrop){
+    let dragging=false;
+    el.addEventListener('pointerdown',e=>{
+      if(el.classList.contains('picked'))return;
+      dragging=true;
+      ghost.innerHTML='<img src="'+imgSrc+'">';
+      ghost.style.display='block';
+      moveGhost(e);
+      el.setPointerCapture(e.pointerId);
+    });
+    el.addEventListener('pointermove',e=>{if(dragging)moveGhost(e);});
+    el.addEventListener('pointerup',e=>{
+      if(!dragging)return;dragging=false;ghost.style.display='none';
+      const t=document.elementFromPoint(e.clientX,e.clientY);
+      onDrop(t);
+    });
+    function moveGhost(e){ghost.style.left=e.clientX+'px';ghost.style.top=e.clientY+'px';}
+  }
+
+  /* =================================================================
+     Scene 23: Build the hidden system
+  ================================================================== */
+  (function(){
+    const pieces=[
+      {id:'input',lab:'INPUT',img:'assets/1398ee89881fee031c1c32e8.webp'},
+      {id:'device',lab:'DEVICE',img:'assets/10b7ac73c7b70f75e20c74ee.webp'},
+      {id:'model',lab:'AI MODEL',img:'assets/84994e42c5bfb729301cd589.webp'},
+      {id:'network',lab:'NETWORK',img:'assets/17407b4efaa5938c1c51861e.webp'},
+      {id:'cloud',lab:'CLOUD',img:'assets/3493d0c3d91a573ecf84ef1c.webp'},
+      {id:'output',lab:'RESULT',img:'assets/92d74e5144131dfe5d8a99ef.webp'}
+    ];
+    const tray=document.getElementById('s23tray'),chain=document.getElementById('s23chain'),
+          fb=document.getElementById('s23fb');
+    let built=[]; // array of piece ids
+    function renderTray(){
+      tray.innerHTML='';
+      pieces.forEach(p=>{
+        const t=document.createElement('button');
+        t.className='tile'+(built.includes(p.id)?' picked':'');
+        t.innerHTML='<img src="'+p.img+'" alt="'+p.lab+'"><span class="lab">'+p.lab+'</span>';
+        t.onclick=()=>{if(!built.includes(p.id)){built.push(p.id);renderChain();renderTray();}};
+        tray.appendChild(t);
+      });
+    }
+    function renderChain(){
+      chain.innerHTML='';
+      if(built.length===0){
+        chain.innerHTML='<span style="color:var(--sage);font-family:Poppins;font-weight:600">Tap pieces below to add them, in order →</span>';
+        return;
+      }
+      built.forEach((id,i)=>{
+        const p=pieces.find(x=>x.id===id);
+        const slot=document.createElement('div');
+        slot.className='chainslot filled';
+        slot.innerHTML='<img src="'+p.img+'" alt="'+p.lab+'"><div class="cl">'+p.lab+'</div>';
+        slot.title='Tap to remove';
+        slot.onclick=()=>{built.splice(i,1);renderChain();renderTray();};
+        chain.appendChild(slot);
+        if(i<built.length-1){const a=document.createElement('span');a.className='arrow-h';a.textContent='➜';chain.appendChild(a);}
+      });
+    }
+    function problem(){
+      const has=id=>built.includes(id);
+      const first=built[0],last=built[built.length-1];
+      const aiWork=has('model')||has('cloud');
+      if(built.length<3)return 'A working system needs at least an <b>input</b>, an <b>AI model</b>, and a <b>result</b>.';
+      if(first!=='input')return 'Every system starts with an <b>input</b>, so put it first.';
+      if(last!=='output')return 'A system ends with a <b>result</b>, so put it last.';
+      if(!aiWork)return 'Nothing is doing the AI work. Add an <b>AI model</b> (or a <b>cloud</b> that runs one).';
+      return null;
+    }
+    function ok(m){fb.className='feedback show ok';fb.innerHTML='<b>✓ It works.</b> '+m;}
+    function no(m){fb.className='feedback show no';fb.innerHTML=m;}
+    const runBtn=document.getElementById('s23run');
+    function run(){
+      const p=problem();
+      if(p){ no(p);
+        chain.animate([{transform:'translateX(0)'},{transform:'translateX(-7px)'},{transform:'translateX(7px)'},{transform:'translateX(0)'}],{duration:320,easing:'ease-in-out'});
+        return;
+      }
+      // valid → run a data pulse through the chain
+      fb.className='feedback';fb.innerHTML='';
+      runBtn.disabled=true;runBtn.textContent='Running…';
+      const slots=[...chain.querySelectorAll('.chainslot')];
+      slots.forEach((sl,i)=>setTimeout(()=>{sl.classList.remove('energize');void sl.offsetWidth;sl.classList.add('energize');},i*170));
+      setTimeout(()=>{
+        runBtn.disabled=false;runBtn.textContent='Run system ▶';
+        const shape=(built.includes('cloud')||built.includes('network'))?'cloud / hybrid':'on-device';
+        ok('Nice work! This system works. Input enters, the AI work happens ('+shape+'), and a result comes out.<br><span style="opacity:.8">There\'s more than one right build, so try a different path with Clear.</span>');
+      }, slots.length*170+450);
+    }
+    runBtn.onclick=run;
+    document.getElementById('s23clear').onclick=()=>{built=[];renderChain();renderTray();fb.className='feedback';fb.innerHTML='';};
+    onEnter['s23']=()=>{built=[];renderChain();renderTray();fb.className='feedback';fb.innerHTML='';};
+    renderTray();renderChain();
+  })();
+
+  /* =================================================================
+     Scene 24: Repair the system - drop orb into gap
+  ================================================================== */
+  (function(){
+    const gap=document.getElementById('s24gap'),fb=document.getElementById('s24fb');
+    const opts=[...document.querySelectorAll('#s24tray .s24opt')];
+    let solved=false;
+    function solve(){
+      solved=true;
+      gap.classList.add('filled');gap.style.borderColor='var(--teal)';
+      gap.innerHTML='<img src="assets/84994e42c5bfb729301cd589.webp" alt="AI model"><div class="cl">AI MODEL</div>';
+      opts.forEach(o=>{if(o.dataset.ok==='1')o.classList.add('picked');});
+      fb.className='feedback show ok';
+      fb.innerHTML='<b>Exactly.</b> Somewhere in the system, the <b>AI model</b> needs to do the work.';
+    }
+    function wrong(o){
+      const nm=(o.querySelector('.lab')||{}).textContent||'part';
+      fb.className='feedback show no';
+      fb.innerHTML='A <b>'+nm.toLowerCase()+'</b> is part of the phone, but it can\'t do the AI work. Which piece actually handles the task?';
+      o.animate([{transform:'translateX(0)'},{transform:'translateX(-6px)'},{transform:'translateX(6px)'},{transform:'translateX(0)'}],{duration:280,easing:'ease-in-out'});
+    }
+    function attempt(o){ if(solved)return; if(o.dataset.ok==='1')solve(); else wrong(o); }
+    opts.forEach(o=>{
+      o.addEventListener('click',()=>attempt(o));
+      o.setAttribute('draggable','true');
+      o.addEventListener('dragstart',e=>e.dataTransfer.setData('text',o.dataset.ok));
+      const img=o.querySelector('img');
+      if(img) makeDraggable(o,img.src,(t)=>{ if(t&&(t===gap||gap.contains(t)))attempt(o); });
+    });
+    gap.addEventListener('dragover',e=>{e.preventDefault();gap.classList.add('over');});
+    gap.addEventListener('dragleave',()=>gap.classList.remove('over'));
+    gap.addEventListener('drop',e=>{e.preventDefault();gap.classList.remove('over');
+      const ok=e.dataTransfer.getData('text');
+      if(ok==='1')solve();
+      else{fb.className='feedback show no';fb.innerHTML='That\'s part of the phone, but it can\'t do the AI work. Which piece actually handles the task?';}
+    });
+    onEnter['s24']=()=>{
+      solved=false;
+      gap.classList.remove('filled');gap.style.borderColor='var(--terracotta)';
+      gap.innerHTML='<div class="cl" style="color:var(--terracotta)">? MISSING</div>';
+      opts.forEach(o=>o.classList.remove('picked'));
+      fb.className='feedback';fb.innerHTML='';
+    };
+  })();
+
+  /* =================================================================
+     Scene 26: reflection persistence
+  ================================================================== */
+  document.querySelectorAll('#s26 textarea').forEach(t=>{
+    t.value=state.ref[t.dataset.ref]||'';
+    t.addEventListener('input',()=>{state.ref[t.dataset.ref]=t.value;save();});
+  });
+
+  /* =================================================================
+     Scene 4 video (loops); bridge reveals a few seconds in
+  ================================================================== */
+  (function(){
+    const v=document.getElementById('vid4'),br=document.querySelector('#s4 [data-bridge4]');
+    /* video always plays, looping, and cannot be paused (no controls, pointer-events:none) */
+    v.addEventListener('timeupdate',()=>{ if(v.currentTime>4.5 && br)br.style.opacity=1; });
+    onEnter['s4']=()=>{ if(br)br.style.opacity=0; try{v.currentTime=0;}catch(e){} v.play().catch(()=>{}); };
+  })();
+
+  /* =================================================================
+     Scene 21 X-ray player - loop + sound with 1.5s volume fades
+  ================================================================== */
+  (function(){
+    const v=document.getElementById('vid21'),
+          play=document.querySelector('#s21player [data-play]'),
+          pp=document.getElementById('s21pp'),mute=document.getElementById('s21mute'),
+          fill=document.getElementById('s21fill'),timeEl=document.getElementById('s21time'),
+          reveal=document.querySelector('#s21 [data-reveal21]'),scan=document.getElementById('scan21');
+    const FADE=1.5; let wantSound=true,scanAnim=null;
+    const fmt=t=>{t=Math.max(0,t||0);const m=Math.floor(t/60),s=Math.floor(t%60);return m+':'+(s<10?'0':'')+s;};
+    function applyVolume(){
+      if(!wantSound||v.muted){v.volume=0;return;}
+      const d=v.duration||0,t=v.currentTime;let vol=1;
+      if(t<FADE)vol=t/FADE; else if(d&&t>d-FADE)vol=Math.max(0,(d-t)/FADE);
+      v.volume=Math.min(1,Math.max(0,vol));
+    }
+    function tick(){const d=v.duration||0;fill.style.width=(d?v.currentTime/d*100:0)+'%';
+      timeEl.textContent=fmt(v.currentTime)+' / '+fmt(d);applyVolume();}
+    function startScan(){ if(!scan)return; if(scanAnim)scanAnim.cancel();
+      scanAnim=scan.animate([{top:'0%',opacity:0},{top:'0%',opacity:1,offset:.08},{top:'100%',opacity:1,offset:.92},{top:'100%',opacity:0}],
+        {duration:Math.min(3400,(v.duration||3)*1000),iterations:Infinity,easing:'ease-in-out'}); }
+    v.addEventListener('timeupdate',()=>{tick(); if(v.currentTime>4 && reveal)reveal.style.opacity=1;});
+    v.addEventListener('loadedmetadata',tick);
+    v.addEventListener('ended',()=>{ if(scanAnim)scanAnim.cancel(); if(reveal)reveal.style.opacity=1;
+      play.style.display='';pp.textContent='►'; });
+    function go(){ v.play().then(()=>{play.style.display='none';pp.textContent='❚❚';startScan();}).catch(()=>{}); }
+    play.addEventListener('click',()=>{wantSound=true;v.muted=false;mute.textContent='🔊';go();});
+    pp.addEventListener('click',()=>{ if(v.paused){go();} else {v.pause();pp.textContent='►';if(scanAnim)scanAnim.pause();} });
+    mute.addEventListener('click',()=>{ v.muted=!v.muted; wantSound=!v.muted; mute.textContent=v.muted?'🔇':'🔊'; applyVolume(); });
+    /* Do NOT autoplay - the student presses play. It plays once (no loop). */
+    onEnter['s21']=()=>{
+      if(reveal)reveal.style.opacity=0;
+      try{v.pause();}catch(e){}
+      play.style.display='';pp.textContent='►';mute.textContent='🔊';
+      v.currentTime=0;wantSound=true;v.muted=false;v.volume=0;
+      if(scanAnim)scanAnim.cancel();
+      fill.style.width='0%';timeEl.textContent='0:00 / '+fmt(v.duration||0);
+    };
+  })();
+
+  /* =================================================================
+     Cover: elegant connected-dots idle animation (runs only on s1)
+  ================================================================== */
+  function startConstellation(){
+    const cv=document.getElementById('cover-net'); if(!cv)return;
+    const ctx=cv.getContext('2d'); const dpr=Math.min(2,window.devicePixelRatio||1);
+    const r=cv.getBoundingClientRect(); if(!r.width||!r.height)return;
+    const W=cv.width=r.width*dpr, H=cv.height=r.height*dpr;
+    const N=Math.max(11,Math.min(22,Math.round(r.width/34)));
+    const pts=Array.from({length:N},()=>({
+      x:Math.random()*W,y:Math.random()*H,
+      vx:(Math.random()-.5)*0.12*dpr,vy:(Math.random()-.5)*0.12*dpr,
+      rad:(1.4+Math.random()*1.8)*dpr}));
+    const maxD=Math.min(W,H)*0.42;
+    function frame(){
+      ctx.clearRect(0,0,W,H);
+      for(const p of pts){p.x+=p.vx;p.y+=p.vy;
+        if(p.x<0||p.x>W)p.vx*=-1; if(p.y<0||p.y>H)p.vy*=-1;}
+      for(let i=0;i<pts.length;i++)for(let j=i+1;j<pts.length;j++){
+        const a=pts[i],b=pts[j],d=Math.hypot(a.x-b.x,a.y-b.y);
+        if(d<maxD){const o=(1-d/maxD)*0.42;
+          ctx.strokeStyle='rgba(0,128,128,'+o.toFixed(3)+')';ctx.lineWidth=dpr;
+          ctx.beginPath();ctx.moveTo(a.x,a.y);ctx.lineTo(b.x,b.y);ctx.stroke();}
+      }
+      for(const p of pts){ctx.fillStyle='rgba(37,208,216,.7)';
+        ctx.beginPath();ctx.arc(p.x,p.y,p.rad,0,Math.PI*2);ctx.fill();}
+      coverRAF=requestAnimationFrame(frame);
+    }
+    cancelAnimationFrame(coverRAF); frame();
+  }
+  onEnter['s1']=()=>startConstellation();
+  window.addEventListener('resize',()=>{ if(idx===0)startConstellation(); });
+
+  /* ---------- init ---------- */
+  scenes.forEach(s=>s.classList.remove('active'));
+  show(0);
+})();
+</script>
+</body>
+</html>

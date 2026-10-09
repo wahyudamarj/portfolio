@@ -1,0 +1,2712 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <title>My AI Helper · Session 1</title>
+  <style>
+/* ============================================================
+   MY AI HELPER — Grade 5, Module 2, Session 1
+   Visual system: colorful, warm, playful-but-not-childish.
+   ============================================================ */
+
+/* ---------- Design tokens ---------- */
+:root {
+  /* palette */
+  --navy: #17324D;
+  --teal: #1EAFA1;
+  --aqua: #4CCFDB;
+  --mint: #BDEFE3;
+  --yellow: #FFD96A;
+  --coral: #FF8E7A;
+  --purple: #A995E8;
+  --sky: #8CCCF4;
+  --offwhite: #FFFDF8;
+  --palemint: #F1FBF7;
+
+  /* spacing */
+  --space-xs: clamp(6px, 0.6vw, 10px);
+  --space-sm: clamp(10px, 1vw, 18px);
+  --space-md: clamp(18px, 1.8vw, 30px);
+  --space-lg: clamp(28px, 3vw, 52px);
+  --space-xl: clamp(42px, 5vw, 84px);
+
+  /* radii */
+  --r-sm: 14px;
+  --r-md: 22px;
+  --r-lg: 34px;
+  --r-xl: 46px;
+
+  /* type */
+  --font: "Poppins", "Nunito", "Arial Rounded MT Bold", Arial, sans-serif;
+
+  /* per-scene accents (set inline by JS) */
+  --accent: var(--teal);
+  --accent-2: var(--aqua);
+  --accent-3: var(--yellow);
+
+  /* shadow */
+  --shadow-sm: 0 6px 18px rgba(23, 50, 77, 0.10);
+  --shadow-md: 0 14px 34px rgba(23, 50, 77, 0.14);
+  --shadow-lg: 0 26px 60px rgba(23, 50, 77, 0.18);
+}
+
+* { box-sizing: border-box; }
+
+html, body {
+  margin: 0;
+  padding: 0;
+  min-height: 100dvh;
+}
+
+body {
+  font-family: var(--font);
+  color: var(--navy);
+  background: var(--palemint);
+  overflow: hidden;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+.sr-only {
+  position: absolute;
+  width: 1px; height: 1px;
+  padding: 0; margin: -1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* ---------- App layout ---------- */
+#app {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  min-height: 100dvh;
+  height: 100dvh;
+  padding: clamp(8px, 1.2vh, 16px) clamp(10px, 1.6vw, 26px);
+  gap: clamp(4px, 0.8vh, 10px);
+}
+
+/* ---------- Top bar ---------- */
+.topbar {
+  flex: 0 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-sm);
+  z-index: 5;
+}
+.topbar__brand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: rgba(255, 255, 255, 0.72);
+  border-radius: 999px;
+  padding: 8px 16px;
+  box-shadow: var(--shadow-sm);
+  backdrop-filter: blur(6px);
+}
+.dot-badge {
+  width: 14px; height: 14px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--teal), var(--aqua));
+  box-shadow: 0 0 0 4px rgba(76, 207, 219, 0.25);
+}
+.session-label {
+  font-weight: 700;
+  color: var(--navy);
+  font-size: clamp(0.8rem, 0.9vw, 1rem);
+  letter-spacing: 0.02em;
+}
+
+.toolbar { display: flex; gap: 8px; }
+.tool {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  border: none;
+  cursor: pointer;
+  background: rgba(255, 255, 255, 0.72);
+  color: var(--navy);
+  border-radius: 999px;
+  padding: 9px 14px;
+  min-height: 44px;
+  font-family: var(--font);
+  font-weight: 700;
+  font-size: clamp(0.78rem, 0.9vw, 0.95rem);
+  box-shadow: var(--shadow-sm);
+  backdrop-filter: blur(6px);
+  transition: transform 0.18s ease, background 0.18s ease, box-shadow 0.18s ease;
+}
+.tool:hover { transform: translateY(-2px); }
+.tool:focus-visible { outline: 3px solid var(--teal); outline-offset: 3px; }
+.tool[aria-pressed="true"] {
+  background: var(--teal);
+  color: #fff;
+}
+.tool__icon { font-size: 1.05em; line-height: 1; }
+.tool__text { line-height: 1; }
+@media (max-width: 900px) { .tool__text { display: none; } .tool { padding: 9px; } }
+
+/* ---------- Stage ----------
+   Fill whatever vertical space is left AFTER the topbar and nav, so the
+   stage + chrome always sum to exactly one screen — nothing is pushed off
+   and no scrolling is needed to reach buttons like "Start". */
+.stage {
+  position: relative;
+  flex: 1 1 auto;
+  min-height: 0;
+  width: min(92vw, 1380px);
+  margin: 0 auto;
+  border-radius: var(--r-xl);
+  overflow: hidden;
+  background: var(--offwhite);
+  box-shadow: var(--shadow-lg);
+  isolation: isolate;
+}
+@media (max-width: 1180px) and (orientation: landscape) {
+  .stage { width: 94vw; }
+}
+
+/* Each scene fills the stage */
+.scene {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  padding: clamp(16px, 2.2vh, 40px) clamp(20px, 3vw, 52px);
+  z-index: 2;
+}
+
+/* Content wrapper: fills the scene, and if content is ever taller than
+   the stage it scrolls INSIDE the wrapper instead of being clipped —
+   so no object is ever cut off at the bottom. The background stays pinned. */
+.scene__content {
+  position: relative;
+  z-index: 2;
+  flex: 1 1 auto;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  overflow-x: hidden;
+  overflow-y: auto;
+  scrollbar-width: thin;
+}
+/* single top-level child per scene: centre it, but let it scroll when tall */
+.scene__content > * { margin-block: auto; width: 100%; }
+
+/* Scene transitions */
+.scene {
+  opacity: 0;
+  transition: opacity 560ms cubic-bezier(0.22, 0.61, 0.36, 1),
+              transform 560ms cubic-bezier(0.22, 0.61, 0.36, 1);
+}
+.scene.enter-right { transform: translateX(42px) scale(0.985); }
+.scene.enter-left  { transform: translateX(-42px) scale(0.985); }
+.scene.is-active   { opacity: 1; transform: translateX(0) scale(1); }
+.scene.leave-left  { opacity: 0; transform: translateX(-42px) scale(0.985); }
+.scene.leave-right { opacity: 0; transform: translateX(42px) scale(0.985); }
+
+/* ============================================================
+   BACKGROUND FAMILIES
+   ============================================================ */
+.bg {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  overflow: hidden;
+  pointer-events: none;
+}
+.bg__grad {
+  position: absolute;
+  inset: -10%;
+  background-size: 180% 180%;
+  animation: gradShift 24s ease-in-out infinite alternate;
+}
+.blob {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(38px);
+  opacity: 0.55;
+  animation: drift 20s ease-in-out infinite alternate;
+}
+.blob.b2 { animation-duration: 24s; animation-delay: -6s; }
+.shape {
+  position: absolute;
+  opacity: 0.5;
+  animation: tilt 9s ease-in-out infinite alternate;
+}
+.shape.round { border-radius: 50%; }
+.shape.soft { border-radius: 30% 70% 62% 38% / 44% 40% 60% 56%; }
+.paper {
+  position: absolute;
+  border-radius: 16px;
+  opacity: 0.5;
+  animation: floaty 14s ease-in-out infinite alternate;
+  box-shadow: 0 8px 18px rgba(23,50,77,0.06);
+}
+.dot {
+  position: absolute;
+  width: 12px; height: 12px;
+  border-radius: 50%;
+  opacity: 0.6;
+  animation: floatUp 13s ease-in-out infinite;
+}
+.spark {
+  position: absolute;
+  font-size: 20px;
+  opacity: 0;
+  animation: twinkle 7s ease-in-out infinite;
+}
+.wave {
+  position: absolute;
+  left: -10%;
+  width: 120%;
+  height: 46%;
+  opacity: 0.5;
+  border-radius: 50% 50% 0 0 / 100% 100% 0 0;
+  animation: waveShift 18s ease-in-out infinite alternate;
+}
+
+/* Family: Mint Waves */
+.bg--mint .bg__grad { background-image: linear-gradient(135deg, #F1FBF7, #E4F7EF, #D6F2E8); }
+.bg--mint .wave.w1 { bottom: -6%; background: var(--mint); }
+.bg--mint .wave.w2 { bottom: -14%; background: var(--aqua); opacity: 0.35; }
+
+/* Family: Aqua Bubbles */
+.bg--aqua .bg__grad { background-image: linear-gradient(135deg, #EAFAFC, #DBF4F8, #CFF0F5); }
+
+/* Family: Coral Paper Shapes */
+.bg--coral .bg__grad { background-image: linear-gradient(135deg, #FFF6F1, #FFEFE9, #FCEAF0); }
+
+/* Family: Yellow Sparkles */
+.bg--yellow .bg__grad { background-image: linear-gradient(135deg, #FFFCEF, #FFF7E0, #FFF2D2); }
+
+/* Family: Purple Clouds */
+.bg--purple .bg__grad { background-image: linear-gradient(135deg, #F6F3FE, #EFEAFC, #F3ECFA); }
+
+/* ---------- background keyframes ---------- */
+@keyframes gradShift { 0% { background-position: 0% 50%; } 100% { background-position: 100% 50%; } }
+@keyframes drift {
+  0%   { transform: translate(0, 0) scale(1); }
+  100% { transform: translate(22px, -18px) scale(1.05); }
+}
+@keyframes tilt {
+  0%   { transform: rotate(-3deg); }
+  100% { transform: rotate(4deg); }
+}
+@keyframes floaty {
+  0%   { transform: translateY(0) rotate(-2deg); }
+  100% { transform: translateY(-16px) rotate(3deg); }
+}
+@keyframes floatUp {
+  0%   { transform: translate(0, 0); opacity: 0.15; }
+  50%  { opacity: 0.7; }
+  100% { transform: translate(16px, -46px); opacity: 0.1; }
+}
+@keyframes twinkle {
+  0%, 100% { opacity: 0; transform: scale(0.7); }
+  50%      { opacity: 0.9; transform: scale(1.1); }
+}
+@keyframes waveShift {
+  0%   { transform: translateX(0); }
+  100% { transform: translateX(30px); }
+}
+
+/* ============================================================
+   TYPOGRAPHY HELPERS
+   ============================================================ */
+.title      { font-size: clamp(2.4rem, 4.4vw, 4.8rem); font-weight: 800; line-height: 1.06; letter-spacing: -0.01em; }
+.heading    { font-size: clamp(2.25rem, 4vw, 4.5rem); font-weight: 800; line-height: 1.08; }
+.question   { font-size: clamp(2rem, 3.4vw, 3.6rem);  font-weight: 700; line-height: 1.12; }
+.keystmt    { font-size: clamp(2.2rem, 4.2vw, 4.8rem); font-weight: 800; line-height: 1.08; }
+.support    { font-size: clamp(1.2rem, 1.7vw, 1.65rem); font-weight: 500; line-height: 1.3; }
+.choicelbl  { font-size: clamp(1.1rem, 1.5vw, 1.45rem); font-weight: 700; line-height: 1.15; }
+.btnlbl     { font-size: clamp(1rem, 1.25vw, 1.25rem); font-weight: 700; }
+
+/* Keep large text legible even when it sits over a coloured blob or wash:
+   a soft light halo separates dark text from mid-tone decoration. */
+.title, .heading, .question, .keystmt, .bigline, .fn-label, .cmp-cap {
+  text-shadow: 0 1px 2px rgba(255, 253, 248, 0.75), 0 0 1px rgba(255, 253, 248, 0.6);
+}
+.eyebrow, .ai-name, .ask-who, .game-meta, .pv-label { text-shadow: none; }
+
+.tx-teal { color: var(--teal); }
+.tx-coral { color: var(--coral); }
+.tx-purple { color: #7d63d8; }
+.tx-white { color: #fff; }
+
+.eyebrow {
+  display: inline-block;
+  font-weight: 800;
+  font-size: clamp(0.8rem, 1vw, 1.05rem);
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--accent);
+  background: rgba(255,255,255,0.7);
+  padding: 7px 16px;
+  border-radius: 999px;
+  box-shadow: var(--shadow-sm);
+}
+
+/* ============================================================
+   LAYOUT FAMILIES
+   ============================================================ */
+.layout {
+  position: relative;
+  z-index: 2;
+  flex: 1 1 auto;
+  display: grid;
+  gap: var(--space-lg);
+  align-items: center;
+  min-height: 0;
+}
+
+/* 1. Cover split */
+.l-cover { grid-template-columns: 42% 1fr; }
+.l-cover .cover-text { display: flex; flex-direction: column; gap: var(--space-sm); }
+
+/* 2. Story split */
+.l-story { grid-template-columns: 46% 1fr; }
+.l-story.rev { grid-template-columns: 1fr 46%; }
+
+/* 3. Single focus */
+.l-single { grid-template-columns: 1fr; place-items: center; text-align: center; }
+
+/* 4. Three character cards */
+.l-three { grid-template-columns: repeat(3, minmax(0, 1fr)); align-items: stretch; min-height: 0; }
+
+/* 5. Two-choice board */
+.l-twochoice { grid-template-rows: auto auto; place-content: center; }
+
+/* 6. Choice grid */
+/* Rows are sized to the cards themselves (min-content) and the whole block is
+   centred, so two rows can never overlap. The image area has a capped, viewport
+   -relative height so photos scale down and two rows always fit the stage. */
+.l-grid6 {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  grid-auto-rows: min-content;
+  align-content: center;
+  align-items: stretch;
+  gap: var(--space-md) var(--space-lg);
+  min-height: 0;
+}
+.l-grid6 .choicecard { min-height: 0; }
+.l-grid6 .cc-img { flex: 0 0 auto; height: clamp(72px, 14vh, 165px); }
+
+/* 7. Build view */
+.l-build { grid-template-columns: 1fr 38%; }
+
+/* 8. Calm reflection */
+.l-reflect { grid-template-columns: 1fr; place-items: center; text-align: center; max-width: min(90%, 1000px); margin: 0 auto; }
+
+@media (max-width: 1024px) {
+  .l-build { grid-template-columns: 1fr; grid-auto-rows: min-content; align-content: start; overflow-y: auto; }
+}
+
+/* ============================================================
+   REUSABLE PIECES
+   ============================================================ */
+
+/* Soft color panel / board */
+.panel {
+  background: rgba(255, 255, 255, 0.92);
+  border-radius: var(--r-lg);
+  padding: clamp(24px, 3.4vw, 56px);
+  box-shadow: var(--shadow-md);
+  backdrop-filter: blur(4px);
+}
+.panel--accent {
+  background: color-mix(in srgb, var(--accent) 20%, #fff);
+}
+
+/* Hero illustration wrapper */
+.hero {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  min-height: 0;
+}
+.hero img { object-fit: contain; }
+
+.img-cover    {
+  max-height: 60vh; max-width: 100%;
+  /* Feather all four edges evenly (~10%) so the illustration melts into the
+     background instead of showing a hard rectangular border. Two linear
+     gradients intersected = a soft rectangular vignette. */
+  -webkit-mask-image:
+    linear-gradient(to right, transparent 0%, #000 11%, #000 89%, transparent 100%),
+    linear-gradient(to bottom, transparent 0%, #000 10%, #000 90%, transparent 100%);
+  -webkit-mask-composite: source-in;
+  mask-image:
+    linear-gradient(to right, transparent 0%, #000 11%, #000 89%, transparent 100%),
+    linear-gradient(to bottom, transparent 0%, #000 10%, #000 90%, transparent 100%);
+  mask-composite: intersect;
+}
+.img-story    { max-height: 54vh; max-width: 100%; filter: drop-shadow(0 20px 30px rgba(23,50,77,0.16)); }
+.img-partner  { max-height: 50vh; max-width: 100%; filter: drop-shadow(0 20px 30px rgba(23,50,77,0.16)); }
+.img-choice   { max-height: 24vh; }
+
+/* Image placeholder card (missing image) */
+.img-fallback {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  text-align: center;
+  background: repeating-linear-gradient(45deg, #fff, #fff 14px, #F1FBF7 14px, #F1FBF7 28px);
+  border: 3px dashed color-mix(in srgb, var(--accent) 55%, #fff);
+  border-radius: var(--r-md);
+  color: var(--navy);
+  padding: clamp(10px, 1.4vw, 22px);
+  min-height: 90px;
+  width: 100%;
+  height: 100%;
+}
+.img-fallback .fb-emoji { font-size: clamp(2rem, 4vw, 3.4rem); }
+.img-fallback .fb-name {
+  font-weight: 700;
+  font-size: clamp(0.8rem, 1vw, 1rem);
+  word-break: break-all;
+  color: #5b6b7a;
+  background: #fff;
+  padding: 4px 10px;
+  border-radius: 8px;
+}
+
+/* Big button */
+.btn {
+  font-family: var(--font);
+  font-weight: 800;
+  font-size: clamp(1.05rem, 1.5vw, 1.4rem);
+  border: none;
+  cursor: pointer;
+  border-radius: var(--r-md);
+  padding: clamp(14px, 1.4vw, 20px) clamp(26px, 3vw, 46px);
+  min-height: 56px;
+  color: #fff;
+  background: linear-gradient(135deg, var(--teal), var(--aqua));
+  box-shadow: var(--shadow-md);
+  transition: transform 0.16s ease, box-shadow 0.16s ease, filter 0.16s ease;
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+}
+.btn:hover { transform: translateY(-3px); filter: brightness(1.04); }
+.btn:active { transform: translateY(-1px); }
+.btn:focus-visible { outline: 4px solid var(--navy); outline-offset: 3px; }
+.btn--pulse { animation: pulseOnce 1s ease 0.6s 1; }
+@keyframes pulseOnce {
+  0%,100% { transform: scale(1); }
+  50%     { transform: scale(1.06); }
+}
+
+/* Choice cards */
+.choicecard {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-sm);
+  background: #fff;
+  border: 4px solid transparent;
+  border-radius: var(--r-lg);
+  padding: clamp(14px, 1.6vw, 24px);
+  cursor: pointer;
+  box-shadow: var(--shadow-md);
+  transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+  min-height: 180px;
+  text-align: center;
+  font-family: var(--font);
+  color: var(--navy);
+  overflow: hidden; /* keep image inside the card, never over the label */
+}
+.choicecard:hover { transform: translateY(-6px); box-shadow: var(--shadow-lg); }
+.choicecard:focus-visible { outline: 4px solid var(--accent); outline-offset: 3px; }
+.choicecard .cc-img {
+  flex: 1 1 auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  min-height: 0;
+  overflow: hidden;
+}
+.choicecard .cc-img img { max-height: 100%; max-width: 100%; object-fit: contain; display: block; }
+.choicecard .cc-label { flex: 0 0 auto; font-weight: 700; font-size: clamp(1.1rem, 1.5vw, 1.45rem); }
+.choicecard .cc-clue {
+  flex: 0 0 auto;
+  font-weight: 600;
+  font-size: clamp(0.85rem, 1.1vw, 1.05rem);
+  color: #5b6b7a;
+  line-height: 1.2;
+}
+.choicecard.is-selected {
+  border-color: var(--accent);
+  transform: translateY(-8px) scale(1.03);
+  box-shadow: 0 26px 54px color-mix(in srgb, var(--accent) 30%, transparent);
+  z-index: 2;
+}
+.choicecard .cc-check {
+  position: absolute;
+  top: 10px; right: 10px;
+  width: 34px; height: 34px;
+  border-radius: 50%;
+  background: var(--accent);
+  color: #fff;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  font-weight: 900;
+  box-shadow: var(--shadow-sm);
+}
+.choicecard.is-selected .cc-check { display: flex; }
+
+.l-three .choicecard { min-height: 40vh; }
+.l-three .cc-img { flex: 0 0 68%; }
+
+/* Chips (problem type / helper action / examples) */
+.chips { display: flex; flex-wrap: wrap; gap: var(--space-sm); justify-content: center; }
+.chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  background: #fff;
+  border: 3px solid color-mix(in srgb, var(--accent) 30%, #fff);
+  border-radius: 999px;
+  padding: 12px 22px;
+  min-height: 54px;
+  font-family: var(--font);
+  font-weight: 700;
+  font-size: clamp(1rem, 1.35vw, 1.3rem);
+  color: var(--navy);
+  cursor: pointer;
+  box-shadow: var(--shadow-sm);
+  transition: transform 0.16s ease, border-color 0.16s ease, background 0.16s ease;
+}
+.chip:hover { transform: translateY(-3px); }
+.chip:focus-visible { outline: 3px solid var(--accent); outline-offset: 3px; }
+.chip .chip-ico { font-size: 1.3em; }
+.chip.is-selected {
+  background: var(--accent);
+  color: #fff;
+  border-color: var(--accent);
+  transform: translateY(-3px) scale(1.03);
+}
+
+/* Two big answer buttons */
+.answers {
+  display: flex;
+  gap: var(--space-md);
+  justify-content: center;
+  flex-wrap: wrap;
+  margin-top: var(--space-md);
+}
+.answer {
+  flex: 1 1 200px;
+  max-width: 320px;
+  min-height: 96px;
+  border: 4px solid #fff;
+  border-radius: var(--r-lg);
+  background: #fff;
+  cursor: pointer;
+  font-family: var(--font);
+  font-weight: 800;
+  font-size: clamp(1.3rem, 2.2vw, 2rem);
+  color: var(--navy);
+  box-shadow: var(--shadow-md);
+  transition: transform 0.16s ease, box-shadow 0.16s ease, border-color 0.16s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+}
+.answer:hover { transform: translateY(-4px); }
+.answer:focus-visible { outline: 4px solid var(--accent); outline-offset: 3px; }
+.answer.pick-a { border-color: color-mix(in srgb, var(--accent) 55%, #fff); }
+.answer.pick-b { border-color: color-mix(in srgb, var(--accent-2) 55%, #fff); }
+.answer.is-chosen { transform: translateY(-4px) scale(1.02); }
+.answer.correct { background: color-mix(in srgb, var(--teal) 18%, #fff); border-color: var(--teal); }
+.answer.soft    { background: color-mix(in srgb, var(--yellow) 26%, #fff); border-color: var(--yellow); }
+.answer:disabled { opacity: 0.55; cursor: default; transform: none; }
+.answers--compact .answer {
+  min-height: 62px;
+  font-size: clamp(1.05rem, 1.5vw, 1.4rem);
+  flex: 1 1 120px;
+  border-radius: var(--r-md);
+}
+
+/* Feedback bubble */
+.feedback {
+  margin-top: var(--space-md);
+  background: color-mix(in srgb, var(--accent) 14%, #fff);
+  border-left: 8px solid var(--accent);
+  border-radius: var(--r-md);
+  padding: clamp(14px, 1.6vw, 24px) clamp(18px, 2vw, 30px);
+  font-weight: 600;
+  font-size: clamp(1.1rem, 1.6vw, 1.5rem);
+  color: var(--navy);
+  max-width: 760px;
+  opacity: 0;
+  transform: translateY(10px);
+  transition: opacity 0.4s ease, transform 0.4s ease;
+}
+.feedback.show { opacity: 1; transform: translateY(0); }
+.feedback .fb-ico { margin-right: 10px; }
+
+/* Speech bubble */
+.speech {
+  position: relative;
+  background: #fff;
+  border-radius: var(--r-lg);
+  padding: clamp(26px, 3.4vw, 52px);
+  box-shadow: var(--shadow-md);
+  font-weight: 700;
+  color: var(--navy);
+}
+.speech::after {
+  content: "";
+  position: absolute;
+  left: -26px;
+  top: 50%;
+  transform: translateY(-50%);
+  border: 20px solid transparent;
+  border-right-color: #fff;
+  filter: drop-shadow(-4px 0 4px rgba(23,50,77,0.06));
+}
+
+/* Objects (tappable) */
+.objects { display: flex; gap: var(--space-md); flex-wrap: wrap; justify-content: center; }
+.object {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  background: #fff;
+  border: 4px solid transparent;
+  border-radius: var(--r-md);
+  padding: 14px 18px;
+  cursor: pointer;
+  box-shadow: var(--shadow-md);
+  font-family: var(--font);
+  font-weight: 700;
+  font-size: clamp(0.95rem, 1.2vw, 1.2rem);
+  color: var(--navy);
+  transition: transform 0.2s ease, border-color 0.2s ease;
+}
+.object .obj-emoji { font-size: clamp(3rem, 5vw, 5rem); line-height: 1; }
+.object:hover { transform: translateY(-4px); }
+.object:focus-visible { outline: 4px solid var(--accent); outline-offset: 3px; }
+.object.is-tapped { border-color: var(--teal); transform: translateY(-6px) scale(1.04); }
+.object.fly { animation: flyToBag 0.7s cubic-bezier(0.3,0.8,0.3,1) forwards; }
+@keyframes flyToBag {
+  to { transform: translate(var(--fx, 0), var(--fy, -80px)) scale(0.4); opacity: 0.25; }
+}
+
+/* Fact cards (Mia scene) */
+.facts { display: grid; grid-template-columns: repeat(5, 1fr); gap: 10px; width: 100%; }
+.factcard {
+  background: #fff;
+  border-radius: 12px;
+  height: clamp(48px, 7vh, 74px);
+  box-shadow: var(--shadow-sm);
+  opacity: 0;
+  transform: scale(0.7) translateY(10px);
+  animation: factPop 0.45s ease forwards;
+  display: flex; align-items: center; justify-content: center;
+  color: #b7c2cc; font-weight: 800; font-size: 0.9rem;
+}
+@keyframes factPop { to { opacity: 1; transform: scale(1) translateY(0); } }
+
+/* Flow: Person -> Problem -> Helper */
+.flow {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: clamp(12px, 2vw, 34px);
+  flex-wrap: wrap;
+}
+.flow__node {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  background: #fff;
+  border-radius: var(--r-lg);
+  padding: clamp(18px, 2.4vw, 36px);
+  box-shadow: var(--shadow-md);
+  min-width: clamp(150px, 18vw, 230px);
+  opacity: 0;
+  transform: translateY(16px);
+  animation: flowIn 0.5s ease forwards;
+}
+.flow__node .fn-emoji { font-size: clamp(2.2rem, 4vw, 3.6rem); }
+.flow__node .fn-label { font-weight: 800; font-size: clamp(1rem, 1.6vw, 1.5rem); }
+.flow__arrow {
+  font-size: clamp(2rem, 4vw, 3.6rem);
+  color: var(--accent);
+  opacity: 0;
+  animation: flowIn 0.5s ease forwards;
+}
+@keyframes flowIn { to { opacity: 1; transform: translateY(0); } }
+
+/* Compare panels (Mia needed / helper gave) */
+.compare { display: grid; grid-template-columns: 1fr auto 1fr; gap: var(--space-md); align-items: stretch; width: 100%; }
+.compare .cmp {
+  border-radius: var(--r-lg);
+  padding: clamp(12px, 1.5vw, 22px);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  text-align: center;
+  box-shadow: var(--shadow-md);
+}
+.compare .cmp .cmp-emoji { font-size: clamp(2.2rem, 4vw, 3.4rem); }
+.compare .cmp .cmp-cap { font-weight: 700; font-size: clamp(1rem, 1.4vw, 1.4rem); }
+.compare .cmp.need { background: color-mix(in srgb, var(--teal) 16%, #fff); }
+.compare .cmp.gave { background: color-mix(in srgb, var(--coral) 18%, #fff); }
+.compare .cmp-vs { align-self: center; font-weight: 900; font-size: clamp(1.4rem, 2.4vw, 2.4rem); color: var(--navy); }
+
+/* ============================================================
+   HELPER IDEA CARD (project preview + final)
+   ============================================================ */
+.helpercard {
+  --card-accent: var(--teal);
+  position: relative;
+  background: linear-gradient(160deg, #ffffff, #FBFDFF);
+  border-radius: var(--r-lg);
+  padding: clamp(18px, 2vw, 30px);
+  box-shadow: var(--shadow-lg);
+  border: 3px solid color-mix(in srgb, var(--card-accent) 30%, #fff);
+  width: 100%;
+  max-width: 460px;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-sm);
+}
+.helpercard__title {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-weight: 800;
+  font-size: clamp(1.2rem, 1.8vw, 1.7rem);
+  color: var(--navy);
+  padding-bottom: 8px;
+  border-bottom: 3px dashed color-mix(in srgb, var(--card-accent) 40%, #fff);
+}
+.helpercard__title .hc-star { color: var(--yellow); }
+.hc-row {
+  background: #fff;
+  border-radius: var(--r-md);
+  padding: clamp(12px, 1.4vw, 18px);
+  box-shadow: var(--shadow-sm);
+  opacity: 0.55;
+  transition: opacity 0.4s ease, transform 0.4s ease, box-shadow 0.4s ease;
+}
+.hc-row.filled { opacity: 1; }
+.hc-row .hc-lead { font-weight: 700; font-size: clamp(0.9rem, 1.1vw, 1.1rem); color: var(--card-accent); }
+.hc-row .hc-val { font-weight: 700; font-size: clamp(1rem, 1.4vw, 1.35rem); color: var(--navy); margin-top: 4px; min-height: 1.4em; }
+.hc-row .hc-emoji { font-size: 1.6em; }
+.hc-row.pop { animation: rowPop 0.5s ease; }
+@keyframes rowPop {
+  0% { transform: scale(0.9); box-shadow: 0 0 0 rgba(0,0,0,0); }
+  50% { transform: scale(1.03); box-shadow: 0 14px 30px rgba(30,175,161,0.25); }
+  100% { transform: scale(1); }
+}
+.helpercard.mini { max-width: 340px; transform: scale(0.92); }
+.helpercard.big { max-width: 520px; }
+
+/* Build preview panel */
+.preview-wrap {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-sm);
+}
+.preview-wrap .pv-label {
+  font-weight: 800;
+  color: var(--accent);
+  font-size: clamp(0.85rem, 1vw, 1.05rem);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+/* Input field */
+.field-wrap { width: 100%; max-width: 760px; display: flex; flex-direction: column; gap: var(--space-sm); }
+.field-lead { font-weight: 700; font-size: clamp(1.2rem, 1.8vw, 1.7rem); color: var(--navy); }
+.bigfield {
+  width: 100%;
+  font-family: var(--font);
+  font-weight: 600;
+  font-size: clamp(1.2rem, 1.8vw, 1.7rem);
+  color: var(--navy);
+  border: 4px solid color-mix(in srgb, var(--accent) 40%, #fff);
+  border-radius: var(--r-md);
+  padding: clamp(16px, 1.8vw, 26px);
+  background: #fff;
+  box-shadow: var(--shadow-sm);
+  resize: none;
+  min-height: clamp(80px, 12vh, 140px);
+}
+.bigfield:focus-visible { outline: 4px solid var(--accent); outline-offset: 2px; border-color: var(--accent); }
+.charcount { font-size: 0.9rem; font-weight: 700; color: #8494a2; align-self: flex-end; }
+
+/* Morph compare (make it small) */
+.morph { display: flex; flex-direction: column; align-items: center; gap: var(--space-md); width: 100%; }
+.morph .m-big {
+  background: color-mix(in srgb, var(--coral) 16%, #fff);
+  border-radius: var(--r-lg);
+  padding: clamp(18px, 2.4vw, 40px);
+  font-weight: 800;
+  font-size: clamp(1.6rem, 3vw, 2.8rem);
+  color: var(--navy);
+  box-shadow: var(--shadow-md);
+  text-decoration: line-through;
+  text-decoration-color: color-mix(in srgb, var(--coral) 70%, #fff);
+  opacity: 0.85;
+}
+.morph .m-arrow { font-size: clamp(2rem, 3.4vw, 3rem); color: var(--teal); }
+.morph .m-small {
+  background: color-mix(in srgb, var(--teal) 16%, #fff);
+  border-radius: var(--r-lg);
+  padding: clamp(20px, 2.8vw, 46px);
+  font-weight: 800;
+  font-size: clamp(1.9rem, 3.6vw, 3.4rem);
+  color: var(--navy);
+  box-shadow: var(--shadow-lg);
+  border: 3px solid var(--teal);
+}
+
+/* Checklist final check */
+.check-hero {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-md);
+}
+.check-emoji {
+  font-size: clamp(4rem, 10vw, 9rem);
+  filter: drop-shadow(0 14px 22px rgba(23,50,77,0.18));
+}
+
+/* Core message big lines */
+.bigline {
+  font-size: clamp(2.4rem, 6vw, 6rem);
+  font-weight: 800;
+  line-height: 1.02;
+  opacity: 0;
+  transform: translateY(24px);
+  transition: opacity 0.6s ease, transform 0.6s ease;
+}
+.bigline.show { opacity: 1; transform: translateY(0); }
+.bigline.l1 { color: var(--teal); }
+.bigline.l2 { color: var(--coral); }
+.bigline.l3 { color: #7d63d8; }
+.bigicons { display: flex; gap: var(--space-lg); justify-content: center; margin-top: var(--space-md); }
+.bigicons .bi { font-size: clamp(3rem, 6vw, 5.5rem); opacity: 0; transform: scale(0.6); transition: opacity 0.5s ease, transform 0.5s ease; }
+.bigicons .bi.show { opacity: 1; transform: scale(1); }
+
+/* Module session progress line (closing) */
+.session-track {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  width: min(80%, 700px);
+  margin: var(--space-md) auto 0;
+}
+.session-node {
+  flex: 0 0 auto;
+  width: 40px; height: 40px;
+  border-radius: 50%;
+  background: #fff;
+  border: 3px solid var(--mint);
+  display: flex; align-items: center; justify-content: center;
+  font-weight: 800; color: #9fb3ad;
+  font-size: 0.9rem;
+}
+.session-node.done { background: var(--teal); border-color: var(--teal); color: #fff; }
+.session-node.active { background: var(--yellow); border-color: var(--yellow); color: var(--navy); animation: pulseOnce 1.4s ease infinite; }
+.session-line { flex: 1 1 auto; height: 6px; border-radius: 999px; background: var(--mint); overflow: hidden; }
+.session-line .sl-fill { height: 100%; width: 0; background: linear-gradient(90deg, var(--teal), var(--aqua)); transition: width 1.2s ease; }
+
+/* Confetti */
+.confetti-piece {
+  position: absolute;
+  width: 12px; height: 16px;
+  top: -20px;
+  border-radius: 3px;
+  animation: fall linear forwards;
+  z-index: 30;
+}
+@keyframes fall {
+  to { transform: translateY(120vh) rotate(720deg); opacity: 0.9; }
+}
+
+/* Optional visual timer */
+.timer {
+  display: flex; align-items: center; gap: 12px;
+  background: rgba(255,255,255,0.8);
+  border-radius: 999px;
+  padding: 10px 20px;
+  box-shadow: var(--shadow-sm);
+  font-weight: 800;
+  color: var(--navy);
+  width: fit-content;
+}
+.timer .ring {
+  width: 34px; height: 34px;
+  border-radius: 50%;
+  border: 5px solid var(--mint);
+  border-top-color: var(--teal);
+  animation: spin 1s linear infinite;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+
+/* ============================================================
+   OBJECTIVES (combined, staged reveal)
+   ============================================================ */
+.obj-heading {
+  font-weight: 800;
+  font-size: clamp(1.4rem, 2.8vw, 2.6rem);
+  line-height: 1.12;
+  color: var(--navy);
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+  text-shadow: 0 1px 2px rgba(255, 253, 248, 0.75), 0 0 1px rgba(255, 253, 248, 0.6);
+}
+.obj-list {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: var(--space-md);
+  width: 100%;
+}
+@media (max-width: 680px) { .obj-list { grid-template-columns: 1fr; } }
+.obj-card {
+  position: relative;
+  background: rgba(255, 255, 255, 0.85);
+  border-radius: var(--r-lg);
+  padding: clamp(22px, 2.8vw, 44px) clamp(18px, 2vw, 30px);
+  box-shadow: var(--shadow-md);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 14px;
+  text-align: center;
+  border-top: 10px solid var(--teal);
+  opacity: 0;
+  transform: translateY(30px) scale(0.92);
+  transition: opacity 0.55s ease, transform 0.55s cubic-bezier(.22,.61,.36,1);
+}
+.obj-card.show { opacity: 1; transform: none; }
+.obj-card:nth-child(1) { border-top-color: var(--teal); }
+.obj-card:nth-child(2) { border-top-color: var(--aqua); }
+.obj-card:nth-child(3) { border-top-color: #E8C455; }
+.obj-num {
+  width: 52px; height: 52px;
+  border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-weight: 800; font-size: 1.4rem; color: #fff;
+  box-shadow: var(--shadow-sm);
+}
+.obj-card:nth-child(1) .obj-num { background: var(--teal); }
+.obj-card:nth-child(2) .obj-num { background: var(--aqua); }
+.obj-card:nth-child(3) .obj-num { background: #E8C455; color: var(--navy); }
+.obj-ico { font-size: clamp(2.8rem, 5.5vw, 4.8rem); line-height: 1; }
+.obj-text { font-weight: 700; font-size: clamp(1.2rem, 1.8vw, 1.75rem); color: var(--navy); line-height: 1.15; }
+.obj-check {
+  position: absolute; top: -14px; right: -12px;
+  width: 40px; height: 40px; border-radius: 50%;
+  background: var(--teal); color: #fff;
+  display: flex; align-items: center; justify-content: center;
+  font-weight: 900; box-shadow: var(--shadow-sm);
+  opacity: 0; transform: scale(0.4);
+  transition: opacity 0.4s ease, transform 0.4s cubic-bezier(.34,1.56,.64,1);
+}
+.obj-card.show .obj-check { opacity: 1; transform: scale(1); transition-delay: 0.35s; }
+
+/* ============================================================
+   AI HELPER avatar / reply (clarity: this is the AI answering)
+   ============================================================ */
+.ai-line { display: flex; align-items: center; gap: 12px; margin-bottom: 6px; }
+.ai-avatar {
+  width: clamp(46px, 5vw, 64px); height: clamp(46px, 5vw, 64px);
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--purple), var(--sky));
+  display: flex; align-items: center; justify-content: center;
+  font-size: clamp(1.6rem, 3vw, 2.4rem);
+  box-shadow: var(--shadow-sm);
+  flex: 0 0 auto;
+}
+.ai-name { font-weight: 800; color: #7d63d8; font-size: clamp(1rem, 1.3vw, 1.3rem); }
+.ai-panel {
+  position: relative;
+  background: #fff;
+  border-radius: var(--r-lg);
+  border-left: 8px solid var(--purple);
+  padding: clamp(16px, 2vw, 28px);
+  box-shadow: var(--shadow-md);
+}
+.ask-bubble {
+  display: inline-block;
+  background: color-mix(in srgb, var(--coral) 20%, #fff);
+  border-radius: 20px 20px 20px 6px;
+  padding: clamp(12px, 1.6vw, 22px) clamp(16px, 2vw, 26px);
+  font-weight: 700;
+  color: var(--navy);
+  box-shadow: var(--shadow-sm);
+}
+.ask-who { font-weight: 800; color: var(--coral); font-size: clamp(0.85rem, 1vw, 1.05rem); display: block; margin-bottom: 4px; }
+
+/* ============================================================
+   PROBLEM-OR-IDEA GAME (multi-round in one scene)
+   ============================================================ */
+.game-meta { font-weight: 800; color: var(--accent); letter-spacing: 0.05em; text-transform: uppercase; font-size: clamp(0.85rem, 1vw, 1.05rem); }
+.game-dots { display: flex; gap: 10px; justify-content: center; margin-top: 6px; }
+.game-dot { width: 14px; height: 14px; border-radius: 50%; background: #d7e7e1; transition: background 0.3s ease, transform 0.3s ease; }
+.game-dot.active { background: var(--accent); transform: scale(1.25); }
+.game-dot.done { background: var(--teal); }
+
+/* "My own idea" custom input (revealed on demand) */
+.own-input {
+  width: 100%;
+  margin-top: var(--space-sm);
+  display: none;
+  flex-direction: column;
+  gap: 8px;
+  animation: ownReveal 0.4s ease;
+}
+.own-input.show { display: flex; }
+.own-input label { font-weight: 700; color: var(--accent); font-size: clamp(1rem, 1.3vw, 1.2rem); }
+@keyframes ownReveal { from { opacity: 0; transform: translateY(-8px); } to { opacity: 1; transform: none; } }
+
+/* ============================================================
+   NAVIGATION
+   ============================================================ */
+.nav {
+  flex: 0 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-md);
+  padding: clamp(6px, 1vh, 12px) clamp(8px, 1.4vw, 22px);
+  z-index: 5;
+}
+/* bottom-left cluster: trademark logo + Back */
+.nav__cluster {
+  display: flex;
+  align-items: center;
+  gap: clamp(10px, 1.4vw, 20px);
+}
+.brandmark {
+  /* proportional: native art is 1493×283 (≈5.3:1); size by height, width auto */
+  height: clamp(20px, 3vh, 34px);
+  width: auto;
+  display: block;
+  opacity: 0.9;
+  user-select: none;
+  -webkit-user-drag: none;
+}
+@media (max-width: 760px) { .brandmark { display: none; } } /* keep controls roomy on small screens */
+.nav__btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  border: none;
+  cursor: pointer;
+  font-family: var(--font);
+  font-weight: 800;
+  font-size: clamp(1rem, 1.25vw, 1.25rem);
+  height: 60px;
+  min-width: 130px;
+  padding: 0 26px;
+  border-radius: 22px;
+  box-shadow: var(--shadow-md);
+  transition: transform 0.16s ease, filter 0.16s ease, box-shadow 0.16s ease;
+}
+.nav__btn:hover { transform: translateY(-3px); }
+.nav__btn:focus-visible { outline: 4px solid var(--navy); outline-offset: 3px; }
+.nav__btn--back { background: #EAF3F0; color: var(--navy); }
+.nav__btn--next { background: linear-gradient(135deg, var(--teal), var(--aqua)); color: #fff; }
+.nav__btn:disabled { opacity: 0.4; cursor: not-allowed; transform: none; }
+
+.nav__progress { flex: 1 1 auto; display: flex; flex-direction: column; align-items: center; gap: 6px; max-width: 560px; }
+.nav__part { font-weight: 800; font-size: clamp(0.8rem, 0.95vw, 1rem); color: var(--teal); letter-spacing: 0.04em; }
+.nav__count { font-weight: 700; font-size: clamp(0.75rem, 0.85vw, 0.9rem); color: #7d8b98; }
+.progress { width: 100%; height: 10px; border-radius: 999px; background: #DFF0EA; overflow: hidden; }
+.progress__fill { height: 100%; width: 2%; border-radius: 999px; background: linear-gradient(90deg, var(--teal), var(--aqua)); transition: width 0.5s ease; }
+
+/* ============================================================
+   REDUCED MOTION
+   ============================================================ */
+@media (prefers-reduced-motion: reduce) {
+  * { animation-duration: 0.001ms !important; animation-iteration-count: 1 !important; }
+  .scene { transition: opacity 0.2s ease !important; transform: none !important; }
+}
+body.reduce-motion .bg__grad,
+body.reduce-motion .blob,
+body.reduce-motion .shape,
+body.reduce-motion .paper,
+body.reduce-motion .dot,
+body.reduce-motion .spark,
+body.reduce-motion .wave,
+body.reduce-motion .session-node.active,
+body.reduce-motion .btn--pulse,
+body.reduce-motion .timer .ring {
+  animation: none !important;
+}
+body.reduce-motion .scene {
+  transition: opacity 0.2s ease !important;
+  transform: none !important;
+}
+body.reduce-motion .confetti-piece { display: none; }
+
+/* small helpers */
+.stack { display: flex; flex-direction: column; gap: var(--space-md); }
+.center { text-align: center; }
+.wrapmax { max-width: min(88vw, 1100px); margin: 0 auto; }
+.grow { flex: 1 1 auto; }
+.row { display: flex; gap: var(--space-md); align-items: center; }
+.rowc { display: flex; gap: var(--space-md); align-items: center; justify-content: center; flex-wrap: wrap; }
+
+/* ============================================================
+   SESSION-1 UPDATE — new knowledge scenes
+   ============================================================ */
+
+/* Teacher note (secondary, never the main student text) */
+.teacher-note {
+  margin-top: var(--space-sm);
+  display: inline-flex; align-items: center; gap: 8px;
+  background: rgba(23,50,77,0.05);
+  border: 2px dashed rgba(23,50,77,0.20);
+  color: #5b6b7a; font-weight: 600;
+  font-size: clamp(0.78rem, 0.95vw, 0.98rem);
+  padding: 7px 15px; border-radius: 14px;
+  max-width: 90%;
+}
+.teacher-note b { color: var(--navy); }
+
+/* ---- NEW 1: An AI helper can… (2×2 board) ---- */
+.aihelp-board {
+  background: rgba(255,255,255,0.94);
+  border-radius: var(--r-xl);
+  padding: clamp(14px, 2vw, 30px);
+  box-shadow: var(--shadow-md);
+  width: 100%;
+}
+.aihelp-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: clamp(10px, 1.6vw, 22px);
+}
+@media (max-width: 680px) { .aihelp-grid { grid-template-columns: 1fr; } }
+.aihelp-card {
+  display: flex; align-items: center; gap: clamp(12px, 1.6vw, 22px);
+  background: #fff; border-radius: var(--r-lg);
+  padding: clamp(10px, 1.4vw, 18px);
+  box-shadow: var(--shadow-sm);
+  border-left: 8px solid var(--accent);
+  opacity: 0; transform: translateY(16px) scale(.96);
+  transition: opacity .5s ease, transform .5s cubic-bezier(.22,.61,.36,1);
+}
+.aihelp-card.show { opacity: 1; transform: none; }
+.aihelp-card:nth-child(1) { border-left-color: var(--teal); }
+.aihelp-card:nth-child(2) { border-left-color: var(--aqua); }
+.aihelp-card:nth-child(3) { border-left-color: #E8C455; }
+.aihelp-card:nth-child(4) { border-left-color: var(--coral); }
+.aihelp-viz { flex: 0 0 auto; width: clamp(60px, 7vw, 92px); height: clamp(60px, 7vw, 92px); display: flex; align-items: center; justify-content: center; }
+.aihelp-label { font-weight: 800; font-size: clamp(1.05rem, 1.6vw, 1.55rem); color: var(--navy); }
+.aihelp-closing { font-weight: 800; font-size: clamp(1.2rem, 2.2vw, 2rem); color: var(--navy); opacity: 0; transform: translateY(10px); transition: opacity .6s ease, transform .6s ease; }
+.aihelp-closing.show { opacity: 1; transform: none; }
+.aihelp-closing b { color: var(--teal); }
+
+/* mini viz: checklist */
+.viz-check { width: 100%; height: 100%; display: flex; flex-direction: column; gap: 6px; justify-content: center; }
+.viz-check .vc-row { display: flex; align-items: center; gap: 7px; }
+.viz-check .vc-box { width: 16px; height: 16px; flex: 0 0 auto; border-radius: 5px; background: var(--mint); border: 2px solid var(--teal); position: relative; }
+.viz-check .vc-box::after { content: "✓"; position: absolute; inset: -2px; display: flex; align-items: center; justify-content: center; color: var(--teal); font-weight: 900; font-size: 13px; opacity: 0; transform: scale(.4); }
+.aihelp-card.show .viz-check .vc-row:nth-child(1) .vc-box::after { animation: vcCheck .4s ease forwards .1s; }
+.aihelp-card.show .viz-check .vc-row:nth-child(2) .vc-box::after { animation: vcCheck .4s ease forwards .3s; }
+.aihelp-card.show .viz-check .vc-row:nth-child(3) .vc-box::after { animation: vcCheck .4s ease forwards .5s; }
+.viz-check .vc-bar { height: 7px; border-radius: 5px; background: #e3edf0; flex: 1; }
+@keyframes vcCheck { to { opacity: 1; transform: scale(1); } }
+
+/* mini viz: question flip */
+.viz-q { width: 72%; height: 72%; perspective: 500px; }
+.viz-q .vq-inner { width: 100%; height: 100%; position: relative; transform-style: preserve-3d; }
+.aihelp-card.show .viz-q .vq-inner { animation: vqFlip 2.6s ease-in-out .4s infinite alternate; }
+.viz-q .vq-face { position: absolute; inset: 0; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-weight: 900; font-size: clamp(1.5rem, 2.8vw, 2.2rem); backface-visibility: hidden; box-shadow: var(--shadow-sm); }
+.viz-q .vq-front { background: var(--aqua); color: #fff; }
+.viz-q .vq-back { background: var(--teal); color: #fff; transform: rotateY(180deg); }
+@keyframes vqFlip { 0%, 45% { transform: rotateY(0); } 55%, 100% { transform: rotateY(180deg); } }
+
+/* mini viz: stepping stones */
+.viz-steps { width: 100%; height: 100%; display: flex; align-items: flex-end; justify-content: center; gap: 7px; }
+.viz-steps .vs { width: clamp(14px, 1.6vw, 22px); border-radius: 8px 8px 4px 4px; opacity: 0; transform: translateY(10px); }
+.viz-steps .vs:nth-child(1) { height: 42%; background: var(--teal); }
+.viz-steps .vs:nth-child(2) { height: 66%; background: var(--aqua); }
+.viz-steps .vs:nth-child(3) { height: 92%; background: #E8C455; }
+.aihelp-card.show .viz-steps .vs:nth-child(1) { animation: vsUp .4s ease forwards .1s; }
+.aihelp-card.show .viz-steps .vs:nth-child(2) { animation: vsUp .4s ease forwards .3s; }
+.aihelp-card.show .viz-steps .vs:nth-child(3) { animation: vsUp .4s ease forwards .5s; }
+@keyframes vsUp { to { opacity: 1; transform: none; } }
+
+/* mini viz: sticky notes settling into a row */
+.viz-notes { width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; gap: 6px; }
+.viz-notes .vn { width: clamp(18px, 2.2vw, 28px); height: clamp(18px, 2.2vw, 28px); border-radius: 6px; box-shadow: var(--shadow-sm); }
+.viz-notes .vn:nth-child(1) { background: var(--yellow); transform: rotate(-14deg) translateY(-6px); }
+.viz-notes .vn:nth-child(2) { background: var(--coral); transform: rotate(10deg) translateY(5px); }
+.viz-notes .vn:nth-child(3) { background: var(--sky); transform: rotate(-5deg) translateY(-2px); }
+.aihelp-card.show .viz-notes .vn { animation: vnSettle .6s ease forwards .4s; }
+@keyframes vnSettle { to { transform: rotate(0) translateY(0); } }
+
+/* ---- NEW 2: comparison paths (does not fit / fits) ---- */
+.fitpaths { display: flex; flex-direction: column; gap: clamp(12px, 1.8vw, 22px); width: 100%; }
+.fitpath { cursor: pointer; border: none; text-align: left; font-family: var(--font); border-radius: var(--r-lg); padding: clamp(10px, 1.4vw, 18px); background: #fff; box-shadow: var(--shadow-md); border: 4px solid transparent; transition: transform .18s ease, border-color .18s ease, box-shadow .18s ease; width: 100%; }
+.fitpath:hover { transform: translateY(-3px); }
+.fitpath:focus-visible { outline: 4px solid var(--accent); outline-offset: 3px; }
+.fitpath .fp-label { font-weight: 800; font-size: clamp(0.85rem, 1.05vw, 1.05rem); text-transform: uppercase; letter-spacing: .04em; margin-bottom: 8px; display: inline-block; padding: 4px 13px; border-radius: 999px; }
+.fitpath--bad .fp-label { background: color-mix(in srgb, var(--coral) 24%, #fff); color: #c0483a; }
+.fitpath--good .fp-label { background: color-mix(in srgb, var(--teal) 22%, #fff); color: #0f7a70; }
+.fp-row { display: flex; align-items: center; gap: clamp(6px, 1.2vw, 16px); }
+.fp-node { display: flex; flex-direction: column; align-items: center; gap: 5px; text-align: center; background: var(--palemint); border-radius: var(--r-md); padding: clamp(7px, 1vw, 14px); min-width: clamp(80px, 11vw, 140px); }
+.fp-node img { height: clamp(48px, 7vh, 84px); width: auto; max-width: 100%; object-fit: contain; }
+.fp-node .fp-emoji { font-size: clamp(1.8rem, 3.2vw, 2.8rem); }
+.fp-node .fp-cap { font-weight: 700; font-size: clamp(0.8rem, 1.05vw, 1.05rem); color: var(--navy); line-height: 1.1; }
+.fp-arrow { font-size: clamp(1.4rem, 2.2vw, 2.2rem); color: var(--accent); flex: 0 0 auto; }
+.fitpath--bad.is-chosen { border-color: var(--coral); }
+.fitpath--good.is-chosen { border-color: var(--teal); }
+.fitpath--good.lit { background: color-mix(in srgb, var(--teal) 8%, #fff); box-shadow: 0 20px 44px color-mix(in srgb, var(--teal) 26%, transparent); }
+.fp-answer.bounce { animation: fpBounce .7s ease; }
+@keyframes fpBounce { 0% { transform: translateX(0);} 30% { transform: translateX(12px);} 60% { transform: translateX(-4px);} 100% { transform: translateX(0);} }
+.fp-answer.snap { animation: fpSnap .5s ease; }
+@keyframes fpSnap { 0% { transform: scale(.82);} 60% { transform: scale(1.08);} 100% { transform: scale(1);} }
+
+/* ---- NEW 3: Match the Help ---- */
+.match-board { position: relative; background: rgba(255,255,255,0.94); border-radius: var(--r-xl); padding: clamp(12px, 1.8vw, 26px); box-shadow: var(--shadow-md); width: 100%; }
+.match-lines { position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; z-index: 1; overflow: visible; }
+.match-cols { position: relative; z-index: 2; display: grid; grid-template-columns: 1fr 1fr; gap: clamp(24px, 6vw, 110px); }
+.match-col-title { font-weight: 800; font-size: clamp(0.95rem, 1.3vw, 1.3rem); color: var(--accent); text-transform: uppercase; letter-spacing: .04em; margin-bottom: 8px; text-align: center; }
+.match-list { display: flex; flex-direction: column; gap: clamp(7px, 1vw, 12px); }
+.match-card, .match-help { display: flex; align-items: center; gap: clamp(8px, 1.1vw, 13px); background: #fff; border-radius: var(--r-md); padding: clamp(7px, 1vw, 13px); box-shadow: var(--shadow-sm); border: 3px solid transparent; cursor: pointer; transition: transform .16s ease, border-color .16s ease, box-shadow .16s ease; font-family: var(--font); color: var(--navy); text-align: left; }
+.match-card:hover, .match-help:hover { transform: translateY(-2px); }
+.match-card:focus-visible, .match-help:focus-visible { outline: 3px solid var(--accent); outline-offset: 2px; }
+.match-card .mc-imgwrap { flex: 0 0 auto; width: clamp(44px, 5.5vh, 62px); height: clamp(44px, 5.5vh, 62px); display: flex; align-items: center; justify-content: center; }
+.match-card .mc-imgwrap img { max-width: 100%; max-height: 100%; object-fit: contain; }
+.match-card .mc-ico { flex: 0 0 auto; width: clamp(44px, 5.5vh, 62px); height: clamp(44px, 5.5vh, 62px); display: flex; align-items: center; justify-content: center; }
+.match-card .mc-text { display: flex; flex-direction: column; gap: 1px; }
+.match-card .mc-name { font-weight: 800; font-size: clamp(0.98rem, 1.25vw, 1.2rem); }
+.match-card .mc-clue { font-weight: 600; font-size: clamp(0.78rem, 1vw, 1rem); color: #5b6b7a; line-height: 1.15; }
+.match-help .mh-ico { flex: 0 0 auto; width: clamp(40px, 5vh, 56px); text-align: center; font-size: clamp(1.6rem, 2.6vw, 2.3rem); }
+.match-help .mh-label { font-weight: 700; font-size: clamp(0.92rem, 1.2vw, 1.18rem); }
+.match-card.sel, .match-help.sel { border-color: var(--teal); transform: translateY(-2px) scale(1.02); }
+.match-card.locked, .match-help.locked { border-color: var(--teal); background: color-mix(in srgb, var(--teal) 8%, #fff); cursor: default; }
+.match-check { margin-left: auto; width: 24px; height: 24px; border-radius: 50%; background: var(--teal); color: #fff; display: none; align-items: center; justify-content: center; font-weight: 900; flex: 0 0 auto; }
+.match-card.locked .match-check, .match-help.locked .match-check { display: flex; }
+.match-line { fill: none; stroke: color-mix(in srgb, var(--teal) 55%, #fff); stroke-width: 4; stroke-linecap: round; opacity: .5; transition: opacity .4s ease, stroke .4s ease; }
+.match-line.bright { opacity: 1; stroke: var(--teal); }
+.match-insight { opacity: 0; transform: translateY(10px); transition: opacity .5s ease, transform .5s ease; }
+.match-insight.show { opacity: 1; transform: none; }
+
+/* ---- NEW 4: Help, don't take over ---- */
+.hdt-grid { display: grid; grid-template-columns: 1fr 1fr; gap: clamp(14px, 2.2vw, 30px); width: 100%; }
+@media (max-width: 760px) { .hdt-grid { grid-template-columns: 1fr; } }
+.hdt-panel { cursor: pointer; border: 4px solid transparent; text-align: left; font-family: var(--font); border-radius: var(--r-lg); padding: clamp(12px, 1.8vw, 22px); background: #fff; box-shadow: var(--shadow-md); display: flex; flex-direction: column; gap: clamp(8px, 1.2vw, 14px); transition: transform .18s ease, border-color .18s ease, box-shadow .18s ease; }
+.hdt-panel:hover { transform: translateY(-3px); }
+.hdt-panel:focus-visible { outline: 4px solid var(--accent); outline-offset: 3px; }
+.hdt-label { font-weight: 800; font-size: clamp(0.95rem, 1.3vw, 1.3rem); padding: 5px 14px; border-radius: 999px; align-self: flex-start; }
+.hdt-panel--support .hdt-label { background: color-mix(in srgb, var(--teal) 18%, #fff); color: #0f7a70; }
+.hdt-panel--takeover .hdt-label { background: color-mix(in srgb, var(--coral) 20%, #fff); color: #c0483a; }
+.hdt-stage { background: var(--palemint); border-radius: var(--r-md); padding: clamp(10px, 1.5vw, 18px); display: flex; flex-direction: column; align-items: center; gap: 8px; min-height: clamp(110px, 18vh, 170px); justify-content: center; text-align: center; }
+.hdt-card { background: #fff; border-radius: 12px; padding: 8px 16px; font-weight: 800; color: var(--navy); box-shadow: var(--shadow-sm); }
+.hdt-card.done { background: color-mix(in srgb, var(--teal) 16%, #fff); }
+.hdt-actor { font-size: clamp(1.8rem, 3vw, 2.6rem); }
+.hdt-panel--support.is-chosen { border-color: var(--teal); }
+.hdt-panel--takeover.is-chosen { border-color: var(--coral); }
+
+/* ---- REVISED: Make it small and clear ---- */
+.smallclear { display: flex; flex-direction: column; gap: 8px; width: 100%; }
+.sc-board { border-radius: var(--r-lg); padding: clamp(10px, 1.5vw, 18px); box-shadow: var(--shadow-sm); display: flex; flex-direction: column; align-items: center; gap: 8px; }
+.sc-board--big { background: color-mix(in srgb, var(--coral) 12%, #fff); }
+.sc-board--clear { background: color-mix(in srgb, var(--teal) 12%, #fff); }
+.sc-label { font-weight: 800; padding: 4px 13px; border-radius: 999px; font-size: clamp(0.8rem, 1vw, 1rem); }
+.sc-board--big .sc-label { background: color-mix(in srgb, var(--coral) 24%, #fff); color: #c0483a; }
+.sc-board--clear .sc-label { background: color-mix(in srgb, var(--teal) 22%, #fff); color: #0f7a70; }
+.sc-text { font-weight: 800; font-size: clamp(1.15rem, 2vw, 1.8rem); color: var(--navy); text-align: center; }
+.sc-branches { display: flex; gap: 6px; flex-wrap: wrap; justify-content: center; }
+.sc-branch { background: #fff; border-radius: 10px; padding: 5px 11px; font-weight: 600; font-size: clamp(0.78rem, 1vw, 0.98rem); color: #5b6b7a; box-shadow: var(--shadow-sm); opacity: 0; transform: scale(.7); }
+.sc-board.reveal .sc-branch { animation: scPop .35s ease forwards; }
+.sc-board.reveal .sc-branch:nth-child(2) { animation-delay: .1s; }
+.sc-board.reveal .sc-branch:nth-child(3) { animation-delay: .2s; }
+.sc-board.reveal .sc-branch:nth-child(4) { animation-delay: .3s; }
+.sc-board.reveal .sc-branch:nth-child(5) { animation-delay: .4s; }
+.sc-board.reveal .sc-branch:nth-child(6) { animation-delay: .5s; }
+@keyframes scPop { to { opacity: 1; transform: scale(1); } }
+.sc-arrow { font-size: clamp(1.4rem, 2.4vw, 2.2rem); color: var(--teal); text-align: center; }
+.sc-clearrow { display: flex; align-items: center; gap: 10px; }
+.sc-board--clear { opacity: 0; transform: translateY(12px); transition: opacity .6s ease, transform .6s ease; }
+.sc-board--clear.reveal { opacity: 1; transform: none; }
+
+/* flow node thumbnail + big node (revised big idea) */
+.flow__node .fn-thumb { height: clamp(46px, 7vh, 74px); width: auto; max-width: 100%; object-fit: contain; }
+.flow__node.bignode { min-width: clamp(120px, 15vw, 190px); }
+.bignode .bn-top { font-weight: 800; font-size: clamp(0.78rem, 1vw, 1rem); text-transform: uppercase; letter-spacing: .03em; color: var(--accent); }
+
+/* ---- density tuning so new scenes fit without scrolling at 720p ---- */
+.fitpaths { gap: clamp(9px, 1.3vw, 15px); }
+.fitpath { padding: clamp(7px, 0.9vw, 13px); }
+.fitpath .fp-label { margin-bottom: 5px; }
+.fp-node { padding: clamp(5px, 0.8vw, 11px); min-width: clamp(76px, 10vw, 132px); gap: 4px; }
+.fp-node img { height: clamp(34px, 4.6vh, 58px); }
+.fp-node .fp-emoji { font-size: clamp(1.5rem, 2.6vw, 2.3rem); }
+.fp-node .fp-cap { font-size: clamp(0.72rem, 0.95vw, 0.98rem); }
+
+.hdt-panel { padding: clamp(10px, 1.4vw, 18px); gap: clamp(6px, 1vw, 11px); }
+.hdt-stage { min-height: clamp(74px, 10vh, 116px); padding: clamp(8px, 1.2vw, 14px); gap: 6px; }
+.hdt-card { padding: 6px 14px; }
+
+.match-list { gap: clamp(6px, 0.8vw, 10px); }
+.match-card, .match-help { padding: clamp(6px, 0.85vw, 11px); }
+.match-card .mc-imgwrap, .match-card .mc-ico { width: clamp(40px, 5vh, 54px); height: clamp(40px, 5vh, 54px); }
+.aihelp-board { padding: clamp(12px, 1.6vw, 24px); }
+
+/* ---- round 2: tighter density for the dense interactive scenes ---- */
+/* NEW2 comparison paths */
+.fitpaths { gap: clamp(7px, 1vw, 12px); }
+.fitpath { padding: clamp(6px, 0.7vw, 10px); }
+.fitpath .fp-label { margin-bottom: 3px; font-size: clamp(0.76rem, 0.92vw, 0.94rem); padding: 3px 11px; }
+.fp-node { padding: clamp(4px, 0.6vw, 8px); min-width: clamp(72px, 9.5vw, 122px); }
+.fp-node img { height: clamp(30px, 4vh, 48px); }
+.fp-node .fp-emoji { font-size: clamp(1.3rem, 2.1vw, 1.9rem); }
+.fp-node .fp-cap { font-size: clamp(0.7rem, 0.9vw, 0.92rem); }
+
+/* NEW4 help / take over */
+.hdt-panel { gap: clamp(5px, 0.8vw, 9px); padding: clamp(9px, 1.2vw, 15px); }
+.hdt-panel .ai-panel { padding: clamp(8px, 1vw, 13px); border-left-width: 6px; }
+.hdt-panel .ai-avatar { width: clamp(36px, 3.8vw, 48px); height: clamp(36px, 3.8vw, 48px); font-size: clamp(1.25rem, 2.2vw, 1.8rem); }
+.hdt-stage { min-height: clamp(60px, 8.5vh, 96px); padding: clamp(7px, 1vw, 12px); }
+.hdt-card { padding: 5px 12px; font-size: clamp(0.9rem, 1.2vw, 1.1rem); }
+
+/* NEW3 match — compact rows + insight */
+.match-board { padding: clamp(10px, 1.4vw, 20px); }
+.match-card, .match-help { padding: clamp(5px, 0.7vw, 9px); }
+.match-card .mc-imgwrap, .match-card .mc-ico { width: clamp(38px, 4.6vh, 50px); height: clamp(38px, 4.6vh, 50px); }
+.match-help .mh-ico { font-size: clamp(1.4rem, 2.3vw, 2rem); }
+.match-insight .heading { font-size: clamp(1.15rem, 1.9vw, 1.7rem) !important; }
+.match-insight .question { font-size: clamp(1.05rem, 1.7vw, 1.45rem) !important; }
+.match-insight { gap: 4px !important; margin-top: 6px !important; }
+
+/* revised big idea — slightly tighter nodes */
+.flow__node.bignode { padding: clamp(8px, 1.1vw, 14px) !important; }
+.bignode .fn-thumb { height: clamp(42px, 6vh, 66px); }
+
+/* ---- round 3: shrink dense-scene internals to remove residual overflow at 720p ---- */
+.hdt-panel { gap: 5px; padding: clamp(8px, 1.1vw, 14px); }
+.hdt-label { font-size: clamp(0.82rem, 1.05vw, 1.05rem); padding: 4px 12px; }
+.hdt-panel .ai-line { gap: 8px; margin-bottom: 0; }
+.hdt-panel .ai-avatar { width: clamp(32px, 3.4vw, 42px); height: clamp(32px, 3.4vw, 42px); font-size: clamp(1.1rem, 2vw, 1.6rem); }
+.hdt-panel .ai-panel { padding: clamp(6px, 0.8vw, 11px); }
+.hdt-panel .ai-panel .support { font-size: clamp(0.85rem, 1.1vw, 1.05rem) !important; }
+.hdt-stage { min-height: 0; gap: 4px; padding: clamp(6px, 0.9vw, 11px); }
+.hdt-actor { font-size: clamp(1.4rem, 2.2vw, 2rem); }
+.hdt-stage .support { font-size: clamp(0.72rem, 0.9vw, 0.9rem) !important; }
+
+/* NEW2 paths — a touch more */
+.fp-node img { height: clamp(28px, 3.6vh, 44px); }
+.fp-node .fp-emoji { font-size: clamp(1.2rem, 2vw, 1.75rem); }
+
+/* NEW3 match — a touch more */
+.match-card .mc-imgwrap, .match-card .mc-ico { width: clamp(36px, 4.2vh, 46px); height: clamp(36px, 4.2vh, 46px); }
+.match-card .mc-clue { font-size: clamp(0.74rem, 0.95vw, 0.94rem); }
+
+/* ---- round 4: trim shared chrome + last dense-scene tuning ---- */
+.feedback { margin-top: var(--space-sm); padding: clamp(10px, 1.2vw, 18px) clamp(14px, 1.6vw, 24px); font-size: clamp(1rem, 1.4vw, 1.35rem); }
+.hdt-stage { gap: 3px; }
+.hdt-card { display: inline-flex; align-items: center; gap: 6px; }
+.hdt-actor { font-size: clamp(1.25rem, 2vw, 1.8rem); }
+.fitpath .fp-label { font-size: clamp(0.72rem, 0.9vw, 0.9rem); margin-bottom: 2px; padding: 2px 10px; }
+.fp-node { padding: 4px 6px; }
+.fp-node img { height: clamp(26px, 3.2vh, 40px); }
+.fp-node .fp-cap { font-size: clamp(0.68rem, 0.88vw, 0.9rem); line-height: 1.05; }
+
+/* ---- round 5: final trims (match insight + spacing) ---- */
+.match-insight .heading { font-size: clamp(1.05rem, 1.7vw, 1.5rem) !important; }
+.match-insight .support { font-size: clamp(0.85rem, 1.1vw, 1.05rem) !important; }
+.match-insight .question { font-size: clamp(1rem, 1.6vw, 1.35rem) !important; }
+.match-insight .answers--compact .answer { min-height: 50px; }
+.match-list { gap: clamp(5px, 0.7vw, 9px); }
+.fitpaths { gap: clamp(6px, 0.9vw, 11px); }
+.hdt-grid { gap: clamp(12px, 1.8vw, 24px); }
+.hdt-panel .ai-name { font-size: clamp(0.9rem, 1.1vw, 1.1rem); }
+
+/* ---- round 6: match rows + hdt final ---- */
+.match-board { padding: clamp(8px, 1.2vw, 16px); }
+.match-list { gap: clamp(4px, 0.6vw, 8px); }
+.match-card, .match-help { padding: 5px 8px; }
+.match-card .mc-imgwrap, .match-card .mc-ico { width: clamp(34px, 4vh, 44px); height: clamp(34px, 4vh, 44px); }
+.match-help .mh-ico { width: clamp(34px, 4vh, 44px); font-size: clamp(1.3rem, 2.1vw, 1.8rem); }
+.match-card .mc-name { font-size: clamp(0.92rem, 1.15vw, 1.12rem); }
+.match-col-title { margin-bottom: 5px; font-size: clamp(0.9rem, 1.2vw, 1.15rem); }
+.hdt-stage { padding: clamp(5px, 0.8vw, 9px); }
+.hdt-panel { gap: 4px; }
+.hdt-panel .ai-panel .support { font-size: clamp(0.82rem, 1.05vw, 1rem) !important; }
+
+/* ---- round 7: fit the COMPLETED match scene (board + full insight) ---- */
+.match-card, .match-help { padding: 4px 8px; }
+.match-card .mc-imgwrap, .match-card .mc-ico, .match-help .mh-ico { width: clamp(32px, 3.6vh, 40px); height: clamp(32px, 3.6vh, 40px); }
+.match-help .mh-ico { font-size: clamp(1.2rem, 2vw, 1.7rem); }
+.match-card .mc-name { font-size: clamp(0.9rem, 1.1vw, 1.08rem); }
+.match-card .mc-clue { font-size: clamp(0.72rem, 0.9vw, 0.9rem); }
+.match-list { gap: 4px; }
+.match-insight { gap: 3px !important; margin-top: 4px !important; }
+.match-insight .heading { font-size: clamp(1rem, 1.5vw, 1.35rem) !important; }
+.match-insight .support { font-size: clamp(0.8rem, 1vw, 0.98rem) !important; }
+.match-insight .question { font-size: clamp(0.95rem, 1.4vw, 1.25rem) !important; }
+.match-insight .answers--compact { margin-top: 2px; }
+.match-insight .answers--compact .answer { min-height: 44px; font-size: clamp(0.95rem, 1.3vw, 1.18rem); flex: 0 1 auto; padding: 0 22px; }
+.match-insight .feedback { margin-top: 5px; padding: 7px 14px; font-size: clamp(0.9rem, 1.2vw, 1.1rem); }
+
+/* ---- round 8: collapse inherited margins inside the match insight ---- */
+.match-insight { gap: 5px !important; margin-top: 4px !important; }
+.match-insight > * { margin-top: 0 !important; margin-bottom: 0 !important; }
+
+/* ---- round 9: tightest match rows so the completed scene fits 720p ---- */
+.match-card .mc-imgwrap, .match-card .mc-ico, .match-help .mh-ico { width: clamp(28px, 3.1vh, 38px); height: clamp(28px, 3.1vh, 38px); }
+.match-card, .match-help { padding: 3px 8px; }
+.match-help .mh-ico { font-size: clamp(1.15rem, 1.9vw, 1.6rem); }
+.match-check { width: 22px; height: 22px; }
+
+</style>
+</head>
+<body>
+  <!-- Live region for gentle, spoken-style feedback (screen readers) -->
+  <div id="live" class="sr-only" aria-live="polite"></div>
+
+  <!-- App root -->
+  <main id="app" aria-label="My AI Helper — Session 1 lesson">
+
+    <!-- Top bar: session label + toolbar -->
+    <header class="topbar">
+      <div class="topbar__brand">
+        <span class="dot-badge" aria-hidden="true"></span>
+        <span class="session-label">Grade 5 · Module 2 · Session 1</span>
+      </div>
+      <div class="toolbar" role="toolbar" aria-label="Lesson controls">
+        <button class="tool" id="btnSound" type="button" aria-pressed="false" title="Sound on/off">
+          <span class="tool__icon" aria-hidden="true">🔈</span>
+          <span class="tool__text">Sound</span>
+        </button>
+        <button class="tool" id="btnMotion" type="button" aria-pressed="false" title="Reduce motion">
+          <span class="tool__icon" aria-hidden="true">🌿</span>
+          <span class="tool__text">Calm</span>
+        </button>
+        <button class="tool" id="btnReset" type="button" title="Reset lesson">
+          <span class="tool__icon" aria-hidden="true">↺</span>
+          <span class="tool__text">Reset</span>
+        </button>
+        <button class="tool" id="btnFull" type="button" title="Fullscreen">
+          <span class="tool__icon" aria-hidden="true">⛶</span>
+          <span class="tool__text">Full</span>
+        </button>
+      </div>
+    </header>
+
+    <!-- Scene stage — scenes are injected here -->
+    <section class="stage" id="stage" aria-live="polite">
+      <!-- background + scene content injected by app.js -->
+    </section>
+
+    <!-- Bottom navigation -->
+    <nav class="nav" aria-label="Lesson navigation">
+      <div class="nav__cluster">
+        <img class="brandmark" src="assets/63f478a42ce86ae4ca5ccc61.webp"
+             alt="aiSTART" onerror="this.style.display='none'" />
+        <button class="nav__btn nav__btn--back" id="btnBack" type="button">
+          <span aria-hidden="true">←</span>
+          <span class="nav__label">Back</span>
+        </button>
+      </div>
+
+      <div class="nav__progress" aria-hidden="true">
+        <div class="nav__part" id="partLabel">Welcome</div>
+        <div class="progress">
+          <div class="progress__fill" id="progressFill"></div>
+        </div>
+        <div class="nav__count" id="sceneCount">1 / 44</div>
+      </div>
+
+      <button class="nav__btn nav__btn--next" id="btnNext" type="button">
+        <span class="nav__label">Next</span>
+        <span aria-hidden="true">→</span>
+      </button>
+    </nav>
+  </main>
+
+  <script>
+/* ============================================================
+   MY AI HELPER — Grade 5 · Module 2 · Session 1
+   Scene engine + 44 scenes.  Plain JS, no framework.
+   ============================================================ */
+
+/* ---------- Image manifest (exact filenames — do not rename) ---------- */
+const IMAGE_ASSETS = {
+  cover: "assets/f13e3878b48c1952d6eb9ea5.webp",
+  miaBag: "assets/72da244e432bc9b3c5fdb4e3.webp",
+  miaConfused: "assets/f598aec554aead63a52ab4ba.webp",
+  kai: "assets/7a326bb42704a2268b1c440c.webp",
+  ben: "assets/03d21c582833dcea2733c681.webp",
+  lila: "assets/fd9f6ef4665ea9ef6909f262.webp",
+  choiceStudent: "assets/f8948b9e5c7813de2c4ca465.webp",
+  choiceYoungerChild: "assets/16ae5823463f81809a9eb466.webp",
+  choiceFamily: "assets/53ff830b63bdff379037e5a1.webp",
+  choiceClub: "assets/31886c6477dbfe1cff523e44.webp",
+  choiceTeacher: "assets/10427eeba5757cd0d3255ade.webp",
+  choiceFictional: "assets/e130a12199a7168eaa97e29e.webp",
+  partnerShare: "assets/3cdfdc815e8f176fb43d123a.webp"
+};
+
+const STORAGE_KEY = "grade5_module2_session1_helper_idea";
+const PREFS_KEY = "grade5_m2_s1_prefs";
+
+/* ---------- Project state ---------- */
+const defaultState = {
+  selectedPersonType: "",
+  selectedProblemType: "",
+  problemSentence: "",
+  selectedHelperAction: "",
+  helperSentence: "",
+  reflection: "",
+  completed: false
+};
+let state = loadState();
+
+/* transient (per-session) UI memory — not persisted */
+const session = { chosenClassmate: "", roundPicks: {} };
+
+function loadState() {
+  try {
+    const raw = localStorage.getItem(STORAGE_KEY);
+    if (raw) return Object.assign({}, defaultState, JSON.parse(raw));
+  } catch (e) {}
+  return Object.assign({}, defaultState);
+}
+function saveState() {
+  try { localStorage.setItem(STORAGE_KEY, JSON.stringify(state)); } catch (e) {}
+}
+
+/* ---------- Preferences (motion / sound) ---------- */
+let prefs = loadPrefs();
+function loadPrefs() {
+  try { return Object.assign({ reduceMotion: false, sound: false }, JSON.parse(localStorage.getItem(PREFS_KEY) || "{}")); }
+  catch (e) { return { reduceMotion: false, sound: false }; }
+}
+function savePrefs() { try { localStorage.setItem(PREFS_KEY, JSON.stringify(prefs)); } catch (e) {} }
+
+/* ---------- Reference data ---------- */
+const PERSONS = [
+  { id: "student",  label: "A student",         img: "choiceStudent",       emoji: "🧑‍🎓" },
+  { id: "younger",  label: "A younger child",   img: "choiceYoungerChild",  emoji: "🧒" },
+  { id: "family",   label: "A family member",   img: "choiceFamily",        emoji: "👪" },
+  { id: "club",     label: "A club member",     img: "choiceClub",          emoji: "⚽" },
+  { id: "teacher",  label: "A teacher",         img: "choiceTeacher",       emoji: "👩‍🏫" },
+  { id: "fictional",label: "A made-up character",img:"choiceFictional",      emoji: "🦸" }
+];
+const PROBLEM_TYPES = [
+  { id: "remember", label: "Remembering",     emoji: "🧠" },
+  { id: "practise", label: "Practising",      emoji: "🔁" },
+  { id: "start",    label: "Starting",        emoji: "🚀" },
+  { id: "organize", label: "Organizing",      emoji: "🗂️" },
+  { id: "steps",    label: "Following steps", emoji: "🪜" },
+  { id: "own",      label: "My own idea",     emoji: "✏️" }
+];
+const HELPER_ACTIONS = [
+  { id: "list",     label: "Make a list",   emoji: "📝", sentence: "make a helpful list" },
+  { id: "practice", label: "Give practice", emoji: "🎯", sentence: "give practice questions" },
+  { id: "step",     label: "Show one step", emoji: "👣", sentence: "show one small first step" },
+  { id: "organize", label: "Organize ideas",emoji: "🗂️", sentence: "organize the ideas" },
+  { id: "remind",   label: "Give reminders",emoji: "⏰", sentence: "give friendly reminders" },
+  { id: "own",      label: "My own idea",   emoji: "💡", sentence: "" }
+];
+const PROBLEM_EXAMPLES = ["remember school items", "practise spelling", "start a project", "follow task steps"];
+
+const PARTS = [
+  { name: "Welcome",            end: 2 },
+  { name: "How Helpers Work",   end: 8 },
+  { name: "Meet Three People",  end: 10 },
+  { name: "Your Voice",         end: 12 },
+  { name: "Problem First",      end: 14 },
+  { name: "Start My Project",   end: 20 },
+  { name: "Your Card",          end: 21 },
+  { name: "Share",              end: 22 },
+  { name: "Final Check",        end: 26 }
+];
+
+/* helpers to read chosen items */
+const person  = () => PERSONS.find(p => p.id === state.selectedPersonType);
+const ptype   = () => PROBLEM_TYPES.find(p => p.id === state.selectedProblemType);
+const haction = () => HELPER_ACTIONS.find(a => a.id === state.selectedHelperAction);
+
+/* ============================================================
+   DOM helper
+   ============================================================ */
+function h(tag, attrs, ...kids) {
+  const e = document.createElement(tag);
+  if (attrs) for (const k in attrs) {
+    const v = attrs[k];
+    if (v == null) continue;
+    if (k === "class") e.className = v;
+    else if (k === "html") e.innerHTML = v;
+    else if (k === "style" && typeof v === "object") Object.assign(e.style, v);
+    else if (k.startsWith("on") && typeof v === "function") e.addEventListener(k.slice(2).toLowerCase(), v);
+    else e.setAttribute(k, v);
+  }
+  kids.flat().forEach(kid => {
+    if (kid == null || kid === false) return;
+    e.appendChild(typeof kid === "object" ? kid : document.createTextNode(String(kid)));
+  });
+  return e;
+}
+
+/* ---------- Images with graceful placeholder ---------- */
+function fallbackCard(src) {
+  const name = String(src).split("/").pop();
+  return h("div", { class: "img-fallback", role: "img", "aria-label": "Missing image " + name },
+    h("div", { class: "fb-emoji", "aria-hidden": "true" }, "🖼️"),
+    h("div", {}, "Image"),
+    h("div", { class: "fb-name" }, name)
+  );
+}
+function assetImg(key, className, alt) {
+  const src = IMAGE_ASSETS[key] || key;
+  const img = document.createElement("img");
+  img.src = src;
+  img.alt = alt || "";
+  if (className) img.className = className;
+  img.addEventListener("error", () => {
+    const fb = fallbackCard(src);
+    if (className) fb.classList.add(className);
+    img.replaceWith(fb);
+  });
+  return img;
+}
+function heroImg(key, cls, alt) { return h("div", { class: "hero" }, assetImg(key, cls, alt)); }
+
+/* Preload (warm cache; errors handled per-scene) */
+Object.values(IMAGE_ASSETS).forEach(src => { const i = new Image(); i.src = src; });
+
+/* ============================================================
+   Backgrounds
+   ============================================================ */
+function makeBg(family) {
+  const bg = h("div", { class: "bg bg--" + family, "aria-hidden": "true" });
+  bg.appendChild(h("div", { class: "bg__grad" }));
+
+  const blob = (color, css) => h("div", { class: "blob", style: Object.assign({ background: color }, css) });
+  const dot  = (color, css, dur, delay) => h("div", { class: "dot", style: Object.assign({ background: color, animationDuration: dur, animationDelay: delay }, css) });
+
+  if (family === "mint") {
+    bg.appendChild(h("div", { class: "wave w1" }));
+    bg.appendChild(h("div", { class: "wave w2" }));
+    bg.appendChild(dot("#FFD96A", { left: "18%", top: "30%" }, "12s", "0s"));
+    bg.appendChild(dot("#4CCFDB", { left: "72%", top: "22%" }, "15s", "-3s"));
+    bg.appendChild(dot("#1EAFA1", { left: "58%", top: "62%" }, "13s", "-6s"));
+  } else if (family === "aqua") {
+    bg.appendChild(blob("#4CCFDB", { width: "34vw", height: "34vw", left: "-6%", top: "-8%" }));
+    bg.appendChild(blob("#8CCCF4", { width: "30vw", height: "30vw", right: "-6%", bottom: "-10%" }));
+    ["16%", "78%", "46%"].forEach((l, i) =>
+      bg.appendChild(h("div", { class: "shape round", style: { width: (70 + i * 20) + "px", height: (70 + i * 20) + "px", left: l, top: (18 + i * 22) + "%", border: "5px solid rgba(30,175,161,0.30)", background: "transparent", animationDelay: (-i * 2) + "s" } })));
+  } else if (family === "coral") {
+    bg.appendChild(blob("#FF8E7A", { width: "32vw", height: "32vw", left: "-8%", top: "-6%" }));
+    bg.appendChild(blob("#FFD96A", { width: "30vw", height: "30vw", right: "-8%", bottom: "-10%" }));
+    [["#FFD1C6", "14%", "26%"], ["#FFE7A6", "80%", "20%"], ["#8CCCF4", "70%", "68%"]].forEach((p, i) =>
+      bg.appendChild(h("div", { class: "paper", style: { width: "120px", height: "150px", background: p[0], left: p[1], top: p[2], animationDelay: (-i * 3) + "s" } })));
+  } else if (family === "yellow") {
+    bg.appendChild(blob("#FFD96A", { width: "32vw", height: "32vw", left: "-6%", top: "-8%" }));
+    bg.appendChild(blob("#FFE7A6", { width: "30vw", height: "30vw", right: "-8%", bottom: "-8%" }));
+    [["12%", "24%"], ["82%", "18%"], ["30%", "70%"], ["66%", "58%"]].forEach((p, i) =>
+      bg.appendChild(h("div", { class: "spark", style: { left: p[0], top: p[1], animationDelay: (-i * 1.7) + "s", color: i % 2 ? "#A995E8" : "#FFC93C" } }, "✨")));
+  } else if (family === "purple") {
+    bg.appendChild(blob("#A995E8", { width: "34vw", height: "34vw", left: "-8%", top: "-6%" }));
+    bg.appendChild(blob("#8CCCF4", { width: "30vw", height: "30vw", right: "-6%", bottom: "-10%" }));
+    [["16%", "30%"], ["74%", "24%"], ["54%", "66%"]].forEach((p, i) =>
+      bg.appendChild(h("div", { class: "shape soft", style: { width: "160px", height: "110px", background: "rgba(255,255,255,0.65)", left: p[0], top: p[1], filter: "blur(6px)", animationDelay: (-i * 2.5) + "s" } })));
+  }
+  return bg;
+}
+
+/* ============================================================
+   Small UI utilities
+   ============================================================ */
+function eyebrow(t) { return h("span", { class: "eyebrow" }, t); }
+
+function announce(t) { const l = document.getElementById("live"); if (l) l.textContent = t; }
+
+let audioCtx = null;
+function blip(freq) {
+  if (!prefs.sound) return;
+  try {
+    audioCtx = audioCtx || new (window.AudioContext || window.webkitAudioContext)();
+    const o = audioCtx.createOscillator(), g = audioCtx.createGain();
+    o.frequency.value = freq || 660; o.type = "sine";
+    g.gain.value = 0.06;
+    o.connect(g); g.connect(audioCtx.destination);
+    o.start();
+    g.gain.exponentialRampToValueAtTime(0.0001, audioCtx.currentTime + 0.18);
+    o.stop(audioCtx.currentTime + 0.2);
+  } catch (e) {}
+}
+
+function toast(text) {
+  const stage = document.getElementById("stage");
+  const t = h("div", {
+    style: {
+      position: "absolute", left: "50%", bottom: "18px", transform: "translateX(-50%)",
+      background: "var(--navy)", color: "#fff", padding: "12px 22px", borderRadius: "999px",
+      fontWeight: "700", boxShadow: "var(--shadow-md)", zIndex: "40", opacity: "0",
+      transition: "opacity .3s ease, transform .3s ease", fontSize: "1.05rem"
+    }
+  }, text);
+  stage.appendChild(t);
+  requestAnimationFrame(() => { t.style.opacity = "1"; t.style.transform = "translateX(-50%) translateY(-6px)"; });
+  setTimeout(() => { t.style.opacity = "0"; setTimeout(() => t.remove(), 320); }, 1700);
+}
+
+function feedbackBox() {
+  const box = h("div", { class: "feedback", role: "status" });
+  box.show = (text, icon) => {
+    box.innerHTML = "";
+    box.appendChild(h("span", { class: "fb-ico", "aria-hidden": "true" }, icon || "💬"));
+    box.appendChild(document.createTextNode(text));
+    box.classList.add("show");
+    announce(text);
+    blip(700);
+  };
+  return box;
+}
+
+/* Big helper-idea card */
+function helperCardEl(opts) {
+  opts = opts || {};
+  const rowsToShow = opts.rows == null ? 3 : opts.rows;
+  const p = person(), pt = ptype(), a = haction();
+  const problemVal = state.problemSentence || (pt ? pt.label.toLowerCase() : "");
+  const helperVal  = state.helperSentence || (a ? (a.sentence || a.label.toLowerCase()) : "");
+
+  const card = h("div", { class: "helpercard" + (opts.mini ? " mini" : "") + (opts.big ? " big" : "") });
+  card.appendChild(h("div", { class: "helpercard__title" },
+    h("span", { class: "hc-star", "aria-hidden": "true" }, "⭐"), "My Helper Idea"));
+
+  const rowData = [
+    { lead: "I want to help…",       val: p ? p.label : "…",       emoji: p ? p.emoji : "🙂", ok: !!p },
+    { lead: "They find it hard to…", val: problemVal || "…",        emoji: pt ? pt.emoji : "🧩", ok: !!problemVal },
+    { lead: "My helper could…",      val: helperVal || "…",         emoji: a ? a.emoji : "💡",  ok: !!helperVal }
+  ];
+  rowData.slice(0, rowsToShow).forEach(r => {
+    card.appendChild(h("div", { class: "hc-row" + (r.ok ? " filled" : "") },
+      h("div", { class: "hc-lead" }, r.lead),
+      h("div", { class: "hc-val" },
+        h("span", { class: "hc-emoji", "aria-hidden": "true" }, r.emoji + " "), r.val)
+    ));
+  });
+  return card;
+}
+
+/* small floating live preview for build scenes */
+function miniPreview() {
+  const wrap = h("div", { class: "preview-wrap" },
+    h("span", { class: "pv-label" }, "Your card"),
+    helperCardEl({ mini: true }));
+  return wrap;
+}
+
+/* ============================================================
+   Reusable interaction builders
+   ============================================================ */
+function answerBtn(label, cls, onClick) {
+  return h("button", { class: "answer " + (cls || ""), type: "button", onClick }, label);
+}
+
+/* Yes / Maybe / Not sure check with one warm reasoning feedback */
+function checkBlock(question, feedbackText) {
+  const fb = feedbackBox();
+  const done = () => fb.show(feedbackText, "🌟");
+  const board = h("div", { class: "stack center" },
+    h("h2", { class: "question" }, question),
+    h("div", { class: "answers" },
+      answerBtn("Yes",      "pick-a", () => { markPicked(0); done(); }),
+      answerBtn("Maybe",    "pick-b", () => { markPicked(1); done(); }),
+      answerBtn("Not sure", "pick-a", () => { markPicked(2); done(); })
+    ),
+    fb
+  );
+  function markPicked(i) {
+    board.querySelectorAll(".answer").forEach((b, idx) => b.classList.toggle("is-chosen", idx === i));
+  }
+  return board;
+}
+
+/* Problem-or-idea round */
+function problemIdeaBlock(statement, correctIsProblem, feedbackText) {
+  const fb = feedbackBox();
+  const board = h("div", { class: "stack center" },
+    h("div", { class: "panel panel--accent", style: { maxWidth: "820px", margin: "0 auto" } },
+      h("div", { class: "keystmt", style: { fontSize: "clamp(1.8rem,3.4vw,3rem)" } }, statement)),
+    h("h2", { class: "question" }, "Problem or cool idea?"),
+    h("div", { class: "answers" },
+      answerBtn("🧩 Problem",   "pick-a", () => pick(true)),
+      answerBtn("✨ Cool Idea", "pick-b", () => pick(false))
+    ),
+    fb
+  );
+  function pick(choseProblem) {
+    const right = choseProblem === correctIsProblem;
+    board.querySelectorAll(".answer").forEach(b => b.classList.remove("is-chosen", "correct", "soft"));
+    const btns = board.querySelectorAll(".answer");
+    const clicked = choseProblem ? btns[0] : btns[1];
+    clicked.classList.add("is-chosen", right ? "correct" : "soft");
+    if (right) fb.show(feedbackText, "🌟");
+    else fb.show("Look again. Is this the problem, or a design idea?", "🔎");
+  }
+  return board;
+}
+
+/* ============================================================
+   SCENE DEFINITIONS (26) — updated with knowledge scenes
+   ============================================================ */
+const SCENES = [];
+const S = (bg, accents, build, id) => SCENES.push({ bg, accents, build, id });
+function sceneIndex(id) { return SCENES.findIndex(s => s.id === id); }
+function goId(id) { const i = sceneIndex(id); if (i >= 0) go(i); }
+
+/* ---- layout helpers ---- */
+function singleFocus(scene, nodes) {
+  scene.appendChild(h("div", { class: "layout l-single" }, h("div", { class: "stack center wrapmax" }, ...nodes)));
+}
+function storyScene(scene, imgKey, imgAlt, rightNodes) {
+  scene.appendChild(h("div", { class: "layout l-story" },
+    heroImg(imgKey, "img-story", imgAlt),
+    h("div", { class: "stack" }, ...rightNodes)));
+}
+function flowNode(emoji, label, d) {
+  return h("div", { class: "flow__node", style: { animationDelay: (d || 0) + "s", padding: "clamp(10px,1.3vw,18px)", minWidth: "clamp(110px,13vw,170px)", gap: "4px" } },
+    h("div", { class: "fn-emoji", "aria-hidden": "true" }, emoji), h("div", { class: "fn-label" }, label));
+}
+function flowArrow(d) { return h("div", { class: "flow__arrow", style: { animationDelay: (d || 0) + "s" }, "aria-hidden": "true" }, "→"); }
+function bigNode(top, emoji, caption, imgKey, d) {
+  const inner = imgKey ? assetImg(imgKey, "fn-thumb", caption) : h("div", { class: "fn-emoji", "aria-hidden": "true" }, emoji);
+  return h("div", { class: "flow__node bignode", style: { animationDelay: (d || 0) + "s", padding: "clamp(10px,1.3vw,18px)", gap: "5px" } },
+    h("div", { class: "bn-top" }, top), inner,
+    h("div", { class: "fn-label", style: { fontSize: "clamp(.9rem,1.3vw,1.15rem)" } }, caption));
+}
+function teacherNote(text) {
+  return h("div", { class: "teacher-note" }, h("span", { "aria-hidden": "true" }, "👩‍🏫"), " " + text);
+}
+/* mini visuals for "An AI helper can…" */
+function vizCheck() { const w = h("div", { class: "viz-check" }); for (let i = 0; i < 3; i++) w.appendChild(h("div", { class: "vc-row" }, h("div", { class: "vc-box" }), h("div", { class: "vc-bar" }))); return w; }
+function vizQ() { return h("div", { class: "viz-q" }, h("div", { class: "vq-inner" }, h("div", { class: "vq-face vq-front" }, "?"), h("div", { class: "vq-face vq-back" }, "A"))); }
+function vizSteps() { return h("div", { class: "viz-steps" }, h("div", { class: "vs" }), h("div", { class: "vs" }), h("div", { class: "vs" })); }
+function vizNotes() { return h("div", { class: "viz-notes" }, h("div", { class: "vn" }), h("div", { class: "vn" }), h("div", { class: "vn" })); }
+
+/* ===================== PART 1 — WELCOME ===================== */
+
+/* S1 — Cover */
+S("mint", ["#1EAFA1", "#4CCFDB", "#FFD96A"], (scene) => {
+  const title = h("h1", { class: "title" }, "Who Will My AI Helper Help?");
+  const startBtn = h("button", { class: "btn btn--pulse", type: "button", onClick: () => next() }, "Start ", h("span", { "aria-hidden": "true" }, "→"));
+  const left = h("div", { class: "cover-text" }, eyebrow("Session 1"), title, h("p", { class: "support" }, "One person. One small problem."), h("div", {}, startBtn));
+  scene.appendChild(h("div", { class: "layout l-cover" }, left, heroImg("cover", "img-cover", "Friendly helpers waving hello")));
+  requestAnimationFrame(() => { title.animate([{ opacity: 0, transform: "translateY(24px)" }, { opacity: 1, transform: "translateY(0)" }], { duration: 620, easing: "cubic-bezier(.22,.61,.36,1)" }); });
+});
+
+/* S2 — Objectives */
+S("mint", ["#1EAFA1", "#4CCFDB", "#E8C455"], (scene) => {
+  const objs = [
+    { n: "1", icon: "🙌", text: "Choose someone to help." },
+    { n: "2", icon: "🔍", text: "Spot one small problem." },
+    { n: "3", icon: "📝", text: "Start my helper idea." }
+  ];
+  const list = h("div", { class: "obj-list" });
+  objs.forEach(o => list.appendChild(h("div", { class: "obj-card" },
+    h("div", { class: "obj-check", "aria-hidden": "true" }, "✓"),
+    h("div", { class: "obj-num" }, o.n),
+    h("div", { class: "obj-ico", "aria-hidden": "true" }, o.icon),
+    h("div", { class: "obj-text" }, o.text))));
+  scene.appendChild(h("div", { class: "layout l-single" }, h("div", { class: "stack center wrapmax", style: { gap: "var(--space-lg)" } },
+    h("h2", { class: "obj-heading" }, "By the end of this session, I can…"), list)));
+  requestAnimationFrame(() => [...list.children].forEach((c, i) => setTimeout(() => c.classList.add("show"), 300 + i * 560)));
+});
+
+/* ===================== PART 2 — HOW HELPERS WORK ===================== */
+
+/* S3 — NEW: What can an AI helper do? */
+S("aqua", ["#1EAFA1", "#4CCFDB", "#FFD96A"], (scene) => {
+  const cards = [
+    { viz: vizCheck(), label: "Make a list" },
+    { viz: vizQ(), label: "Ask practice questions" },
+    { viz: vizSteps(), label: "Show small steps" },
+    { viz: vizNotes(), label: "Organize ideas" }
+  ];
+  const grid = h("div", { class: "aihelp-grid" });
+  cards.forEach(c => grid.appendChild(h("div", { class: "aihelp-card" },
+    h("div", { class: "aihelp-viz", "aria-hidden": "true" }, c.viz),
+    h("div", { class: "aihelp-label" }, c.label))));
+  const closing = h("div", { class: "aihelp-closing" }, "It gives support. ", h("b", {}, "You still decide."));
+  scene.appendChild(h("div", { class: "layout l-single" }, h("div", { class: "stack center wrapmax", style: { gap: "var(--space-sm)" } },
+    h("h2", { class: "heading", style: { fontSize: "clamp(1.7rem,3vw,2.8rem)" } }, "An AI helper can…"),
+    h("div", { class: "aihelp-board" }, grid),
+    closing,
+    teacherNote("Which kind of support have you used before?"))));
+  requestAnimationFrame(() => {
+    [...grid.children].forEach((c, i) => setTimeout(() => c.classList.add("show"), 250 + i * 420));
+    setTimeout(() => closing.classList.add("show"), 250 + 4 * 420 + 200);
+  });
+});
+
+/* S4 — Meet Mia + her problem */
+S("coral", ["#FF8E7A", "#4CCFDB", "#FFD96A"], (scene) => {
+  const obj = (emoji, name) => {
+    const o = h("button", { class: "object", type: "button", "aria-pressed": "false" },
+      h("span", { class: "obj-emoji", "aria-hidden": "true" }, emoji), h("span", {}, name));
+    o.addEventListener("click", () => { const on = o.classList.toggle("is-tapped"); o.setAttribute("aria-pressed", on ? "true" : "false"); blip(620); });
+    return o;
+  };
+  storyScene(scene, "miaBag", "Mia holding her sports bag", [
+    eyebrow("Meet Mia"),
+    h("h2", { class: "heading" }, "Mia has Physical Education today."),
+    h("p", { class: "support", style: { fontSize: "clamp(1.3rem,2vw,1.9rem)", fontWeight: "600" } }, "She forgot what to pack."),
+    h("div", { class: "objects", style: { justifyContent: "flex-start" } }, obj("🚰", "Water bottle"), obj("👟", "Sports shoes"))
+  ]);
+});
+
+/* S5 — Mia asks the AI helper (clearly labeled) */
+S("coral", ["#FF8E7A", "#A995E8", "#FFD96A"], (scene) => {
+  const facts = h("div", { class: "facts" });
+  for (let i = 0; i < 25; i++) facts.appendChild(h("div", { class: "factcard", style: { animationDelay: (i * 0.03) + "s", height: "clamp(38px,5vh,54px)" }, "aria-hidden": "true" }, "?"));
+  storyScene(scene, "miaConfused", "Mia looking confused", [
+    h("div", {}, h("span", { class: "ask-who" }, "Mia asks:"), h("div", { class: "ask-bubble" }, "What should I pack for Physical Education?")),
+    h("div", { class: "ai-line" }, h("div", { class: "ai-avatar", "aria-hidden": "true" }, "🤖"), h("span", { class: "ai-name" }, "AI Helper answers…")),
+    h("div", { class: "ai-panel" }, h("div", { class: "keystmt", style: { fontSize: "clamp(1.4rem,2.4vw,2.1rem)", marginBottom: "10px" } }, "Here are 25 facts about sports!"), facts)
+  ]);
+});
+
+/* S6 — Quick vote: Helpful? */
+S("coral", ["#FF8E7A", "#4CCFDB", "#FFD96A"], (scene) => {
+  const fb = feedbackBox();
+  const facts = h("div", { class: "facts", style: { gridTemplateColumns: "repeat(3,1fr)" } });
+  for (let i = 0; i < 6; i++) facts.appendChild(h("div", { class: "factcard", style: { animationDelay: (i * 0.05) + "s" } }, "?"));
+  scene.appendChild(h("div", { class: "layout l-story" },
+    h("div", { class: "stack" },
+      h("div", { class: "ai-line" }, h("div", { class: "ai-avatar", "aria-hidden": "true" }, "🤖"), h("span", { class: "ai-name" }, "AI Helper said:")),
+      h("div", { class: "ai-panel" }, h("div", { class: "support", style: { fontWeight: "700" } }, "25 sports facts"), facts)),
+    h("div", { class: "stack center" },
+      h("h2", { class: "question" }, "Did that help Mia?"),
+      h("div", { class: "answers" },
+        answerBtn("Yes", "pick-a", () => fb.show("Look again — did it help her pack her bag?", "🔎")),
+        answerBtn("Not really", "pick-b", () => fb.show("Right — those facts don’t help her pack.", "🌟"))),
+      fb)
+  ));
+});
+
+/* S7 — NEW: An answer is not always helpful (two paths) */
+S("coral", ["#FF8E7A", "#1EAFA1", "#FFD96A"], (scene) => {
+  const fb = feedbackBox();
+  function pathRow(cls, labelText, ansEmoji, ansCap, good) {
+    const ans = h("div", { class: "fp-node fp-answer" }, h("div", { class: "fp-emoji", "aria-hidden": "true" }, ansEmoji), h("div", { class: "fp-cap" }, ansCap));
+    const row = h("button", { class: "fitpath " + cls, type: "button" },
+      h("span", { class: "fp-label" }, labelText),
+      h("div", { class: "fp-row" },
+        h("div", { class: "fp-node" }, assetImg("miaBag", null, "Mia"), h("div", { class: "fp-cap" }, "Mia")),
+        h("div", { class: "fp-arrow", "aria-hidden": "true" }, "→"),
+        h("div", { class: "fp-node" }, h("div", { class: "fp-emoji", "aria-hidden": "true" }, "🎒"), h("div", { class: "fp-cap" }, "Forgot what to pack")),
+        h("div", { class: "fp-arrow", "aria-hidden": "true" }, "→"),
+        ans));
+    row.addEventListener("click", () => {
+      scene.querySelectorAll(".fitpath").forEach(x => x.classList.remove("is-chosen"));
+      row.classList.add("is-chosen");
+      if (good) { row.classList.add("lit"); ans.classList.remove("bounce"); ans.classList.add("snap"); fb.show("Yes. It matches Mia’s problem.", "🌟"); }
+      else { ans.classList.add("bounce"); fb.show("It is an answer, but it solves the wrong problem.", "💬"); }
+      blip(good ? 740 : 520);
+    });
+    return { row, ans };
+  }
+  const bad = pathRow("fitpath--bad", "Does not fit", "📚", "Sports facts", false);
+  const good = pathRow("fitpath--good", "Fits the problem", "📋", "Short packing list", true);
+  scene.appendChild(h("div", { class: "layout l-single" }, h("div", { class: "stack center wrapmax", style: { gap: "var(--space-sm)" } },
+    h("h2", { class: "heading", style: { fontSize: "clamp(1.4rem,2.3vw,2rem)" } }, "Not every answer helps."),
+    h("p", { class: "support", style: { fontWeight: "600" } }, "Helpful answers fit the problem."),
+    h("div", { class: "fitpaths" }, bad.row, good.row),
+    h("div", { style: { fontWeight: "700", fontSize: "clamp(1.1rem,1.6vw,1.4rem)", color: "var(--navy)" } }, "Which answer really helps?"),
+    fb,
+    teacherNote("Both are answers. Why is only one helpful?"))));
+  requestAnimationFrame(() => {
+    setTimeout(() => bad.ans.classList.add("bounce"), 700);
+    setTimeout(() => good.ans.classList.add("snap"), 1500);
+    setTimeout(() => { bad.ans.classList.remove("bounce"); good.ans.classList.remove("snap"); }, 2300);
+  });
+});
+
+/* S8 — REVISED big idea: Person → Small Problem → Helpful Support */
+S("mint", ["#1EAFA1", "#4CCFDB", "#FFD96A"], (scene) => {
+  const fb = feedbackBox();
+  const q = h("div", { class: "stack center", style: { gap: "10px", opacity: "0", transform: "translateY(16px)", transition: "opacity .5s ease, transform .5s ease" } },
+    h("h3", { class: "heading", style: { fontSize: "clamp(1.2rem,2.1vw,1.9rem)" } }, "What if we skip the problem?"),
+    h("div", { class: "answers answers--compact" },
+      answerBtn("The help may not fit", "pick-a", () => fb.show("Right. The help may solve the wrong problem.", "🌟")),
+      answerBtn("The helper becomes colorful", "pick-b", () => fb.show("Look again — skipping the problem can misfit the help.", "🔎"))),
+    fb);
+  scene.appendChild(h("div", { class: "layout l-single" }, h("div", { class: "stack center wrapmax", style: { gap: "var(--space-sm)" } },
+    h("h2", { class: "heading", style: { fontSize: "clamp(1.5rem,2.6vw,2.3rem)" } }, "Start with the person."),
+    h("div", { class: "flow" },
+      bigNode("Person", null, "Mia", "miaBag", 0.1), flowArrow(0.35),
+      bigNode("Small Problem", "🎒", "Forgets what to pack", null, 0.55), flowArrow(0.75),
+      bigNode("Helpful Support", "📋", "Short packing list", null, 0.95)),
+    q)));
+  requestAnimationFrame(() => setTimeout(() => { q.style.opacity = "1"; q.style.transform = "none"; }, 1200));
+});
+
+/* ===================== PART 3 — MEET THREE PEOPLE ===================== */
+
+/* S9 — Meet three people (merged intro) */
+S("aqua", ["#1EAFA1", "#A995E8", "#FFD96A"], (scene) => {
+  const people = [
+    { key: "kai", name: "Kai", clue: "Forgets what to pack", alt: "Kai with his school bag" },
+    { key: "ben", name: "Ben", clue: "Needs spelling practice", alt: "Ben with his spelling cards" },
+    { key: "lila", name: "Lila", clue: "Not sure how to start", alt: "Lila with her class project" }
+  ];
+  const grid = h("div", { class: "layout l-three" });
+  people.forEach(p => grid.appendChild(h("div", { class: "choicecard", style: { cursor: "default" } },
+    h("span", { class: "cc-img" }, assetImg(p.key, null, p.alt)),
+    h("span", { class: "cc-label" }, p.name),
+    h("span", { class: "cc-clue" }, p.clue))));
+  scene.appendChild(h("div", { class: "stack", style: { height: "100%", gap: "var(--space-md)" } },
+    h("h2", { class: "question center" }, "Meet three people."),
+    grid));
+});
+
+/* S10 — NEW: Match the Help */
+S("mint", ["#1EAFA1", "#FF8E7A", "#4CCFDB"], (scene) => {
+  const fb = feedbackBox();
+  const problems = [
+    { id: "kai", name: "Kai", clue: "Forgets what to pack", img: "kai" },
+    { id: "ben", name: "Ben", clue: "Needs spelling practice", img: "ben" },
+    { id: "lila", name: "Lila", clue: "Does not know how to start", img: "lila" },
+    { id: "mixed", name: "Mixed Ideas", clue: "Ideas are out of order", notes: true }
+  ];
+  const helps = [
+    { id: "list", label: "Make a packing list", ico: "📋", match: "kai", fb: "A list can help Kai remember." },
+    { id: "quiz", label: "Ask practice questions", ico: "❓", match: "ben", fb: "Questions give Ben practice." },
+    { id: "step", label: "Show one first step", ico: "👣", match: "lila", fb: "One first step can help Lila begin." },
+    { id: "sort", label: "Put ideas in order", ico: "🗂️", match: "mixed", fb: "Sorting can make ideas clearer." }
+  ];
+  const svgNS = "http://www.w3.org/2000/svg";
+  const board = h("div", { class: "match-board" });
+  const lines = document.createElementNS(svgNS, "svg"); lines.setAttribute("class", "match-lines"); lines.setAttribute("preserveAspectRatio", "none");
+  board.appendChild(lines);
+  const leftList = h("div", { class: "match-list" });
+  const rightList = h("div", { class: "match-list" });
+  const cols = h("div", { class: "match-cols" },
+    h("div", { class: "match-col" }, h("div", { class: "match-col-title" }, "Problems"), leftList),
+    h("div", { class: "match-col" }, h("div", { class: "match-col-title" }, "Helpful Support"), rightList));
+  board.appendChild(cols);
+  const insight = h("div", { class: "match-insight stack center", style: { gap: "6px", marginTop: "var(--space-sm)" } });
+
+  let selected = null, done = 0;
+  function sizeSvg() { lines.setAttribute("viewBox", "0 0 " + board.clientWidth + " " + board.clientHeight); }
+  function drawLine(a, b) {
+    const br = board.getBoundingClientRect(), ra = a.getBoundingClientRect(), rb = b.getBoundingClientRect();
+    const x1 = ra.right - br.left, y1 = ra.top + ra.height / 2 - br.top;
+    const x2 = rb.left - br.left, y2 = rb.top + rb.height / 2 - br.top;
+    const mx = (x1 + x2) / 2;
+    const p = document.createElementNS(svgNS, "path");
+    p.setAttribute("d", "M " + x1 + " " + y1 + " C " + mx + " " + y1 + ", " + mx + " " + y2 + ", " + x2 + " " + y2);
+    p.setAttribute("class", "match-line");
+    lines.appendChild(p);
+  }
+  problems.forEach(p => {
+    const visual = p.notes
+      ? h("span", { class: "mc-ico", "aria-hidden": "true" }, vizNotes())
+      : h("span", { class: "mc-imgwrap" }, assetImg(p.img, null, p.name));
+    const card = h("button", { class: "match-card", type: "button", "data-id": p.id },
+      visual,
+      h("span", { class: "mc-text" }, h("span", { class: "mc-name" }, p.name), h("span", { class: "mc-clue" }, p.clue)),
+      h("span", { class: "match-check", "aria-hidden": "true" }, "✓"));
+    card.addEventListener("click", () => {
+      if (card.classList.contains("locked")) return;
+      selected = p.id;
+      leftList.querySelectorAll(".match-card").forEach(x => x.classList.remove("sel"));
+      card.classList.add("sel"); blip(660);
+    });
+    leftList.appendChild(card);
+  });
+  helps.forEach(hp => {
+    const card = h("button", { class: "match-help", type: "button", "data-id": hp.id },
+      h("span", { class: "mh-ico", "aria-hidden": "true" }, hp.ico),
+      h("span", { class: "mh-label" }, hp.label),
+      h("span", { class: "match-check", "aria-hidden": "true" }, "✓"));
+    card.addEventListener("click", () => {
+      if (card.classList.contains("locked")) return;
+      if (!selected) { fb.show("Tap a problem first, then its match.", "👆"); return; }
+      if (hp.match === selected) {
+        const pcard = leftList.querySelector('.match-card[data-id="' + selected + '"]');
+        pcard.classList.remove("sel"); pcard.classList.add("locked"); card.classList.add("locked");
+        sizeSvg(); drawLine(pcard, card);
+        fb.show(hp.fb, "🌟"); blip(760);
+        done++; selected = null;
+        if (done === helps.length) complete();
+      } else { fb.show("Look at what feels hard. Try another match.", "🔎"); blip(500); }
+    });
+    rightList.appendChild(card);
+  });
+  function complete() {
+    lines.querySelectorAll(".match-line").forEach(l => l.classList.add("bright"));
+    const qfb = feedbackBox();
+    insight.appendChild(h("h3", { class: "heading", style: { fontSize: "clamp(1.3rem,2.2vw,2rem)" } }, "Different problems need different help."));
+    insight.appendChild(h("p", { class: "support", style: { fontWeight: "600" } }, "The help should fit what feels hard."));
+    insight.appendChild(h("h3", { class: "question", style: { fontSize: "clamp(1.2rem,1.9vw,1.6rem)" } }, "One helper idea for everyone?"));
+    insight.appendChild(h("div", { class: "answers answers--compact" },
+      answerBtn("Yes", "pick-b", () => qfb.show("Not always — the best support fits the problem.", "🔎")),
+      answerBtn("Not always", "pick-a", () => qfb.show("Right. The best support fits the problem.", "🌟"))));
+    insight.appendChild(qfb);
+    insight.classList.add("show");
+  }
+  scene.appendChild(h("div", { class: "stack", style: { height: "100%", gap: "6px" } },
+    h("h2", { class: "question center", style: { marginBottom: "0", fontSize: "clamp(1.5rem,2.4vw,2.1rem)" } }, "Match the Help"),
+    h("p", { class: "support center", style: { fontWeight: "600", fontSize: "clamp(1rem,1.3vw,1.2rem)" } }, "Tap a problem, then tap its best match."),
+    board, insight,
+    teacherNote("Why does the best support fit each problem?")));
+  requestAnimationFrame(sizeSvg);
+});
+
+/* ===================== PART 4 — YOUR VOICE ===================== */
+
+/* S11 — Choose someone (three character cards) */
+S("mint", ["#1EAFA1", "#FF8E7A", "#A995E8"], (scene) => {
+  const cards = [
+    { key: "kai", label: "Kai", clue: "Forgets what to pack", alt: "Kai with his school bag" },
+    { key: "ben", label: "Ben", clue: "No one to practise spelling with", alt: "Ben with his spelling cards" },
+    { key: "lila", label: "Lila", clue: "Not sure how to start", alt: "Lila with her class project" }
+  ];
+  const grid = h("div", { class: "layout l-three" });
+  cards.forEach(c => {
+    const card = h("button", { class: "choicecard", type: "button", "aria-pressed": session.chosenClassmate === c.key ? "true" : "false" },
+      h("span", { class: "cc-check", "aria-hidden": "true" }, "✓"),
+      h("span", { class: "cc-img" }, assetImg(c.key, null, c.alt)),
+      h("span", { class: "cc-label" }, c.label),
+      h("span", { class: "cc-clue" }, c.clue));
+    if (session.chosenClassmate === c.key) card.classList.add("is-selected");
+    card.addEventListener("click", () => {
+      session.chosenClassmate = c.key;
+      grid.querySelectorAll(".choicecard").forEach(x => { x.classList.remove("is-selected"); x.setAttribute("aria-pressed", "false"); });
+      card.classList.add("is-selected"); card.setAttribute("aria-pressed", "true"); blip(700);
+    });
+    grid.appendChild(card);
+  });
+  scene.appendChild(h("div", { class: "stack", style: { height: "100%" } },
+    h("h2", { class: "question center", style: { marginBottom: "var(--space-sm)" } }, "Who would you help first?"),
+    grid));
+});
+
+/* S12 — Pair talk */
+S("aqua", ["#4CCFDB", "#1EAFA1", "#FFD96A"], (scene) => {
+  const c = session.chosenClassmate;
+  const map = { kai: ["kai", "Kai"], ben: ["ben", "Ben"], lila: ["lila", "Lila"] };
+  const chosen = map[c];
+  const timer = h("button", { class: "timer", type: "button", title: "Start a calm timer" }, h("span", { class: "ring", style: { animationPlayState: "paused" } }), h("span", {}, "Calm timer"));
+  let running = false, ivl = null, secs = 60;
+  const label = timer.querySelector("span:last-child");
+  timer.addEventListener("click", () => {
+    running = !running;
+    const ring = timer.querySelector(".ring");
+    ring.style.animationPlayState = running ? "running" : "paused";
+    if (running) { secs = 60; label.textContent = secs + "s"; ivl = setInterval(() => { secs--; label.textContent = Math.max(0, secs) + "s"; if (secs <= 0) { clearInterval(ivl); running = false; ring.style.animationPlayState = "paused"; label.textContent = "Time!"; } }, 1000); }
+    else { clearInterval(ivl); label.textContent = "Calm timer"; }
+  });
+  const leftCol = chosen ? heroImg(chosen[0], "img-story", chosen[1]) : h("div", { class: "hero", style: { fontSize: "clamp(5rem,11vw,10rem)" }, "aria-hidden": "true" }, "🙂");
+  scene.appendChild(h("div", { class: "layout l-story" }, leftCol,
+    h("div", { class: "stack" },
+      h("h2", { class: "question" }, "Why did you choose them?"),
+      h("div", { class: "panel panel--accent" }, h("div", { class: "keystmt", style: { fontSize: "clamp(1.6rem,2.8vw,2.6rem)" } }, "“I chose ___ because ___.”")),
+      timer,
+      h("button", { class: "btn", type: "button", onClick: () => next() }, "Teacher Continue →"))));
+});
+
+/* ===================== PART 5 — PROBLEM FIRST ===================== */
+
+/* S13 — Find the problem first */
+S("mint", ["#1EAFA1", "#FF8E7A", "#FFD96A"], (scene) => {
+  singleFocus(scene, [
+    h("h2", { class: "heading" }, "Find the problem first."),
+    h("p", { class: "support", style: { fontSize: "clamp(1.4rem,2.2vw,2rem)" } }, "Cool ideas come later."),
+    h("div", { class: "rowc", style: { marginTop: "var(--space-md)" } },
+      h("div", { class: "flow__node", style: { animationDelay: ".1s", background: "color-mix(in srgb, var(--teal) 16%, #fff)" } }, h("div", { class: "fn-emoji", "aria-hidden": "true" }, "🧩"), h("div", { class: "fn-label" }, "1 · Problem")),
+      h("div", { class: "flow__arrow", style: { animationDelay: ".4s" }, "aria-hidden": "true" }, "→"),
+      h("div", { class: "flow__node", style: { animationDelay: ".7s", background: "color-mix(in srgb, var(--coral) 16%, #fff)" } }, h("div", { class: "fn-emoji", "aria-hidden": "true" }, "✨"), h("div", { class: "fn-label" }, "2 · Cool Idea")))
+  ]);
+});
+
+/* S14 — Problem-or-idea game (all rounds in one scene) */
+S("mint", ["#1EAFA1", "#FF8E7A", "#FFD96A"], (scene) => {
+  const rounds = [
+    { stmt: "Kai forgets what to pack.", problem: true, fb: "Yes. This tells us what is hard." },
+    { stmt: "The helper has rainbow buttons.", problem: false, fb: "That is a cool idea. The problem comes first." },
+    { stmt: "Ben needs spelling practice.", problem: true, fb: "Yes. A helper could support this." }
+  ];
+  let idx = 0;
+  const meta = h("div", { class: "game-meta" }, "Round 1 of 3");
+  const stmt = h("div", { class: "keystmt", style: { fontSize: "clamp(1.7rem,3.2vw,2.8rem)" } }, rounds[0].stmt);
+  const dots = h("div", { class: "game-dots" }, ...rounds.map(() => h("div", { class: "game-dot" })));
+  const fb = feedbackBox();
+  const btnP = answerBtn("🧩 Problem", "pick-a", () => pick(true));
+  const btnC = answerBtn("✨ Cool Idea", "pick-b", () => pick(false));
+  const nextBtn = h("button", { class: "btn", type: "button", style: { display: "none", marginTop: "var(--space-sm)" } }, "Next one →");
+  const done = h("div", { class: "keystmt tx-teal", style: { display: "none", fontSize: "clamp(1.6rem,3vw,2.6rem)" } }, "You found the problems! 🎉");
+  function paint() {
+    stmt.textContent = rounds[idx].stmt;
+    meta.textContent = "Round " + (idx + 1) + " of " + rounds.length;
+    [...dots.children].forEach((d, i) => { d.className = "game-dot" + (i < idx ? " done" : i === idx ? " active" : ""); });
+    [btnP, btnC].forEach(b => { b.classList.remove("is-chosen", "correct", "soft"); b.disabled = false; });
+    fb.classList.remove("show"); nextBtn.style.display = "none";
+  }
+  function pick(choseProblem) {
+    const r = rounds[idx], right = choseProblem === r.problem;
+    [btnP, btnC].forEach(b => b.classList.remove("is-chosen", "correct", "soft"));
+    (choseProblem ? btnP : btnC).classList.add("is-chosen", right ? "correct" : "soft");
+    if (right) { fb.show(r.fb, "🌟"); [...dots.children][idx].className = "game-dot done"; }
+    else fb.show("Look again. Is this the problem, or a design idea?", "🔎");
+    if (idx < rounds.length - 1) nextBtn.style.display = "inline-flex";
+    else if (right) { done.style.display = "block"; btnP.disabled = true; btnC.disabled = true; nextBtn.style.display = "none"; }
+    else nextBtn.style.display = "none";
+  }
+  nextBtn.addEventListener("click", () => { idx++; paint(); blip(700); });
+  requestAnimationFrame(paint);
+  scene.appendChild(h("div", { class: "layout l-single" }, h("div", { class: "stack center wrapmax", style: { gap: "var(--space-sm)" } },
+    meta,
+    h("div", { class: "panel panel--accent", style: { maxWidth: "820px", margin: "0 auto", padding: "clamp(16px,2vw,32px)" } }, stmt),
+    h("h2", { class: "question", style: { fontSize: "clamp(1.5rem,2.6vw,2.3rem)" } }, "Problem or cool idea?"),
+    h("div", { class: "answers answers--compact" }, btnP, btnC),
+    dots, fb, nextBtn, done)));
+});
+
+/* S15 — NEW: Help, don't take over */
+S("coral", ["#FF8E7A", "#1EAFA1", "#FFD96A"], (scene) => {
+  const fb = feedbackBox();
+  function panel(cls, label, bubble, good, viz) {
+    const p = h("button", { class: "hdt-panel " + cls, type: "button" },
+      h("span", { class: "hdt-label" }, label),
+      h("div", { class: "ai-panel", style: { width: "100%" } },
+        h("div", { class: "ai-line", style: { marginBottom: "4px" } }, h("div", { class: "ai-avatar", "aria-hidden": "true" }, "🤖"), h("span", { class: "ai-name" }, "AI Helper")),
+        h("div", { class: "support", style: { fontWeight: "700" } }, bubble)),
+      h("div", { class: "hdt-stage" }, ...viz));
+    p.addEventListener("click", () => {
+      scene.querySelectorAll(".hdt-panel").forEach(x => x.classList.remove("is-chosen"));
+      p.classList.add("is-chosen");
+      if (good) fb.show("Yes. Good helpers support your thinking.", "🌟");
+      else fb.show("Look again. Is the student still making choices?", "🔎");
+      blip(good ? 740 : 520);
+    });
+    return p;
+  }
+  const support = panel("hdt-panel--support", "Helps me begin", "Try this first step.", true, [
+    h("div", { class: "hdt-card" }, h("span", { class: "hdt-actor", "aria-hidden": "true" }, "🧑‍🎓✏️"), " 1️⃣ First step"),
+    h("div", { class: "support", style: { fontSize: "clamp(.78rem,1vw,.95rem)", color: "#5b6b7a" } }, "Student keeps working")
+  ]);
+  const takeover = panel("hdt-panel--takeover", "Does it all", "I finished the whole project.", false, [
+    h("div", { class: "hdt-card done" }, h("span", { class: "hdt-actor", "aria-hidden": "true" }, "🧑‍🎓🙅"), " ✅ Whole project"),
+    h("div", { class: "support", style: { fontSize: "clamp(.78rem,1vw,.95rem)", color: "#5b6b7a" } }, "Student is left out")
+  ]);
+  scene.appendChild(h("div", { class: "layout l-single" }, h("div", { class: "stack center wrapmax", style: { gap: "var(--space-sm)" } },
+    h("h2", { class: "heading", style: { fontSize: "clamp(1.4rem,2.4vw,2.1rem)" } }, "Help, don’t take over."),
+    h("p", { class: "support", style: { fontWeight: "600" } }, "A good helper keeps you thinking."),
+    h("div", { class: "hdt-grid" }, support, takeover),
+    h("div", { style: { fontWeight: "700", fontSize: "clamp(1.05rem,1.5vw,1.3rem)", color: "var(--navy)" } }, "Which one keeps the student in charge?"),
+    fb,
+    teacherNote("How can a helper help without doing the work?"))));
+});
+
+/* ===================== PART 6 — START MY PROJECT ===================== */
+
+/* S16 — Choose someone to help (2×3 grid) */
+S("mint", ["#1EAFA1", "#4CCFDB", "#FFD96A"], (scene) => {
+  const grid = h("div", { class: "layout l-grid6" });
+  PERSONS.forEach(p => {
+    const card = h("button", { class: "choicecard", type: "button", "aria-pressed": state.selectedPersonType === p.id ? "true" : "false" },
+      h("span", { class: "cc-check", "aria-hidden": "true" }, "✓"),
+      h("span", { class: "cc-img" }, assetImg(p.img, null, p.label)),
+      h("span", { class: "cc-label" }, p.label));
+    if (state.selectedPersonType === p.id) card.classList.add("is-selected");
+    card.addEventListener("click", () => {
+      state.selectedPersonType = p.id; saveState();
+      grid.querySelectorAll(".choicecard").forEach(x => { x.classList.remove("is-selected"); x.setAttribute("aria-pressed", "false"); });
+      card.classList.add("is-selected"); card.setAttribute("aria-pressed", "true");
+      blip(720); toast("Added to your card ✓");
+    });
+    grid.appendChild(card);
+  });
+  scene.appendChild(h("div", { class: "stack", style: { height: "100%", gap: "var(--space-md)" } },
+    h("h2", { class: "question center" }, "Who could your helper support?"),
+    grid));
+});
+
+/* S17 — Choose a problem type (chips) */
+S("mint", ["#4CCFDB", "#1EAFA1", "#FFD96A"], (scene) => {
+  const preview = miniPreview();
+  const chips = h("div", { class: "chips", style: { justifyContent: "flex-start" } });
+  PROBLEM_TYPES.forEach(pt => {
+    const chip = h("button", { class: "chip", type: "button", "aria-pressed": state.selectedProblemType === pt.id ? "true" : "false" },
+      h("span", { class: "chip-ico", "aria-hidden": "true" }, pt.emoji), pt.label);
+    if (state.selectedProblemType === pt.id) chip.classList.add("is-selected");
+    chip.addEventListener("click", () => {
+      state.selectedProblemType = pt.id; saveState();
+      chips.querySelectorAll(".chip").forEach(x => { x.classList.remove("is-selected"); x.setAttribute("aria-pressed", "false"); });
+      chip.classList.add("is-selected"); chip.setAttribute("aria-pressed", "true"); blip(700);
+      refreshMini(preview);
+    });
+    chips.appendChild(chip);
+  });
+  scene.appendChild(h("div", { class: "layout l-build" },
+    h("div", { class: "stack" }, h("h2", { class: "question" }, "What is hard for them?"), chips),
+    h("div", { class: "hero" }, preview)));
+});
+
+/* S18 — REVISED: Make it small and clear */
+S("mint", ["#1EAFA1", "#4CCFDB", "#FFD96A"], (scene) => {
+  const bigBoard = h("div", { class: "sc-board sc-board--big" },
+    h("span", { class: "sc-label" }, "Too big"),
+    h("div", { class: "sc-text" }, "Help with school."),
+    h("div", { class: "sc-branches" }, ...["📚 homework", "📖 reading", "🎒 packing", "🗓️ planning", "✏️ practising"].map(t => h("div", { class: "sc-branch" }, t))));
+  const clearBoard = h("div", { class: "sc-board sc-board--clear" },
+    h("span", { class: "sc-label" }, "Small and clear"),
+    h("div", { class: "sc-clearrow" }, h("div", { class: "sc-text" }, "Remember what to pack."), h("span", { class: "sc-arrow", "aria-hidden": "true" }, "→"), h("span", { style: { fontSize: "clamp(1.8rem,3vw,2.6rem)" }, "aria-hidden": "true" }, "📋")));
+
+  const fb = feedbackBox();
+  const yoursVal = () => state.problemSentence || (ptype() ? ptype().label.toLowerCase() : "…");
+  /* the "Your problem" board IS the live preview — it updates as they edit */
+  const yours = h("div", { class: "panel panel--accent", style: { maxWidth: "560px", margin: "0 auto" } },
+    h("div", { class: "support", style: { fontWeight: "700" } }, "Your problem:"),
+    h("div", { class: "keystmt", style: { fontSize: "clamp(1.2rem,2vw,1.7rem)" } }, "They find it hard to " + yoursVal()));
+  const field = h("textarea", { class: "bigfield", maxlength: "55", rows: "2", placeholder: "e.g. remember what to pack", "aria-label": "They find it hard to…" });
+  field.value = state.problemSentence || "";
+  const editWrap = h("div", { class: "own-input", style: { maxWidth: "560px", margin: "0 auto" } },
+    h("label", {}, "Make it smaller — they find it hard to…"), field);
+  field.addEventListener("input", () => {
+    state.problemSentence = field.value.trim(); saveState();
+    yours.querySelector(".keystmt").textContent = "They find it hard to " + yoursVal();
+  });
+  const buttons = h("div", { class: "answers answers--compact" },
+    answerBtn("Looks good", "pick-a", () => { fb.show("Nice — small and clear is easy to help.", "🌟"); }),
+    answerBtn("Make it smaller", "pick-b", () => { editWrap.classList.add("show"); setTimeout(() => field.focus(), 60); fb.show("Good thinking — shrink it to one clear thing.", "💬"); }));
+
+  scene.appendChild(h("div", { class: "layout l-build" },
+    h("div", { class: "stack" },
+      h("h2", { class: "heading", style: { fontSize: "clamp(1.5rem,2.6vw,2.3rem)" } }, "Make it small and clear."),
+      h("div", { class: "smallclear" }, bigBoard, h("div", { class: "sc-arrow", "aria-hidden": "true", style: { textAlign: "center" } }, "↓"), clearBoard),
+      h("p", { class: "support", style: { fontWeight: "600", textAlign: "center" } }, "Small and clear works better.")),
+    h("div", { class: "stack", style: { justifyContent: "center" } },
+      yours,
+      h("div", { style: { fontWeight: "700", fontSize: "clamp(1.05rem,1.5vw,1.35rem)", color: "var(--navy)", textAlign: "center" } }, "Is yours small and clear?"),
+      buttons, editWrap, fb)));
+  requestAnimationFrame(() => { setTimeout(() => { bigBoard.classList.add("reveal"); }, 300); setTimeout(() => { clearBoard.classList.add("reveal"); }, 1100); });
+});
+
+/* S19 — Finish the problem (input + examples + live preview) */
+S("mint", ["#1EAFA1", "#4CCFDB", "#FFD96A"], (scene) => {
+  const preview = miniPreview();
+  const field = h("textarea", { class: "bigfield", maxlength: "55", rows: "2", placeholder: "e.g. remember school items", "aria-label": "They find it hard to…" });
+  field.value = state.problemSentence || "";
+  const count = h("div", { class: "charcount" }, field.value.length + " / 55");
+  const update = () => { state.problemSentence = field.value.trim(); count.textContent = field.value.length + " / 55"; saveState(); refreshMini(preview); };
+  field.addEventListener("input", update);
+  const chips = h("div", { class: "chips", style: { justifyContent: "flex-start" } });
+  PROBLEM_EXAMPLES.forEach(ex => chips.appendChild(h("button", { class: "chip", type: "button", onClick: () => { field.value = ex; update(); blip(680); } }, ex)));
+  scene.appendChild(h("div", { class: "layout l-build" },
+    h("div", { class: "field-wrap" },
+      eyebrow("Finish the problem"),
+      h("div", { class: "field-lead" }, "They find it hard to…"),
+      field, count,
+      h("div", { class: "support", style: { fontSize: "1.05rem" } }, "Tap an example, or write your own:"),
+      chips),
+    h("div", { class: "hero" }, preview)));
+}, "finishProblem");
+
+/* S20 — Choose a helper idea (build view) */
+S("aqua", ["#1EAFA1", "#4CCFDB", "#FFD96A"], (scene) => {
+  const preview = miniPreview();
+  const chips = h("div", { class: "chips", style: { justifyContent: "flex-start" } });
+  const ownField = h("input", { class: "bigfield", type: "text", maxlength: "55", style: { minHeight: "auto" }, placeholder: "e.g. cheer them on", "aria-label": "My own helper idea" });
+  const ownWrap = h("div", { class: "own-input" + (state.selectedHelperAction === "own" ? " show" : "") }, h("label", {}, "✏️ Write your own helper idea:"), ownField);
+  if (state.selectedHelperAction === "own") ownField.value = state.helperSentence || "";
+  ownField.addEventListener("input", () => { state.helperSentence = ownField.value.trim(); saveState(); refreshMini(preview); });
+  HELPER_ACTIONS.forEach(a => {
+    const chip = h("button", { class: "chip", type: "button", "aria-pressed": state.selectedHelperAction === a.id ? "true" : "false" },
+      h("span", { class: "chip-ico", "aria-hidden": "true" }, a.emoji), a.label);
+    if (state.selectedHelperAction === a.id) chip.classList.add("is-selected");
+    chip.addEventListener("click", () => {
+      state.selectedHelperAction = a.id;
+      if (a.id === "own") { ownWrap.classList.add("show"); state.helperSentence = ownField.value.trim(); setTimeout(() => ownField.focus(), 60); }
+      else { ownWrap.classList.remove("show"); state.helperSentence = a.sentence; }
+      saveState();
+      chips.querySelectorAll(".chip").forEach(x => { x.classList.remove("is-selected"); x.setAttribute("aria-pressed", "false"); });
+      chip.classList.add("is-selected"); chip.setAttribute("aria-pressed", "true"); blip(720);
+      refreshMini(preview);
+    });
+    chips.appendChild(chip);
+  });
+  scene.appendChild(h("div", { class: "layout l-build" },
+    h("div", { class: "stack" }, h("h2", { class: "question" }, "How might a helper help?"), chips, ownWrap),
+    h("div", { class: "hero" }, preview)));
+});
+
+/* ===================== PART 7 — YOUR CARD ===================== */
+
+/* S21 — Complete Helper Idea Card */
+S("mint", ["#1EAFA1", "#4CCFDB", "#FFD96A"], (scene) => {
+  const card = helperCardEl({ rows: 3, big: true });
+  const edit = h("input", { class: "bigfield", type: "text", maxlength: "55", style: { minHeight: "auto" }, placeholder: "e.g. give friendly reminders", "aria-label": "My helper could…" });
+  edit.value = state.helperSentence || (haction() ? (haction().sentence || "") : "");
+  edit.addEventListener("input", () => {
+    state.helperSentence = edit.value.trim(); saveState();
+    const vals = card.querySelectorAll(".hc-row .hc-val");
+    if (vals[2]) vals[2].lastChild.textContent = state.helperSentence || "…";
+  });
+  scene.appendChild(h("div", { class: "layout", style: { gridTemplateColumns: "44% 1fr", alignItems: "center" } },
+    h("div", { class: "stack" },
+      eyebrow("Done!"),
+      h("h2", { class: "heading" }, "My Helper Idea"),
+      h("div", { class: "field-wrap" }, h("div", { class: "field-lead", style: { fontSize: "clamp(1rem,1.3vw,1.2rem)" } }, "Tweak your helper idea:"), edit),
+      h("div", { class: "rowc", style: { justifyContent: "flex-start" } },
+        h("button", { class: "btn", type: "button", style: { background: "#EAF3F0", color: "var(--navy)" }, onClick: () => goId("finishProblem") }, "✏️ Edit"),
+        h("button", { class: "btn", type: "button", onClick: () => { state.completed = true; saveState(); toast("Saved! ✓"); } }, "💾 Save"))),
+    h("div", { class: "hero" }, card)));
+  requestAnimationFrame(() => {
+    const rows = card.querySelectorAll(".hc-row");
+    rows.forEach((r, i) => { r.style.opacity = "0"; r.style.transform = "translateY(16px)"; setTimeout(() => { r.style.transition = "opacity .45s ease, transform .45s cubic-bezier(.22,.61,.36,1)"; r.style.opacity = ""; r.style.transform = ""; r.classList.add("pop"); }, 250 + i * 350); });
+  });
+});
+
+/* ===================== PART 8 — SHARE ===================== */
+
+/* S22 — Partner check (merged share + friendly question) */
+S("aqua", ["#4CCFDB", "#1EAFA1", "#FFD96A"], (scene) => {
+  const fb = feedbackBox();
+  const editRow = h("div", { style: { display: "none", marginTop: "var(--space-sm)" } },
+    h("button", { class: "btn", type: "button", onClick: () => goId("finishProblem") }, "✏️ Edit my problem"));
+  const answers = h("div", { class: "answers answers--compact" },
+    answerBtn("Yes", "pick-a", () => { fb.show("Great — a small, clear problem is easier to help with.", "🌟"); editRow.style.display = "none"; }),
+    answerBtn("Not yet", "pick-b", () => { fb.show("That’s okay. Let’s make it a little smaller.", "💬"); editRow.style.display = "block"; }),
+    answerBtn("Make it smaller", "pick-a", () => { fb.show("Good thinking — one small problem works best.", "💬"); editRow.style.display = "block"; }));
+  scene.appendChild(h("div", { class: "layout l-story" },
+    heroImg("partnerShare", "img-story", "Two students sharing ideas"),
+    h("div", { class: "stack" },
+      eyebrow("Partner check"),
+      h("h2", { class: "heading", style: { fontSize: "clamp(1.6rem,2.9vw,2.6rem)" } }, "Share your helper idea."),
+      h("div", { class: "panel panel--accent" }, h("div", { class: "keystmt", style: { fontSize: "clamp(1.2rem,2vw,1.8rem)" } }, "“My helper could help ___ with ___.”")),
+      h("div", { style: { fontWeight: "700", fontSize: "clamp(1.05rem,1.6vw,1.45rem)", color: "var(--navy)" } }, "Is the problem small and clear?"),
+      answers, fb, editRow)));
+});
+
+/* ===================== PART 9 — FINAL CHECK ===================== */
+
+/* S23 — Final check */
+S("mint", ["#1EAFA1", "#4CCFDB", "#E8C455"], (scene) => {
+  const p = person();
+  const pv = state.problemSentence || (ptype() ? ptype().label.toLowerCase() : "…");
+  const hv = state.helperSentence || (haction() ? (haction().sentence || haction().label.toLowerCase()) : "…");
+  const items = [
+    { icon: p ? p.emoji : "🙂", lead: "One person", val: p ? p.label : "Pick someone" },
+    { icon: "🧩", lead: "One small problem", val: "They find it hard to " + pv },
+    { icon: "💡", lead: "One helper idea", val: "My helper could " + hv }
+  ];
+  const list = h("div", { class: "obj-list" });
+  items.forEach(it => list.appendChild(h("div", { class: "obj-card", style: { justifyContent: "flex-start" } },
+    h("div", { class: "obj-check", "aria-hidden": "true" }, "✓"),
+    h("div", { class: "obj-ico", "aria-hidden": "true" }, it.icon),
+    h("div", { class: "obj-num", style: { width: "auto", height: "auto", borderRadius: "999px", padding: "4px 16px", fontSize: "0.9rem" } }, it.lead),
+    h("div", { class: "obj-text", style: { fontSize: "clamp(1rem,1.4vw,1.35rem)" } }, it.val))));
+  scene.appendChild(h("div", { class: "layout l-single" }, h("div", { class: "stack center wrapmax", style: { gap: "var(--space-md)" } },
+    h("h2", { class: "heading", style: { fontSize: "clamp(1.8rem,3.2vw,3rem)" } }, "Let’s check your idea."),
+    list)));
+  requestAnimationFrame(() => [...list.children].forEach((c, i) => setTimeout(() => c.classList.add("show"), 300 + i * 500)));
+});
+
+/* S24 — Core message */
+S("purple", ["#A995E8", "#1EAFA1", "#FF8E7A"], (scene) => {
+  const l1 = h("div", { class: "bigline l1" }, "One person.");
+  const l2 = h("div", { class: "bigline l2" }, "One small problem.");
+  const l3 = h("div", { class: "bigline l3" }, "One helper idea.");
+  const icons = h("div", { class: "bigicons" }, h("span", { class: "bi", "aria-hidden": "true" }, "🙂"), h("span", { class: "bi", "aria-hidden": "true" }, "🧩"), h("span", { class: "bi", "aria-hidden": "true" }, "💡"));
+  singleFocus(scene, [h("div", { class: "stack center" }, l1, l2, l3, icons)]);
+  [l1, l2, l3].forEach((el, i) => setTimeout(() => el.classList.add("show"), 250 + i * 550));
+  setTimeout(() => icons.querySelectorAll(".bi").forEach((b, i) => setTimeout(() => b.classList.add("show"), i * 200)), 250 + 3 * 550);
+});
+
+/* S25 — Reflection */
+S("mint", ["#1EAFA1", "#A995E8", "#FFD96A"], (scene) => {
+  const preview = miniPreview();
+  const field = h("textarea", { class: "bigfield", rows: "2", placeholder: "Write a little, or just talk it through.", "aria-label": "My helper could help by…" });
+  field.value = state.reflection || "";
+  field.addEventListener("input", () => { state.reflection = field.value.trim(); saveState(); });
+  scene.appendChild(h("div", { class: "layout l-build" },
+    h("div", { class: "field-wrap" }, eyebrow("Reflection"), h("div", { class: "field-lead" }, "My helper could help by…"), field),
+    h("div", { class: "hero" }, preview)));
+});
+
+/* S26 — Closing */
+S("yellow", ["#E8C455", "#1EAFA1", "#4CCFDB"], (scene) => {
+  const card = helperCardEl({ rows: 3, big: true });
+  const track = h("div", { class: "session-track", "aria-hidden": "true" },
+    h("div", { class: "session-node done" }, "1"),
+    h("div", { class: "session-line" }, h("div", { class: "sl-fill" })),
+    h("div", { class: "session-node active" }, "2"));
+  scene.appendChild(h("div", { class: "layout", style: { gridTemplateColumns: "44% 1fr", alignItems: "center" } },
+    h("div", { class: "stack" },
+      h("h2", { class: "heading tx-teal" }, "Great start!"),
+      h("p", { class: "support", style: { fontSize: "clamp(1.3rem,2vw,1.9rem)" } }, "Next: Give your helper one clear job."),
+      track,
+      h("div", { class: "rowc", style: { justifyContent: "flex-start" } },
+        h("button", { class: "btn", type: "button", onClick: () => { state.completed = true; saveState(); toast("Project saved! ✓"); } }, "💾 Save Project"),
+        h("button", { class: "btn", type: "button", style: { background: "linear-gradient(135deg,#FFD96A,#FF8E7A)" }, onClick: () => { confetti(); toast("All done! 🎉"); } }, "Finish 🎉"))),
+    h("div", { class: "hero" }, card)));
+  requestAnimationFrame(() => { const f = track.querySelector(".sl-fill"); if (f) setTimeout(() => f.style.width = "100%", 300); });
+  confetti();
+});
+
+/* refresh a mini preview in-place */
+function refreshMini(wrap) {
+  const old = wrap.querySelector(".helpercard");
+  if (old) old.replaceWith(helperCardEl({ mini: true }));
+}
+
+/* ============================================================
+   Confetti
+   ============================================================ */
+function confetti() {
+  if (prefs.reduceMotion || document.body.classList.contains("reduce-motion")) return;
+  const stage = document.getElementById("stage");
+  const colors = ["#1EAFA1", "#4CCFDB", "#FFD96A", "#FF8E7A", "#A995E8", "#8CCCF4"];
+  for (let i = 0; i < 46; i++) {
+    const c = h("div", { class: "confetti-piece", style: {
+      left: (Math.random() * 100) + "%",
+      background: colors[i % colors.length],
+      animationDuration: (2.4 + Math.random() * 1.6) + "s",
+      animationDelay: (Math.random() * 0.5) + "s",
+      transform: "rotate(" + (Math.random() * 360) + "deg)"
+    } });
+    stage.appendChild(c);
+    setTimeout(() => c.remove(), 4600);
+  }
+}
+
+/* ============================================================
+   Scene engine + navigation
+   ============================================================ */
+let current = 0;
+const stage = document.getElementById("stage");
+
+function partName(n) { for (const p of PARTS) if (n <= p.end) return p.name; return ""; }
+
+function renderScene(index, dir) {
+  const def = SCENES[index];
+  const scene = h("div", { class: "scene " + (dir === "back" ? "enter-left" : "enter-right") });
+  scene.style.setProperty("--accent", def.accents[0]);
+  scene.style.setProperty("--accent-2", def.accents[1]);
+  scene.style.setProperty("--accent-3", def.accents[2]);
+  scene.appendChild(makeBg(def.bg));
+  const content = h("div", { class: "scene__content" });
+  scene.appendChild(content);
+  def.build(content);
+
+  const prev = stage.querySelector(".scene.is-active");
+  stage.appendChild(scene);
+  requestAnimationFrame(() => {
+    scene.classList.remove("enter-left", "enter-right");
+    scene.classList.add("is-active");
+    if (prev) {
+      prev.classList.remove("is-active");
+      prev.classList.add(dir === "back" ? "leave-right" : "leave-left");
+      setTimeout(() => prev.remove(), 620);
+    }
+  });
+  updateNav();
+}
+
+function updateNav() {
+  const n = current + 1, total = SCENES.length;
+  document.getElementById("sceneCount").textContent = n + " / " + total;
+  document.getElementById("partLabel").textContent = partName(n);
+  document.getElementById("progressFill").style.width = Math.max(2, (n / total) * 100) + "%";
+  document.getElementById("btnBack").disabled = current === 0;
+  document.getElementById("btnNext").disabled = current === total - 1;
+}
+
+function go(index, dir) {
+  index = Math.max(0, Math.min(SCENES.length - 1, index));
+  if (index === current && stage.querySelector(".scene")) return;
+  const direction = dir || (index < current ? "back" : "forward");
+  current = index;
+  renderScene(index, direction);
+}
+function next() { if (current < SCENES.length - 1) go(current + 1, "forward"); }
+function back() { if (current > 0) go(current - 1, "back"); }
+
+/* ---------- wire controls ---------- */
+document.getElementById("btnNext").addEventListener("click", next);
+document.getElementById("btnBack").addEventListener("click", back);
+
+document.addEventListener("keydown", (e) => {
+  const tag = (e.target && e.target.tagName) || "";
+  if (tag === "TEXTAREA" || tag === "INPUT") return;
+  if (e.key === "ArrowRight") { e.preventDefault(); next(); }
+  else if (e.key === "ArrowLeft") { e.preventDefault(); back(); }
+});
+
+/* toolbar */
+const btnSound = document.getElementById("btnSound");
+const btnMotion = document.getElementById("btnMotion");
+btnSound.addEventListener("click", () => {
+  prefs.sound = !prefs.sound; savePrefs();
+  btnSound.setAttribute("aria-pressed", prefs.sound ? "true" : "false");
+  btnSound.querySelector(".tool__icon").textContent = prefs.sound ? "🔊" : "🔈";
+  if (prefs.sound) blip(760);
+});
+btnMotion.addEventListener("click", () => {
+  prefs.reduceMotion = !prefs.reduceMotion; savePrefs();
+  applyMotion();
+});
+function applyMotion() {
+  document.body.classList.toggle("reduce-motion", prefs.reduceMotion);
+  btnMotion.setAttribute("aria-pressed", prefs.reduceMotion ? "true" : "false");
+  btnMotion.querySelector(".tool__text").textContent = prefs.reduceMotion ? "Calm ✓" : "Calm";
+}
+document.getElementById("btnReset").addEventListener("click", () => {
+  const ok = window.confirm("Reset the lesson and clear your Helper Idea Card?");
+  if (!ok) return;
+  try { localStorage.removeItem(STORAGE_KEY); } catch (e) {}
+  state = Object.assign({}, defaultState);
+  session.chosenClassmate = "";
+  go(0, "back");
+  toast("Lesson reset");
+});
+document.getElementById("btnFull").addEventListener("click", () => {
+  if (!document.fullscreenElement) (document.documentElement.requestFullscreen || (() => {})).call(document.documentElement);
+  else (document.exitFullscreen || (() => {})).call(document);
+});
+
+/* ---------- init ---------- */
+btnSound.setAttribute("aria-pressed", prefs.sound ? "true" : "false");
+btnSound.querySelector(".tool__icon").textContent = prefs.sound ? "🔊" : "🔈";
+applyMotion();
+/* optional deep-link: ?scene=N (1-based) for review / teacher jump */
+let startIndex = 0;
+try {
+  const sp = new URLSearchParams(location.search).get("scene");
+  if (sp) startIndex = Math.max(0, Math.min(SCENES.length - 1, parseInt(sp, 10) - 1));
+} catch (e) {}
+go(startIndex, "forward");
+
+</script>
+</body>
+</html>

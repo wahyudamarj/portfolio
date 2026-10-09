@@ -1,0 +1,1509 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>Would You Trust an AI Referee? · G8 · M5 · S1</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@500;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+/* ============================================================
+   WOULD YOU TRUST AN AI REFEREE?  -  Playful Sports Editorial
+   Grade 8 · Module 5 · Session 1
+   EVENT -> SYSTEM OUTPUT -> HUMAN DECISION
+   ============================================================ */
+
+:root{
+  --sand:#FCF8F0; --deep-navy:#10222C; --navy:#1A3847; --teal:#008080;
+  --apricot:#F49E58; --coral:#E86849; --periwinkle:#7C84F7; --lime:#D9F75B;
+  --ink:#10222C; --ink-soft:#4a6472; --line:rgba(16,34,44,.12);
+  --fs:1;
+  --r-sm:12px; --r-md:18px; --r-lg:26px; --r-xl:34px;
+  --sh-1:0 6px 20px -12px rgba(16,34,44,.4);
+  --sh-2:0 18px 44px -24px rgba(16,34,44,.5);
+  --sh-3:0 34px 80px -34px rgba(16,34,44,.6);
+  --t-fast:.16s; --t-mid:.4s; --t-slow:.7s;
+  --ease:cubic-bezier(.4,0,.2,1);
+  --ease-out:cubic-bezier(.16,1,.3,1);
+  --chrome-h:clamp(62px,7.8vh,80px);
+  --safe-x:clamp(30px,5vw,86px);
+  --safe-top:clamp(20px,3.4vh,40px);
+}
+
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%;overflow:hidden}
+body{font-family:'Inter',system-ui,-apple-system,Segoe UI,sans-serif;color:var(--ink);
+  background:var(--sand);-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility}
+button{font-family:inherit}
+img{-webkit-user-drag:none;user-select:none}
+
+/* ---------- Z0 Atmosphere ---------- */
+#atmos{position:fixed;inset:0;z-index:0;pointer-events:none;
+  background:
+    radial-gradient(1500px 1100px at 84% -18%, rgba(244,158,88,.17), transparent 58%),
+    radial-gradient(1400px 1200px at 0% 118%, rgba(0,128,128,.11), transparent 58%),
+    radial-gradient(1200px 900px at 108% 108%, rgba(124,132,247,.09), transparent 58%),
+    var(--sand);}
+#atmos::after{content:"";position:absolute;inset:0;opacity:.30;mix-blend-mode:multiply;
+  background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='160' height='160'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/><feColorMatrix type='saturate' values='0'/></filter><rect width='100%25' height='100%25' filter='url(%23n)' opacity='0.03'/></svg>");}
+/* faint crowd atmosphere band (asset: stadium-crowd-layer) */
+#crowdband{position:fixed;left:0;right:0;bottom:0;height:34vh;z-index:0;pointer-events:none;opacity:.14;
+  object-fit:cover;object-position:center 30%;-webkit-mask-image:linear-gradient(180deg,transparent,#000 70%);
+  mask-image:linear-gradient(180deg,transparent,#000 70%)}
+
+/* ---------- App shell + scenes ---------- */
+#app{position:fixed;inset:0;z-index:1}
+.scene{position:absolute;inset:0;display:none;flex-direction:column;
+  padding:var(--safe-top) var(--safe-x) calc(var(--chrome-h) + clamp(10px,1.6vh,20px))}
+.scene.active{display:flex}
+/* fallback fade when View Transitions unavailable */
+html:not(.vt) .scene.active{animation:sceneIn .5s var(--ease) both}
+@keyframes sceneIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+
+/* ---------- View Transitions ---------- */
+::view-transition-old(root){animation:vtOut .34s var(--ease) both}
+::view-transition-new(root){animation:vtIn .44s var(--ease-out) both}
+@keyframes vtOut{to{opacity:0}}
+@keyframes vtIn{from{opacity:0;transform:scale(.992)}to{opacity:1;transform:none}}
+
+/* ---------- Shared head block ---------- */
+.head{max-width:min(900px,74vw);z-index:6;flex:0 0 auto}
+.head.wide{max-width:min(1200px,94vw)}
+.head.center{max-width:min(1000px,90vw);text-align:center;margin:0 auto}
+.eyebrow{font-family:'Sora',sans-serif;font-weight:700;
+  font-size:calc(clamp(12px,1.05vw,15px)*var(--fs));letter-spacing:.24em;text-transform:uppercase;color:var(--teal);
+  display:inline-flex;align-items:center;gap:.6em;margin-bottom:.55em}
+.eyebrow .dot{width:.62em;height:.62em;border-radius:50%;background:var(--apricot);display:inline-block;
+  box-shadow:0 0 0 4px rgba(244,158,88,.22)}
+.title{font-family:'Sora',sans-serif;font-weight:800;line-height:1.03;color:var(--navy);
+  font-size:calc(clamp(34px,4.5vw,62px)*var(--fs));letter-spacing:-.02em;text-wrap:balance}
+.instruct{margin-top:.6em;color:var(--ink-soft);font-weight:500;line-height:1.34;
+  font-size:calc(clamp(19px,1.95vw,28px)*var(--fs));max-width:32em;text-wrap:pretty}
+.instruct b{color:var(--coral);font-weight:700}
+.instruct .t{color:var(--teal);font-weight:700}
+.main{position:relative;flex:1 1 auto;min-height:0;display:flex;z-index:2}
+
+/* ============================================================
+   CHROME
+   ============================================================ */
+#progress{position:fixed;top:0;left:0;height:4px;width:0;z-index:40;
+  background:linear-gradient(90deg,var(--teal),var(--apricot));transition:width .5s var(--ease);border-radius:0 3px 3px 0}
+#chrome{position:fixed;left:0;right:0;bottom:0;height:var(--chrome-h);z-index:35;
+  display:grid;grid-template-columns:1fr auto 1fr;align-items:center;gap:12px;padding:0 clamp(14px,2.4vw,26px);
+  background:rgba(252,248,240,.86);backdrop-filter:blur(14px) saturate(1.2);-webkit-backdrop-filter:blur(14px) saturate(1.2);
+  border-top:1px solid var(--line)}
+.brand{display:flex;align-items:center;gap:12px;justify-self:start;min-width:0}
+.logobox{background:#fff;border-radius:12px;padding:7px 13px;display:flex;align-items:center;box-shadow:0 3px 12px rgba(16,34,44,.12)}
+.logobox img{height:clamp(18px,2.3vh,24px);display:block}
+.copyright{justify-self:center;font-size:clamp(10px,1.1vw,13px);color:var(--ink-soft);white-space:nowrap;font-weight:500}
+.nav{display:flex;align-items:center;gap:8px;justify-self:end}
+.navbtn{border:1px solid var(--line);background:rgba(255,255,255,.72);color:var(--navy);cursor:pointer;
+  border-radius:12px;font-weight:600;display:inline-flex;align-items:center;gap:7px;
+  height:clamp(40px,4.9vh,48px);padding:0 clamp(13px,1.6vw,19px);font-size:clamp(13px,1.25vw,16px);
+  transition:transform var(--t-fast) var(--ease),background .15s,box-shadow .15s}
+.navbtn:hover{background:#fff;box-shadow:var(--sh-1)}
+.navbtn:active{transform:translateY(1px)}
+.navbtn:disabled{opacity:.32;cursor:not-allowed;box-shadow:none}
+.navbtn.primary{background:var(--teal);color:#fff;border-color:transparent}
+.navbtn.primary:hover{background:#0a6f6f}
+.fontgroup{display:flex;gap:5px;align-items:center;margin-right:2px}
+.fontgroup .navbtn{height:clamp(34px,4.2vh,40px);width:clamp(34px,4.2vh,40px);padding:0;justify-content:center}
+:focus-visible{outline:3px solid var(--periwinkle);outline-offset:2px;border-radius:6px}
+@media(max-width:780px){.copyright{display:none}#chrome{grid-template-columns:auto 1fr}.brand{grid-column:1}.nav{grid-column:2}}
+
+/* ============================================================
+   MEDIA TREATMENTS
+   ============================================================ */
+/* cinematic frame */
+.cine{position:relative;border-radius:var(--r-xl);overflow:hidden;line-height:0;
+  box-shadow:var(--sh-3);background:#0e2731}
+.cine img{display:block;width:100%;height:100%;object-fit:cover;opacity:0;transition:opacity .7s var(--ease)}
+.cine img.ok{opacity:1}
+.cine.contain img{object-fit:contain;background:linear-gradient(160deg,#173a48,#0f2b36)}
+/* color aura behind cinematic media (cheap media-glow) */
+.aura{position:absolute;border-radius:50%;filter:blur(64px);pointer-events:none;z-index:0;opacity:.6;
+  background:radial-gradient(circle at 50% 45%,var(--auraC,rgba(0,128,128,.4)),transparent 70%)}
+/* blurred-duplicate glow (used sparingly, JS mounts a copy) */
+.glowcopy{position:absolute;inset:-6%;z-index:-1;object-fit:cover;filter:blur(30px) saturate(1.2);
+  opacity:.45;border-radius:50%;transform:scale(1.05)}
+/* seamless edge blend for atmospheric photos */
+.blend{-webkit-mask-image:linear-gradient(90deg,transparent,#000 6%,#000 94%,transparent),
+    linear-gradient(180deg,transparent,#000 7%,#000 93%,transparent);
+  -webkit-mask-composite:source-in;mask-composite:intersect;
+  mask-image:linear-gradient(90deg,transparent,#000 6%,#000 94%,transparent),
+    linear-gradient(180deg,transparent,#000 7%,#000 93%,transparent)}
+/* floating cutout */
+.cut{position:relative;display:block;pointer-events:none;filter:drop-shadow(0 22px 26px rgba(16,34,44,.32))}
+.cut img{display:block;width:100%;height:auto;opacity:0;transition:opacity .6s var(--ease)}
+.cut img.ok{opacity:1}
+.float{animation:floaty 6s ease-in-out infinite}
+.float.d1{animation-delay:-1.5s}.float.d2{animation-delay:-3s}.float.d3{animation-delay:-4.5s}
+@keyframes floaty{0%,100%{transform:translateY(0)}50%{transform:translateY(-14px)}}
+/* fallback panel for any failed image */
+.fallback{position:absolute;inset:0;z-index:1;display:none;flex-direction:column;align-items:center;justify-content:center;
+  gap:.5em;text-align:center;padding:8%;background:linear-gradient(160deg,#1f4353,#12303d)}
+.fallback.show{display:flex}
+.fallback .pl{font-family:'Sora';font-weight:700;color:rgba(252,248,240,.94);font-size:calc(clamp(15px,1.5vw,20px)*var(--fs))}
+.fallback svg{width:clamp(44px,7vw,84px);opacity:.85}
+
+/* ============================================================
+   SCENE 1 - COVER
+   ============================================================ */
+#s1{padding:0}
+.cover{position:relative;flex:1;display:grid;grid-template-columns:1.06fr .94fr;align-items:center;gap:clamp(10px,3vw,54px);
+  padding:var(--safe-top) var(--safe-x) calc(var(--chrome-h) + clamp(10px,1.6vh,20px))}
+.cover-copy{z-index:5;display:flex;flex-direction:column;gap:clamp(14px,2.6vh,30px)}
+.cover-meta{font-family:'Sora';font-weight:700;letter-spacing:.3em;text-transform:uppercase;color:var(--teal);
+  font-size:calc(clamp(13px,1.25vw,17px)*var(--fs));display:flex;align-items:center;gap:.7em;
+  opacity:0;transform:translateY(10px)}
+.cover-meta.in{opacity:1;transform:none;transition:.7s var(--ease-out)}
+.cover-meta .wh{width:1.5em;height:1.5em}
+.cover-title{font-family:'Sora';font-weight:800;color:var(--navy);line-height:.94;letter-spacing:-.03em;
+  font-size:calc(clamp(50px,8.6vw,112px)*var(--fs))}
+.cover-title .ln{display:block;overflow:hidden}
+.cover-title .ln > span{display:block;transform:translateY(105%)}
+.cover-title .ln > span.in{transform:none;transition:transform .8s var(--ease-out)}
+.cover-title .ai{color:var(--coral)}
+.cover-visual{position:relative;height:100%;display:flex;align-items:center;justify-content:center;min-height:0}
+.cover-frame{position:relative;width:100%;height:min(80vh,100%);max-height:100%;
+  opacity:0;transform:scale(1.06)}
+.cover-frame.in{opacity:1;transform:none;transition:opacity 1s var(--ease-out),transform 1.2s var(--ease-out)}
+.cover-ball{position:absolute;left:-5%;bottom:6%;width:clamp(90px,13vw,180px);z-index:6;
+  opacity:0;transform:translateY(30px) rotate(-20deg)}
+.cover-ball.in{opacity:1;transform:none;transition:opacity .7s .3s var(--ease-out),transform 1s .3s var(--ease-out)}
+.cover-line{position:absolute;left:0;bottom:2%;height:6px;width:0;background:linear-gradient(90deg,var(--lime),transparent);
+  border-radius:3px;z-index:5}
+.cover-line.in{width:60%;transition:width 1.1s .5s var(--ease-out)}
+@media(max-width:900px){.cover{grid-template-columns:1fr;gap:10px}.cover-visual{order:2}.cover-frame{height:min(44vh,100%)}.cover-ball{width:90px}}
+
+/* ============================================================
+   SCENE 2 - OBJECTIVES  (learning journey)
+   ============================================================ */
+.plan .main{flex-direction:column;justify-content:center;gap:clamp(10px,1.8vh,22px)}
+.jrow{display:flex;align-items:center;gap:clamp(10px,1.5vw,22px);width:100%;max-width:1180px;margin:0 auto;
+  opacity:0;transform:translateX(-14px)}
+.jrow.in{opacity:1;transform:none;transition:.6s var(--ease-out)}
+.jnum{font-family:'Sora';font-weight:800;color:var(--jc,var(--teal));line-height:1;letter-spacing:-.03em;
+  font-size:calc(clamp(34px,4.4vw,64px)*var(--fs));flex:0 0 auto;width:1.7em;text-align:right}
+.jbar{width:5px;align-self:stretch;border-radius:3px;background:var(--jc,var(--teal));opacity:.5;flex:0 0 auto}
+.jtext{font-family:'Sora';font-weight:700;color:var(--navy);line-height:1.16;
+  font-size:calc(clamp(19px,2vw,30px)*var(--fs))}
+.jtext .verb{color:var(--jc,var(--teal))}
+@media(max-height:720px){.jtext{font-size:calc(clamp(17px,1.7vw,24px)*var(--fs))}.jnum{font-size:calc(clamp(28px,3.4vw,46px)*var(--fs))}}
+
+/* ============================================================
+   SCENE 3 - STUDENT IDENTITY
+   ============================================================ */
+.identity .main{display:grid;grid-template-columns:1.02fr .98fr;align-items:center;gap:clamp(18px,3vw,54px)}
+.id-form{display:flex;flex-direction:column;gap:clamp(14px,2.4vh,26px);justify-content:center}
+.namefield input{font-family:'Sora';font-weight:700;color:var(--navy);font-size:calc(clamp(26px,3.4vw,48px)*var(--fs));
+  background:#fff;border:2px solid var(--line);border-bottom:4px solid var(--teal);border-radius:var(--r-md);
+  padding:.35em .55em;width:100%;outline:none;transition:border-color .2s,box-shadow .2s}
+.namefield input:focus{border-color:var(--teal);box-shadow:0 8px 30px -16px rgba(0,128,128,.6)}
+.namefield input::placeholder{color:#b8c4c9;font-weight:600}
+.bigbtn{align-self:flex-start;background:var(--coral);color:#fff;border:none;cursor:pointer;font-family:'Sora';font-weight:700;
+  border-radius:var(--r-md);font-size:calc(clamp(17px,1.7vw,24px)*var(--fs));padding:.7em 1.4em;
+  box-shadow:0 14px 30px -14px rgba(232,104,73,.75);display:inline-flex;align-items:center;gap:.5em;
+  transition:transform var(--t-fast) var(--ease),box-shadow .2s,background .2s}
+.bigbtn:hover{transform:translateY(-2px);box-shadow:0 20px 38px -16px rgba(232,104,73,.8)}
+.bigbtn:active{transform:translateY(1px)}
+.bigbtn.teal{background:var(--teal);box-shadow:0 14px 30px -14px rgba(0,128,128,.6)}
+.bigbtn:disabled{opacity:.4;cursor:not-allowed;transform:none;box-shadow:none}
+.id-visual{position:relative;height:100%;display:flex;align-items:flex-end;justify-content:center;min-height:0}
+.id-student{position:relative;height:min(74vh,100%);z-index:2;opacity:0;transform:translateY(24px)}
+.id-student.in{opacity:1;transform:none;transition:.8s var(--ease-out)}
+.id-student img{height:100%;width:auto;object-fit:contain;filter:drop-shadow(0 26px 30px rgba(16,34,44,.34))}
+.credential{position:absolute;right:-2%;top:8%;z-index:4;background:linear-gradient(155deg,#14333f,#0f2733);color:#fff;
+  border-radius:var(--r-lg);padding:clamp(16px,2.4vh,26px);width:min(330px,42%);box-shadow:var(--sh-3);
+  border:1px solid rgba(255,255,255,.1);overflow:hidden;opacity:0;transform:scale(.86) translateY(16px)}
+.credential.reveal{opacity:1;transform:none;transition:opacity .6s var(--ease-out),transform .6s var(--ease-out)}
+.credential::before{content:"";position:absolute;top:-40%;left:-30%;width:70%;height:180%;
+  background:linear-gradient(90deg,transparent,rgba(217,247,91,.28),transparent);transform:rotate(18deg);animation:sweep 3.4s var(--ease) .5s}
+@keyframes sweep{0%{left:-40%}60%,100%{left:130%}}
+.cred-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:1em;gap:.6em}
+.cred-badge{width:clamp(34px,4vw,48px);height:clamp(34px,4vw,48px);border-radius:12px;background:var(--lime);
+  display:flex;align-items:center;justify-content:center;overflow:hidden}
+.cred-badge img{width:78%;height:78%;object-fit:contain}
+.cred-org{font-family:'Sora';font-weight:700;letter-spacing:.12em;text-transform:uppercase;
+  font-size:calc(clamp(10px,.95vw,13px)*var(--fs));color:var(--lime);text-align:right;line-height:1.3}
+.cred-name{font-family:'Sora';font-weight:800;line-height:1.02;letter-spacing:-.02em;
+  font-size:calc(clamp(24px,3vw,40px)*var(--fs));word-break:break-word}
+.cred-role{margin-top:.3em;font-size:calc(clamp(12px,1.1vw,16px)*var(--fs));color:rgba(252,248,240,.8);font-weight:500}
+.cred-status{margin-top:1em;display:inline-flex;align-items:center;gap:.5em;font-family:'Sora';font-weight:700;letter-spacing:.16em;
+  font-size:calc(clamp(11px,1vw,14px)*var(--fs))}
+.cred-status .live{width:.7em;height:.7em;border-radius:50%;background:var(--lime);animation:pulse 1.8s infinite}
+@keyframes pulse{0%{box-shadow:0 0 0 0 rgba(217,247,91,.6)}70%{box-shadow:0 0 0 10px rgba(217,247,91,0)}100%{box-shadow:0 0 0 0 rgba(217,247,91,0)}}
+@media(max-width:900px){.identity .main{grid-template-columns:1fr;gap:12px}.id-visual{order:2}.id-student{height:min(38vh,100%)}.credential{position:relative;right:auto;top:auto;width:min(340px,90%);margin:0 auto}}
+
+/* ============================================================
+   SCENE 4 / 16 - KINETIC
+   ============================================================ */
+.kinetic .main{flex-direction:column;align-items:center;justify-content:center;text-align:center;gap:clamp(10px,2vh,22px)}
+.k-small{font-family:'Sora';font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:var(--teal);
+  font-size:calc(clamp(15px,1.6vw,22px)*var(--fs))}
+.k-mega{font-family:'Sora';font-weight:800;color:var(--navy);line-height:.96;letter-spacing:-.03em;
+  font-size:calc(clamp(52px,9vw,110px)*var(--fs))}
+.k-mega .ac{color:var(--coral)}
+.k-sub{font-size:calc(clamp(20px,2.3vw,32px)*var(--fs));color:var(--ink-soft);font-weight:500}
+.k-line{opacity:0;transform:translateY(22px)}
+.k-line.in{opacity:1;transform:none;transition:opacity .6s var(--ease),transform .6s var(--ease-out)}
+.k-goalframe{position:absolute;right:4%;bottom:8%;width:clamp(150px,22vw,320px);z-index:1;opacity:0;transform:translateY(20px)}
+.k-goalframe.in{opacity:.9;transform:none;transition:1s .3s var(--ease-out)}
+.k-lens{position:absolute;left:5%;bottom:10%;width:clamp(120px,16vw,220px);z-index:1;opacity:0;transform:scale(.8)}
+.k-lens.in{opacity:1;transform:none;transition:1s .3s var(--ease-out)}
+
+/* ============================================================
+   SCENE 5 / 9 - VIDEO
+   ============================================================ */
+.videoscene .main{flex-direction:column;align-items:center;gap:clamp(10px,1.8vh,18px)}
+.videowrap{position:relative;flex:1 1 auto;min-height:0;width:100%;display:flex;align-items:center;justify-content:center}
+.videoframe{position:relative;border-radius:var(--r-xl);overflow:hidden;box-shadow:var(--sh-3);background:#0b1a22;line-height:0;
+  max-width:100%;max-height:100%;aspect-ratio:16/9;width:auto;height:min(100%,calc((100vw - 2*var(--safe-x))*9/16))}
+.videoframe video{display:block;width:100%;height:100%;object-fit:contain;background:#0b1a22}
+.vidglow{position:absolute;inset:-3% -2%;z-index:-1;border-radius:50%;filter:blur(50px);opacity:.4;
+  background:radial-gradient(circle,var(--teal),transparent 70%)}
+.vprompt{font-family:'Sora';font-weight:700;color:var(--navy);text-align:center;line-height:1.1;flex:0 0 auto;
+  font-size:calc(clamp(22px,2.7vw,38px)*var(--fs))}
+.vprompt .q{color:var(--coral)}
+.playhint{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;z-index:3;background:rgba(11,26,34,.34);cursor:pointer;transition:opacity .3s}
+.playhint.hide{opacity:0;pointer-events:none}
+.playhint .pbtn{width:clamp(64px,8vw,104px);height:clamp(64px,8vw,104px);border-radius:50%;background:rgba(255,255,255,.94);
+  display:flex;align-items:center;justify-content:center;color:var(--teal);font-size:clamp(24px,3vw,40px);box-shadow:var(--sh-2);animation:pop .5s var(--ease-out)}
+@keyframes pop{from{transform:scale(.7);opacity:0}to{transform:scale(1);opacity:1}}
+/* reveal AFTER video (never over it) */
+.vreveal{flex:0 0 auto;display:flex;align-items:center;justify-content:center;gap:.4em;font-family:'Sora';font-weight:800;
+  color:var(--teal);font-size:calc(clamp(26px,3.4vw,52px)*var(--fs));opacity:0;transform:translateY(10px)}
+.vreveal.in{opacity:1;transform:none;transition:.6s var(--ease-out)}
+
+/* ============================================================
+   SCENE 6 / 8 - VOTE
+   ============================================================ */
+.vote .main{flex-direction:column;align-items:center;justify-content:center;gap:clamp(16px,3vh,36px)}
+.voterow{display:flex;gap:clamp(16px,3vw,44px);flex-wrap:wrap;justify-content:center}
+.votebtn{cursor:pointer;border:3px solid transparent;border-radius:var(--r-xl);background:#fff;box-shadow:var(--sh-2);
+  padding:clamp(20px,4vh,46px) clamp(30px,5vw,72px);display:flex;flex-direction:column;align-items:center;gap:.3em;
+  min-width:clamp(200px,26vw,300px);transition:transform var(--t-fast) var(--ease),box-shadow .2s,border-color .2s}
+.votebtn:hover{transform:translateY(-4px);box-shadow:var(--sh-3)}
+.votebtn:active{transform:translateY(0)}
+.votebtn .ve{font-size:calc(clamp(46px,7vw,88px)*var(--fs));line-height:1}
+.votebtn .vl{font-family:'Sora';font-weight:800;letter-spacing:.02em;font-size:calc(clamp(24px,2.8vw,40px)*var(--fs))}
+.votebtn.goal{color:var(--teal)}
+.votebtn.goal.sel{border-color:var(--teal);background:linear-gradient(180deg,#fff,#e9f6f6)}
+.votebtn.nogoal{color:var(--coral)}
+.votebtn.nogoal.sel{border-color:var(--coral);background:linear-gradient(180deg,#fff,#fdeee9)}
+.votenote{font-family:'Sora';font-weight:700;color:var(--navy);text-align:center;min-height:1.4em;
+  font-size:calc(clamp(18px,2vw,28px)*var(--fs));opacity:0;transition:opacity .4s}
+.votenote.show{opacity:1}
+.handhint{color:var(--ink-soft);font-weight:500;font-size:calc(clamp(14px,1.3vw,18px)*var(--fs));display:inline-flex;align-items:center;gap:.5em;
+  background:#fff;border:1px solid var(--line);border-radius:999px;padding:.5em 1.1em;box-shadow:var(--sh-1)}
+
+/* ============================================================
+   SCENE 7 - PEER DISCUSSION
+   ============================================================ */
+.discuss .main{display:grid;grid-template-columns:1fr auto;align-items:center;gap:clamp(20px,4vw,60px)}
+.timerwrap{display:flex;flex-direction:column;align-items:center;gap:.7em}
+.ring{--p:0;width:clamp(150px,20vw,240px);height:clamp(150px,20vw,240px);border-radius:50%;
+  background:conic-gradient(var(--teal) calc(var(--p)*1%), rgba(0,128,128,.14) 0);display:flex;align-items:center;justify-content:center;transition:background .3s linear}
+.ring .inner{width:78%;height:78%;border-radius:50%;background:var(--sand);display:flex;align-items:center;justify-content:center;box-shadow:inset 0 2px 10px rgba(16,34,44,.08)}
+.ring .num{font-family:'Sora';font-weight:800;color:var(--navy);font-size:calc(clamp(40px,5vw,72px)*var(--fs))}
+@media(max-width:900px){.discuss .main{grid-template-columns:1fr;justify-items:center;text-align:center}}
+
+/* ============================================================
+   CHAPTER DIVIDERS
+   ============================================================ */
+.chapter{align-items:center;justify-content:center;text-align:center;overflow:hidden}
+.chapter .numeral{position:absolute;top:50%;left:50%;transform:translate(-50%,-52%);font-family:'Sora';font-weight:800;color:var(--navy);
+  font-size:min(62vh,52vw);line-height:1;opacity:.055;z-index:0;pointer-events:none;letter-spacing:-.04em}
+.chapter .cimg{position:absolute;right:0;top:0;height:100%;width:46%;z-index:0;opacity:0}
+.chapter .cimg.in{opacity:1;transition:opacity 1.1s var(--ease)}
+.chapter .cimg img{width:100%;height:100%;object-fit:cover;object-position:center;
+  -webkit-mask-image:linear-gradient(90deg,transparent,#000 55%);mask-image:linear-gradient(90deg,transparent,#000 55%)}
+.chapter .cwrap{position:relative;z-index:5;display:flex;flex-direction:column;align-items:center;gap:.4em;max-width:min(1000px,92vw)}
+.chapter.left .cwrap{align-items:flex-start;text-align:left;margin-right:auto;max-width:min(680px,60vw)}
+.chapter .clabel{font-family:'Sora';font-weight:700;letter-spacing:.3em;text-transform:uppercase;color:var(--teal);font-size:calc(clamp(13px,1.3vw,18px)*var(--fs))}
+.chapter .ctitle{font-family:'Sora';font-weight:800;color:var(--navy);line-height:.98;letter-spacing:-.02em;
+  font-size:calc(clamp(44px,7.6vw,90px)*var(--fs))}
+.chapter .cinstruct{color:var(--ink-soft);font-weight:500;margin-top:.35em;font-size:calc(clamp(17px,1.8vw,26px)*var(--fs));max-width:22em}
+.chapmotif{position:absolute;z-index:1;pointer-events:none}
+
+/* ============================================================
+   THREE LAYERS (scene 12)
+   ============================================================ */
+.layers .main{flex-direction:column;align-items:center;justify-content:center;gap:clamp(8px,1.6vh,18px)}
+.layerstack{display:flex;flex-direction:column;align-items:center;gap:clamp(6px,1.2vh,14px);width:min(780px,92vw)}
+.layercard{width:100%;background:#fff;border:1px solid var(--line);border-left:8px solid var(--lcol,var(--teal));border-radius:var(--r-md);
+  padding:clamp(12px,2vh,22px) clamp(16px,2.4vw,30px);box-shadow:var(--sh-1);opacity:0;transform:translateY(18px);display:flex;flex-direction:column;gap:.2em}
+.layercard.in{opacity:1;transform:none;transition:opacity .55s var(--ease),transform .55s var(--ease-out)}
+.layercard .llab{font-family:'Sora';font-weight:800;letter-spacing:.06em;color:var(--lcol,var(--teal));font-size:calc(clamp(15px,1.5vw,21px)*var(--fs))}
+.layercard .ltext{color:var(--navy);font-weight:500;font-size:calc(clamp(17px,1.7vw,25px)*var(--fs))}
+.laydown{color:var(--apricot);font-weight:800;font-size:calc(clamp(18px,2vw,28px)*var(--fs));opacity:0;transition:opacity .4s}
+.laydown.in{opacity:1}
+.layereq{font-family:'Sora';font-weight:800;color:var(--navy);margin-top:.2em;letter-spacing:.01em;
+  font-size:calc(clamp(20px,2.6vw,38px)*var(--fs));opacity:0;transform:scale(.9);text-align:center}
+.layereq.in{opacity:1;transform:none;transition:opacity .5s var(--ease-out),transform .5s var(--ease-out)}
+.layereq b{color:var(--coral)}
+
+/* ============================================================
+   MINI CHECK BOARDS
+   ============================================================ */
+.check .main{flex-direction:column;gap:clamp(10px,2vh,20px);min-height:0}
+.check-body{flex:1 1 auto;min-height:0;display:flex;flex-direction:column;gap:clamp(10px,1.8vh,18px)}
+.feedback{font-family:'Sora';font-weight:700;text-align:center;min-height:1.4em;font-size:calc(clamp(16px,1.7vw,24px)*var(--fs));opacity:0;transition:opacity .3s}
+.feedback.show{opacity:1}
+.feedback.good{color:var(--teal)}.feedback.hint{color:var(--apricot)}
+
+/* Sort (scene 13) */
+.sortlayout{display:grid;grid-template-columns:.82fr 1.18fr;gap:clamp(14px,2.4vw,30px);flex:1 1 auto;min-height:0}
+.sortphoto{position:relative;border-radius:var(--r-lg);overflow:hidden;box-shadow:var(--sh-2);min-height:0}
+.sortphoto img{width:100%;height:100%;object-fit:cover;object-position:center}
+.sortphoto .cap{position:absolute;left:0;right:0;bottom:0;padding:1em;color:#fff;font-family:'Sora';font-weight:700;
+  font-size:calc(clamp(14px,1.4vw,19px)*var(--fs));background:linear-gradient(180deg,transparent,rgba(11,26,34,.82))}
+.sortwrap{display:grid;grid-template-rows:auto 1fr;gap:clamp(10px,1.8vh,16px);min-height:0}
+.tray{display:flex;gap:clamp(8px,1.2vw,14px);justify-content:center;flex-wrap:wrap}
+.stmt{cursor:pointer;background:#fff;border:2px solid var(--line);border-radius:var(--r-md);padding:clamp(9px,1.4vh,14px) clamp(12px,1.6vw,20px);
+  box-shadow:var(--sh-1);max-width:300px;font-weight:600;color:var(--navy);font-size:calc(clamp(13px,1.3vw,18px)*var(--fs));line-height:1.22;
+  transition:transform var(--t-fast) var(--ease),box-shadow .2s,border-color .2s,opacity .3s}
+.stmt:hover{transform:translateY(-2px);box-shadow:var(--sh-2)}
+.stmt.sel{border-color:var(--periwinkle);box-shadow:0 0 0 4px rgba(124,132,247,.2)}
+.stmt.placed{display:none}
+.stmt.shake{animation:shake .4s}
+@keyframes shake{0%,100%{transform:translateX(0)}25%{transform:translateX(-7px)}75%{transform:translateX(7px)}}
+.buckets{display:grid;grid-template-columns:repeat(3,1fr);gap:clamp(8px,1.2vw,14px);min-height:0}
+.bucket{background:linear-gradient(180deg,#fffdf8,#f7efe0);border:2px dashed var(--bcol,var(--teal));border-radius:var(--r-lg);
+  padding:clamp(9px,1.6vh,16px);display:flex;flex-direction:column;gap:.5em;transition:background .2s,box-shadow .2s;min-height:0}
+.bucket.hot{box-shadow:0 0 0 4px rgba(0,128,128,.18);background:linear-gradient(180deg,#fff,#eef7f6)}
+.bucket .bhead{font-family:'Sora';font-weight:800;color:var(--bcol,var(--teal));text-align:center;font-size:calc(clamp(12px,1.25vw,17px)*var(--fs));letter-spacing:.03em;line-height:1.1}
+.bucket .drop{flex:1 1 auto;display:flex;flex-direction:column;gap:.45em;min-height:clamp(50px,8vh,90px)}
+.chip-in{background:#fff;border-radius:12px;padding:.55em .75em;font-weight:600;color:var(--navy);font-size:calc(clamp(12px,1.2vw,16px)*var(--fs));
+  box-shadow:var(--sh-1);line-height:1.2;border-left:5px solid var(--bcol,var(--teal));animation:snap .4s var(--ease-out)}
+@keyframes snap{0%{transform:scale(1.15);box-shadow:0 0 0 6px rgba(217,247,91,.5)}100%{transform:scale(1);box-shadow:var(--sh-1)}}
+@media(max-width:900px){.sortlayout{grid-template-columns:1fr}.sortphoto{display:none}}
+
+/* floating side character (scenes 18, 23) */
+.sidechar{position:absolute;left:clamp(12px,3vw,64px);bottom:calc(var(--chrome-h) + 8px);height:min(58vh,520px);z-index:1;pointer-events:none;opacity:0;transform:translateY(22px)}
+.sidechar.in{opacity:1;transform:none;transition:.8s var(--ease-out)}
+.sidechar img{height:100%;width:auto;object-fit:contain;filter:drop-shadow(0 24px 28px rgba(16,34,44,.3))}
+@media(max-width:1120px){.sidechar{display:none}}
+/* Reorder (scene 18) */
+.reorder{display:flex;flex-direction:column;gap:clamp(8px,1.4vh,14px);width:min(640px,90vw);margin:0 auto}
+.rstep{display:flex;align-items:center;gap:clamp(10px,1.6vw,18px);background:#fff;border:2px solid var(--line);border-radius:var(--r-md);
+  padding:clamp(9px,1.5vh,15px) clamp(14px,1.8vw,22px);box-shadow:var(--sh-1);transition:transform .35s var(--ease-out),border-color .2s,background .2s}
+.rstep .ricon{width:clamp(38px,4vw,54px);height:clamp(38px,4vw,54px);flex:0 0 auto;border-radius:12px;background:var(--sand);
+  display:flex;align-items:center;justify-content:center;font-size:clamp(20px,2.2vw,28px);overflow:hidden}
+.rstep .ricon img{width:80%;height:80%;object-fit:contain}
+.rstep .rlabel{flex:1 1 auto;font-family:'Sora';font-weight:700;color:var(--navy);font-size:calc(clamp(15px,1.5vw,22px)*var(--fs))}
+.rstep .rctl{display:flex;flex-direction:column;gap:3px}
+.rstep .rbtn{width:clamp(30px,3vw,38px);height:clamp(22px,2.2vh,28px);border:1px solid var(--line);background:var(--sand);border-radius:8px;cursor:pointer;
+  color:var(--navy);font-weight:800;line-height:1;display:flex;align-items:center;justify-content:center;transition:background .15s}
+.rstep .rbtn:hover{background:#fff}
+.rstep .rbtn:disabled{opacity:.3;cursor:not-allowed}
+.rstep.correct{border-color:var(--teal);background:linear-gradient(180deg,#fff,#eef7f6)}
+.rstep.flash{animation:snap .5s var(--ease-out)}
+
+/* Two-choice cards */
+.choicerow{display:flex;gap:clamp(14px,2.4vw,30px);justify-content:center;flex-wrap:wrap}
+.choice{cursor:pointer;background:#fff;border:3px solid var(--line);border-radius:var(--r-lg);padding:clamp(16px,2.6vh,30px) clamp(20px,2.6vw,38px);
+  box-shadow:var(--sh-2);text-align:center;max-width:360px;display:flex;flex-direction:column;gap:.4em;
+  transition:transform var(--t-fast) var(--ease),box-shadow .2s,border-color .2s,background .2s}
+.choice:hover{transform:translateY(-3px);box-shadow:var(--sh-3)}
+.choice .cico{font-size:calc(clamp(30px,4vw,52px)*var(--fs));line-height:1}
+.choice .ctxt{font-family:'Sora';font-weight:700;color:var(--navy);line-height:1.1;font-size:calc(clamp(17px,1.7vw,24px)*var(--fs))}
+.choice.right{border-color:var(--teal);background:linear-gradient(180deg,#fff,#eef7f6)}
+.choice.wrong{border-color:var(--apricot);animation:shake .4s}
+.choice.dim{opacity:.5}
+
+/* ============================================================
+   DIAGRAM / composition scenes
+   ============================================================ */
+.stagewrap{position:relative;flex:1 1 auto;min-height:0;width:100%;display:flex;align-items:center;justify-content:center}
+.pipeline{display:flex;align-items:center;justify-content:center;gap:clamp(6px,1vw,14px);flex-wrap:wrap}
+.pnode{background:#fff;border:2px solid var(--line);border-radius:var(--r-md);padding:clamp(8px,1.4vh,14px) clamp(12px,1.4vw,20px);box-shadow:var(--sh-1);
+  font-family:'Sora';font-weight:700;color:var(--navy);text-align:center;line-height:1.1;font-size:calc(clamp(12px,1.2vw,17px)*var(--fs));
+  opacity:.35;transition:opacity .3s,transform .3s,box-shadow .3s,border-color .3s}
+.pnode small{display:block;font-family:'Inter';font-weight:500;color:var(--ink-soft);font-size:.7em;margin-top:.2em}
+.pnode.lit{opacity:1;transform:translateY(-3px);box-shadow:var(--sh-2);border-color:var(--acol,var(--teal))}
+.pnode.done{opacity:1}
+.pnode.official{border-color:var(--periwinkle);--acol:var(--periwinkle)}
+.parr{color:var(--apricot);font-weight:800;font-size:calc(clamp(14px,1.6vw,24px)*var(--fs));opacity:.4;transition:opacity .3s}
+.parr.lit{opacity:1}
+
+/* scene 10 - the line */
+.linescene .main{display:grid;grid-template-columns:1.25fr .95fr;gap:clamp(16px,3vw,44px);align-items:center}
+.linephoto{position:relative;height:min(66vh,100%);border-radius:var(--r-xl);overflow:hidden;box-shadow:var(--sh-3)}
+.linephoto img{width:100%;height:100%;object-fit:cover;object-position:center}
+.line-anno{position:absolute;left:0;right:0;bottom:0;top:0;pointer-events:none}
+.line-strip{position:absolute;left:50%;top:0;bottom:0;width:5px;background:rgba(217,247,91,.0);transform:translateX(-50%);transition:background .4s}
+.line-verlabel{position:absolute;left:0;right:0;bottom:0;padding:1em;text-align:center;font-family:'Sora';font-weight:800;color:#fff;
+  font-size:calc(clamp(18px,2vw,28px)*var(--fs));background:linear-gradient(180deg,transparent,rgba(11,26,34,.85))}
+.line-verlabel .no{color:#ffb59f}.line-verlabel .yes{color:var(--lime)}
+.line-right{display:flex;flex-direction:column;gap:clamp(12px,2.4vh,24px);justify-content:center}
+.linediag{position:relative;width:100%;height:clamp(120px,20vh,190px);background:#fff;border:1px solid var(--line);border-radius:var(--r-lg);box-shadow:var(--sh-1);overflow:hidden}
+.linetoggle{display:flex;gap:10px;flex-wrap:wrap}
+.tgl{cursor:pointer;border:2px solid var(--line);background:#fff;border-radius:999px;padding:.5em 1.2em;font-family:'Sora';font-weight:700;color:var(--navy);
+  box-shadow:var(--sh-1);font-size:calc(clamp(13px,1.3vw,18px)*var(--fs));transition:all .2s}
+.tgl.on{background:var(--navy);color:#fff;border-color:var(--navy)}
+.rule{font-family:'Sora';font-weight:800;color:var(--navy);line-height:1.1;font-size:calc(clamp(20px,2.2vw,32px)*var(--fs))}
+.rule .t{color:var(--teal)}.rule b{color:var(--coral)}
+@media(max-width:960px){.linescene .main{grid-template-columns:1fr}.linephoto{height:min(40vh,100%)}}
+
+/* scene 15 cameras / 17 tracking / 20 offside - photo stage with overlays */
+.photostage{position:relative;flex:1 1 auto;min-height:0;width:100%;border-radius:var(--r-xl);overflow:hidden;box-shadow:var(--sh-3)}
+.photostage > img.bg{width:100%;height:100%;object-fit:cover;object-position:center;opacity:0;transition:opacity .7s}
+.photostage > img.bg.ok{opacity:1}
+.ov-cam{position:absolute;width:clamp(52px,7vw,96px);z-index:4;opacity:0;transform:scale(.7);transition:opacity .4s,transform .5s var(--ease-out);filter:drop-shadow(0 10px 14px rgba(0,0,0,.4))}
+.ov-cam.on{opacity:1;transform:none}
+.ov-cam img,.ov-cut > img{display:block;width:100%;height:auto}
+.beam{position:absolute;height:3px;transform-origin:left center;background:linear-gradient(90deg,rgba(217,247,91,.9),rgba(217,247,91,0));z-index:3;opacity:0;transition:opacity .4s}
+.beam.on{opacity:.9}
+.ov-cut{position:absolute;z-index:4;opacity:0;transform:translateY(16px);transition:opacity .5s,transform .6s var(--ease-out);filter:drop-shadow(0 16px 20px rgba(0,0,0,.4))}
+.ov-cut.on{opacity:1;transform:none}
+.ov-mark{position:absolute;z-index:5;width:clamp(44px,6vw,80px);height:clamp(44px,6vw,80px);border:3px solid var(--lime);border-radius:50%;
+  box-shadow:0 0 0 3px rgba(217,247,91,.28);opacity:0;transform:scale(.5);transition:opacity .3s,transform .4s var(--ease-out)}
+.ov-mark.on{opacity:1;transform:none}
+.ov-line{position:absolute;top:6%;bottom:6%;width:3px;background:repeating-linear-gradient(180deg,var(--periwinkle),var(--periwinkle) 10px,transparent 10px,transparent 18px);z-index:5;opacity:0;transition:opacity .4s}
+.ov-line.on{opacity:1}
+.ov-flag{position:absolute;z-index:6;font-family:'Sora';font-weight:800;color:#fff;background:var(--coral);border-radius:10px;padding:.25em .6em;
+  font-size:calc(clamp(14px,1.5vw,20px)*var(--fs));opacity:0;transform:translateY(-8px) scale(.8);transition:.4s var(--ease-out);box-shadow:var(--sh-2)}
+.ov-flag.on{opacity:1;transform:none}
+.ctrlbar{display:flex;gap:clamp(8px,1.4vw,16px);align-items:center;justify-content:center;flex:0 0 auto;flex-wrap:wrap}
+
+/* reveal tiles (scene 20) */
+.revealgrid{display:flex;gap:clamp(10px,1.6vw,20px);justify-content:center;flex-wrap:wrap}
+.revealtile{background:#fff;border:2px solid var(--line);border-radius:var(--r-md);box-shadow:var(--sh-1);padding:clamp(10px,1.8vh,18px) clamp(14px,1.8vw,24px);
+  display:flex;align-items:center;gap:.6em;opacity:0;transform:translateY(16px)}
+.revealtile.in{opacity:1;transform:none;transition:opacity .5s var(--ease),transform .5s var(--ease-out)}
+.revealtile .ri{width:clamp(34px,4vw,50px);height:clamp(34px,4vw,50px);flex:0 0 auto;display:flex;align-items:center;justify-content:center;font-size:calc(clamp(24px,3vw,38px)*var(--fs))}
+.revealtile .ri img{width:100%;height:100%;object-fit:contain}
+.revealtile .rt{font-family:'Sora';font-weight:700;color:var(--navy);font-size:calc(clamp(14px,1.4vw,20px)*var(--fs))}
+
+/* scene 17 - AI tracking two-zone (feed -> clean tracked data, no overlap) */
+.aitrack{display:grid;grid-template-columns:1fr auto 1.08fr;gap:clamp(10px,2vw,26px);align-items:stretch;flex:1 1 auto;min-height:0;width:100%}
+.zonelabel{position:absolute;top:10px;left:10px;z-index:6;font-family:'Sora';font-weight:800;letter-spacing:.1em;
+  font-size:calc(clamp(10px,1vw,13px)*var(--fs));text-transform:uppercase;background:rgba(16,34,44,.74);color:#fff;
+  padding:.35em .7em;border-radius:999px;backdrop-filter:blur(4px)}
+.feedpanel{position:relative;border-radius:var(--r-lg);overflow:hidden;box-shadow:var(--sh-2);min-height:0}
+.feedpanel img{width:100%;height:100%;object-fit:cover}
+.morpharrow{align-self:center;font-family:'Sora';font-weight:800;color:var(--apricot);font-size:calc(clamp(20px,2.4vw,36px)*var(--fs))}
+.trackpanel{position:relative;border-radius:var(--r-lg);overflow:hidden;min-height:0;box-shadow:var(--sh-2);
+  background:linear-gradient(180deg,#4aa666,#2f7d4c 72%,#276a41)}
+.trackpanel::before{content:"";position:absolute;inset:0;pointer-events:none;
+  background:repeating-linear-gradient(90deg,transparent,transparent 44px,rgba(255,255,255,.07) 44px,rgba(255,255,255,.07) 46px)}
+.tp-cut{position:absolute;bottom:7%;height:62%;z-index:3;opacity:0;transform:translateY(16px);
+  transition:opacity .5s,transform .6s var(--ease-out);filter:drop-shadow(0 14px 16px rgba(0,0,0,.35))}
+.tp-cut.on{opacity:1;transform:none}
+.tp-cut img{display:block;height:100%;width:auto}
+@media(max-width:1000px){.aitrack{grid-template-columns:1fr}.feedpanel,.morpharrow{display:none}}
+
+/* scene 20 - measurements (clear cards + framed photo, no overlap) */
+.measure2col{display:grid;grid-template-columns:1.02fr .98fr;gap:clamp(16px,3vw,40px);align-items:center;flex:1 1 auto;min-height:0}
+.measphoto{position:relative;height:min(60vh,100%);border-radius:var(--r-xl);overflow:hidden;box-shadow:var(--sh-3)}
+.measphoto img{width:100%;height:100%;object-fit:cover;object-position:center}
+.measphoto .scan{position:absolute;left:0;right:0;height:34%;top:-40%;pointer-events:none;
+  background:linear-gradient(180deg,transparent,rgba(217,247,91,.30),transparent);mix-blend-mode:screen;animation:scanmove 2.8s var(--ease) infinite}
+@keyframes scanmove{0%{top:-40%}100%{top:112%}}
+.measchip{position:absolute;top:12px;left:12px;z-index:4;font-family:'Sora';font-weight:800;letter-spacing:.1em;
+  font-size:calc(clamp(10px,1vw,13px)*var(--fs));text-transform:uppercase;background:rgba(16,34,44,.74);color:var(--lime);
+  padding:.35em .7em;border-radius:999px;display:flex;align-items:center;gap:.4em}
+.measchip .lv{width:.6em;height:.6em;border-radius:50%;background:var(--lime);animation:pulse 1.8s infinite}
+.measlist{display:flex;flex-direction:column;gap:clamp(10px,1.8vh,16px)}
+.mcard{display:flex;align-items:center;gap:clamp(12px,1.5vw,18px);background:#fff;border:1px solid var(--line);border-left:6px solid var(--mc,var(--teal));
+  border-radius:var(--r-md);box-shadow:var(--sh-1);padding:clamp(11px,1.9vh,17px) clamp(14px,1.6vw,22px);opacity:0;transform:translateX(18px)}
+.mcard.in{opacity:1;transform:none;transition:opacity .5s var(--ease),transform .5s var(--ease-out)}
+.mcard .mi{width:clamp(42px,5vw,62px);height:clamp(42px,5vw,62px);flex:0 0 auto;display:flex;align-items:center;justify-content:center;font-size:calc(clamp(26px,3vw,40px)*var(--fs))}
+.mcard .mi img{width:100%;height:100%;object-fit:contain}
+.mcard .mt{font-family:'Sora';font-weight:800;color:var(--navy);font-size:calc(clamp(16px,1.6vw,23px)*var(--fs));line-height:1.1}
+.mcard .md{color:var(--ink-soft);font-weight:500;font-size:calc(clamp(13px,1.3vw,18px)*var(--fs));margin-top:.15em}
+.measinsight{font-family:'Sora';font-weight:700;color:var(--navy);font-size:calc(clamp(15px,1.6vw,22px)*var(--fs));opacity:0;transition:opacity .5s;margin-top:.7em}
+.measinsight.in{opacity:1}
+.measinsight b{color:var(--coral)}
+@media(max-width:960px){.measure2col{grid-template-columns:1fr}.measphoto{height:min(32vh,100%)}}
+
+/* draggable reorder */
+.rgrip{cursor:grab;color:#c0ccd1;font-size:calc(clamp(15px,1.5vw,20px)*var(--fs));flex:0 0 auto;line-height:1;user-select:none;touch-action:none}
+.rgrip:active{cursor:grabbing}
+.rstep.dragging{opacity:.5;box-shadow:var(--sh-3);border-color:var(--teal)}
+
+/* reflection box (exit ticket) */
+.reflectbox{width:min(680px,92vw);min-height:clamp(84px,15vh,140px);font-family:'Inter';font-weight:500;color:var(--navy);
+  font-size:calc(clamp(16px,1.6vw,22px)*var(--fs));line-height:1.4;background:#fff;border:2px solid var(--line);border-radius:var(--r-md);
+  padding:clamp(12px,1.8vh,18px);outline:none;resize:none;transition:border-color .2s,box-shadow .2s;text-align:left}
+.reflectbox:focus{border-color:var(--teal);box-shadow:0 8px 30px -16px rgba(0,128,128,.5)}
+.reflectbox::placeholder{color:#b8c4c9}
+
+/* tap-to-investigate (scene 21) */
+.investlayout{display:grid;grid-template-columns:1.35fr .65fr;gap:clamp(14px,2.4vw,30px);flex:1 1 auto;min-height:0;align-items:stretch}
+.investphoto{position:relative;border-radius:var(--r-xl);overflow:hidden;box-shadow:var(--sh-3);min-height:0}
+.investphoto img.bg{width:100%;height:100%;object-fit:cover;object-position:center 35%}
+.hotspot{position:absolute;width:clamp(38px,4.4vw,58px);height:clamp(38px,4.4vw,58px);border-radius:50%;border:3px solid #fff;cursor:pointer;
+  background:rgba(124,132,247,.5);backdrop-filter:blur(2px);display:flex;align-items:center;justify-content:center;color:#fff;font-family:'Sora';font-weight:800;
+  box-shadow:0 6px 18px rgba(0,0,0,.4);animation:hspulse 2s infinite;transition:transform .2s}
+.hotspot:hover{transform:scale(1.12)}
+.hotspot.done{background:var(--teal);animation:none}
+@keyframes hspulse{0%{box-shadow:0 0 0 0 rgba(124,132,247,.5),0 6px 18px rgba(0,0,0,.4)}70%{box-shadow:0 0 0 14px rgba(124,132,247,0),0 6px 18px rgba(0,0,0,.4)}100%{box-shadow:0 0 0 0 rgba(124,132,247,0),0 6px 18px rgba(0,0,0,.4)}}
+.investpanel{display:flex;flex-direction:column;gap:clamp(8px,1.4vh,14px);justify-content:center}
+.ansitem{background:#fff;border:1px solid var(--line);border-left:5px solid var(--periwinkle);border-radius:var(--r-md);box-shadow:var(--sh-1);
+  padding:clamp(10px,1.6vh,16px) clamp(12px,1.4vw,18px);opacity:.35;transition:opacity .3s,border-color .3s}
+.ansitem.on{opacity:1;border-left-color:var(--teal)}
+.ansitem .aq{font-family:'Sora';font-weight:800;color:var(--navy);font-size:calc(clamp(14px,1.4vw,20px)*var(--fs))}
+.ansitem .aa{color:var(--ink-soft);font-weight:500;font-size:calc(clamp(13px,1.25vw,17px)*var(--fs));line-height:1.25;max-height:0;overflow:hidden;transition:max-height .4s,margin .3s}
+.ansitem.on .aa{max-height:8em;margin-top:.3em}
+@media(max-width:960px){.investlayout{grid-template-columns:1fr;grid-template-rows:1fr auto}.investpanel{flex-direction:row;flex-wrap:wrap}}
+
+/* scene 22 - fail (photo + choices) */
+.failscene .main{display:grid;grid-template-columns:1fr 1fr;gap:clamp(16px,3vw,44px);align-items:center}
+.failphoto{position:relative;height:min(62vh,100%);border-radius:var(--r-xl);overflow:hidden;box-shadow:var(--sh-3)}
+.failphoto img{width:100%;height:100%;object-fit:cover;object-position:center}
+.failphoto .glitch{position:absolute;inset:0;background:repeating-linear-gradient(0deg,rgba(232,104,73,.0),rgba(232,104,73,.12) 2px,transparent 4px);mix-blend-mode:overlay;animation:glitchmove 2.4s linear infinite;pointer-events:none}
+@keyframes glitchmove{0%{background-position-y:0}100%{background-position-y:16px}}
+.failright{display:flex;flex-direction:column;gap:clamp(12px,2.2vh,22px);justify-content:center}
+.failreveal{font-family:'Sora';font-weight:800;color:var(--navy);font-size:calc(clamp(18px,2vw,28px)*var(--fs));opacity:0;transition:opacity .5s}
+.failreveal.show{opacity:1}.failreveal .t{color:var(--teal)}
+@media(max-width:960px){.failscene .main{grid-template-columns:1fr}.failphoto{height:min(36vh,100%)}}
+
+/* synthesis (scene 25) */
+.synth{display:grid;grid-template-columns:1fr auto 1fr;gap:clamp(12px,2vw,28px);align-items:stretch;width:min(940px,94vw);margin:0 auto}
+.synthcol{background:#fff;border:1px solid var(--line);border-radius:var(--r-lg);box-shadow:var(--sh-2);padding:clamp(16px,2.6vh,28px);display:flex;flex-direction:column;gap:.6em}
+.synthcol.tech{border-top:6px solid var(--apricot)}
+.synthcol.human{border-top:6px solid var(--teal)}
+.synthcol h4{font-family:'Sora';font-weight:800;color:var(--navy);font-size:calc(clamp(16px,1.7vw,24px)*var(--fs))}
+.synthcol ul{list-style:none;display:flex;flex-direction:column;gap:.4em}
+.synthcol li{font-weight:600;color:var(--ink-soft);font-size:calc(clamp(14px,1.4vw,20px)*var(--fs));display:flex;align-items:center;gap:.5em}
+.synthcol li::before{content:"";width:.55em;height:.55em;border-radius:50%;background:var(--apricot)}
+.synthcol.human li::before{background:var(--teal)}
+.synthvs{align-self:center;font-family:'Sora';font-weight:800;color:var(--coral);font-size:calc(clamp(24px,3vw,44px)*var(--fs));text-align:center}
+.synthfinal{text-align:center;font-family:'Sora';font-weight:800;color:var(--navy);margin-top:.3em;font-size:calc(clamp(24px,3.2vw,48px)*var(--fs))}
+.synthfinal b{color:var(--coral)}
+@media(max-width:820px){.synth{grid-template-columns:1fr;gap:10px}.synthvs{transform:rotate(90deg)}}
+
+/* ============================================================
+   EXIT TICKET + BADGE (scene 26)
+   ============================================================ */
+.exit{position:relative}
+.exitbg{position:absolute;inset:0;z-index:0;overflow:hidden}
+.exitbg img{width:100%;height:100%;object-fit:cover;object-position:center 30%;opacity:.16;
+  -webkit-mask-image:radial-gradient(120% 90% at 50% 40%,#000 40%,transparent 78%);mask-image:radial-gradient(120% 90% at 50% 40%,#000 40%,transparent 78%)}
+.exit .head,.exit .main{position:relative;z-index:2}
+.exit .main{flex-direction:column;align-items:center;justify-content:center;gap:clamp(12px,2.4vh,26px)}
+.dots{display:flex;gap:.7em;align-items:center}
+.dots .d{width:clamp(12px,1.4vw,17px);height:clamp(12px,1.4vw,17px);border-radius:50%;background:rgba(16,34,44,.16);transition:background .3s,transform .3s}
+.dots .d.on{background:var(--teal);transform:scale(1.15)}
+.dots .d.done{background:var(--lime)}
+.qcard{width:min(840px,94vw);display:flex;flex-direction:column;align-items:center;gap:clamp(14px,2.4vh,26px);text-align:center}
+.qcard .qq{font-family:'Sora';font-weight:800;color:var(--navy);line-height:1.08;font-size:calc(clamp(24px,3vw,44px)*var(--fs))}
+.qcard .qtag{font-family:'Sora';font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:var(--teal);font-size:calc(clamp(12px,1.2vw,16px)*var(--fs))}
+.exitfb{font-family:'Sora';font-weight:700;min-height:1.4em;font-size:calc(clamp(16px,1.7vw,24px)*var(--fs));opacity:0;transition:opacity .3s;color:var(--teal)}
+.exitfb.show{opacity:1}
+.badgescene{flex-direction:column;align-items:center;justify-content:center;gap:clamp(12px,2vh,24px)}
+.badgewrap{position:relative;display:flex;align-items:center;justify-content:center}
+.badgecard{position:relative;background:linear-gradient(155deg,#14333f,#0f2733);color:#fff;border-radius:var(--r-xl);
+  padding:clamp(22px,3.6vh,44px) clamp(28px,4vw,60px);width:min(560px,92vw);box-shadow:var(--sh-3);border:1px solid rgba(255,255,255,.12);
+  overflow:hidden;text-align:center;display:flex;flex-direction:column;align-items:center;gap:clamp(6px,1.2vh,14px);opacity:0;transform:scale(.7)}
+.badgecard.assemble{opacity:1;transform:scale(1);transition:opacity .6s var(--ease-out),transform .7s var(--ease-out)}
+.badgecard.shine::after{content:"";position:absolute;top:-40%;left:-40%;width:60%;height:200%;background:linear-gradient(90deg,transparent,rgba(217,247,91,.35),transparent);transform:rotate(18deg);animation:sweep 1.6s var(--ease)}
+.badgemedal{width:clamp(96px,14vw,148px);height:clamp(96px,14vw,148px);opacity:0;transform:scale(.4) rotate(-30deg)}
+.badgemedal img{width:100%;height:100%;object-fit:contain;filter:drop-shadow(0 10px 26px rgba(217,247,91,.5))}
+.badgecard.assemble .badgemedal{opacity:1;transform:none;transition:opacity .5s .25s var(--ease-out),transform .6s .25s var(--ease-out)}
+.badge-title{font-family:'Sora';font-weight:800;letter-spacing:.02em;color:var(--lime);line-height:1;font-size:calc(clamp(26px,3.6vw,50px)*var(--fs))}
+.badge-awarded{font-size:calc(clamp(13px,1.2vw,17px)*var(--fs));color:rgba(252,248,240,.72);letter-spacing:.14em;text-transform:uppercase}
+.badge-name{font-family:'Sora';font-weight:800;color:#fff;line-height:1.02;word-break:break-word;font-size:calc(clamp(28px,3.8vw,52px)*var(--fs))}
+.badge-org{margin-top:.4em;display:inline-flex;align-items:center;gap:.5em;font-family:'Sora';font-weight:700;letter-spacing:.14em;font-size:calc(clamp(11px,1.1vw,15px)*var(--fs));color:var(--lime)}
+.particles{position:absolute;inset:0;z-index:2;pointer-events:none;overflow:hidden}
+.particles i{position:absolute;width:9px;height:9px;border-radius:2px;opacity:0;top:50%;left:50%}
+
+/* reduced motion */
+@media(prefers-reduced-motion:reduce){
+  *{animation-duration:.001s!important;animation-iteration-count:1!important;transition-duration:.001s!important}
+  .float{animation:none}
+}
+@media(max-height:700px){:root{--safe-top:clamp(12px,2vh,22px)}.instruct{margin-top:.4em}}
+@media(max-height:780px){.exit .main{gap:clamp(8px,1.5vh,16px)}.qcard{gap:clamp(10px,1.7vh,16px)}}
+</style>
+</head>
+<body>
+<div id="atmos"></div>
+<img id="crowdband" data-asset="stadium-crowd-layer" alt="">
+<div id="progress"></div>
+
+<div id="app">
+
+<!-- =========================== SCENE 1 - COVER =========================== -->
+<section class="scene" id="s1">
+  <div class="cover">
+    <div class="cover-copy">
+      <div class="cover-meta">
+        <svg class="wh" viewBox="0 0 24 24" fill="none"><path d="M3 10a5 5 0 0 1 5-5h9l4-2v9a6 6 0 0 1-6 6H8a5 5 0 0 1-5-5v-3z" fill="#008080"/><circle cx="8.5" cy="12" r="2.4" fill="#FCF8F0"/></svg>
+        Grade 8 · Module 5 · Session 1
+      </div>
+      <h1 class="cover-title">
+        <span class="ln"><span>WOULD YOU</span></span>
+        <span class="ln"><span>TRUST AN</span></span>
+        <span class="ln"><span class="ai">AI REFEREE?</span></span>
+      </h1>
+    </div>
+    <div class="cover-visual">
+      <div class="cover-frame">
+        <div class="aura" style="inset:6%;--auraC:rgba(244,158,88,.45)"></div>
+        <figure class="cine" style="height:100%"><img data-asset="referee-cover" alt="Young referee watching a ball at the goal line"><div class="fallback"></div></figure>
+        <div class="cover-line"></div>
+      </div>
+      <span class="cover-ball cut" style="--vtn:vt-ball"><img data-asset="football" alt=""></span>
+    </div>
+  </div>
+</section>
+
+<!-- =========================== SCENE 2 - OBJECTIVES =========================== -->
+<section class="scene plan" id="s2">
+  <div class="head center"><h2 class="title">By the end of this session, I can...</h2></div>
+  <div class="main">
+    <div style="display:flex;flex-direction:column;gap:clamp(10px,1.8vh,22px);width:100%">
+      <div class="jrow" style="--jc:var(--teal)"><span class="jnum">01</span><span class="jbar"></span><span class="jtext"><span class="verb">Distinguish</span> what happened, what a system reported, and what the referee decided.</span></div>
+      <div class="jrow" style="--jc:var(--apricot)"><span class="jnum">02</span><span class="jbar"></span><span class="jtext"><span class="verb">Trace</span> how cameras and tracking data become a technology-assisted output.</span></div>
+      <div class="jrow" style="--jc:var(--coral)"><span class="jnum">03</span><span class="jbar"></span><span class="jtext"><span class="verb">Identify</span> when a system can measure something accurately but still miss important context.</span></div>
+      <div class="jrow" style="--jc:var(--periwinkle)"><span class="jnum">04</span><span class="jbar"></span><span class="jtext"><span class="verb">Decide</span> when a human should review a technology or AI-assisted call.</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- =========================== SCENE 3 - IDENTITY =========================== -->
+<section class="scene identity" id="s3">
+  <div class="head">
+    <div class="eyebrow"><span class="dot"></span>Join the Review Board</div>
+    <h2 class="title">What should we call you?</h2>
+    <p class="instruct">We'll put your name on your reviewer pass. You keep it to the very end.</p>
+  </div>
+  <div class="main">
+    <div class="id-form">
+      <div class="namefield"><input id="nameInput" type="text" maxlength="24" autocomplete="off" placeholder="Type your name" aria-label="Your name"></div>
+      <button class="bigbtn" id="passBtn">Get my pass <span>›</span></button>
+    </div>
+    <div class="id-visual">
+      <div class="id-student"><img data-asset="review-board-student" alt="Student reviewer"></div>
+      <div class="credential" id="cred" aria-live="polite">
+        <div class="cred-top"><div class="cred-badge"><img data-asset="referee-whistle" alt=""></div><div class="cred-org">Fair Play<br>Review Board</div></div>
+        <div class="cred-name" id="credName">—</div>
+        <div class="cred-role">Match Reviewer</div>
+        <div class="cred-status"><span class="live"></span> ACTIVE</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- =========================== SCENE 4 - SETUP =========================== -->
+<section class="scene kinetic" id="s4">
+  <span class="k-lens cut"><img data-asset="referee-whistle" alt=""></span>
+  <span class="k-goalframe cut"><img data-asset="goal-frame" alt=""></span>
+  <div class="main">
+    <div class="k-small k-line">One shot. One call.</div>
+    <div class="k-mega k-line">YOU'RE THE <span class="ac">REF.</span></div>
+    <div class="k-sub k-line">Watch closely.</div>
+  </div>
+</section>
+
+<!-- =========================== SCENE 5 - VIDEO (play) =========================== -->
+<section class="scene videoscene" id="s5">
+  <div class="head center"><div class="eyebrow"><span class="dot"></span>The play</div><h2 class="title">Roll the tape.</h2></div>
+  <div class="main">
+    <div class="videowrap">
+      <div class="videoframe">
+        <div class="vidglow"></div>
+        <video id="vid5" playsinline preload="metadata" controls><source src="assets/71e65e193152a7dbb15c304d.mp4" type="video/mp4"></video>
+        <div class="playhint" id="hint5"><div class="pbtn">▶</div></div>
+      </div>
+    </div>
+  </div>
+  <p class="vprompt">Did the <span class="q">whole ball</span> cross the line?</p>
+</section>
+
+<!-- =========================== SCENE 6 - FIRST VOTE =========================== -->
+<section class="scene vote" id="s6">
+  <div class="head center"><div class="eyebrow"><span class="dot"></span>Make the call</div><h2 class="title">What's your call?</h2></div>
+  <div class="main">
+    <div class="voterow" id="vote1">
+      <button class="votebtn goal" data-v="goal"><span class="ve">⚽</span><span class="vl">GOAL</span></button>
+      <button class="votebtn nogoal" data-v="nogoal"><span class="ve">✋</span><span class="vl">NO GOAL</span></button>
+    </div>
+    <div class="votenote" id="note1"></div>
+    <div class="handhint">👋 Watching together? Vote with your hand.</div>
+  </div>
+</section>
+
+<!-- =========================== SCENE 7 - DISCUSSION =========================== -->
+<section class="scene discuss" id="s7">
+  <div>
+    <div class="head">
+      <div class="eyebrow"><span class="dot"></span>Talk it out</div>
+      <h2 class="title">Find someone who saw it <span style="color:var(--coral)">differently</span>.</h2>
+      <p class="instruct">What did they notice that you missed? Give yourselves thirty seconds.</p>
+    </div>
+  </div>
+  <div class="main" style="grid-column:2;justify-self:center">
+    <div class="timerwrap">
+      <div class="ring" id="ring7"><div class="inner"><div class="num" id="timerNum">30</div></div></div>
+      <button class="bigbtn teal" id="timerBtn">Start 30s ▶</button>
+    </div>
+  </div>
+</section>
+
+<!-- =========================== SCENE 8 - REVOTE =========================== -->
+<section class="scene vote" id="s8">
+  <div class="head center"><div class="eyebrow"><span class="dot"></span>Back to the incident</div><h2 class="title">Keep it, or switch?</h2></div>
+  <div class="main">
+    <div class="voterow" id="vote2">
+      <button class="votebtn goal" data-v="goal"><span class="ve">⚽</span><span class="vl">GOAL</span></button>
+      <button class="votebtn nogoal" data-v="nogoal"><span class="ve">✋</span><span class="vl">NO GOAL</span></button>
+    </div>
+    <div class="votenote" id="note2"></div>
+  </div>
+</section>
+
+<!-- =========================== SCENE 9 - REVEAL VIDEO =========================== -->
+<section class="scene videoscene" id="s9">
+  <div class="head center"><div class="eyebrow"><span class="dot"></span>The reveal</div><h2 class="title">Okay, let's check.</h2></div>
+  <div class="main">
+    <div class="videowrap">
+      <div class="videoframe">
+        <div class="vidglow"></div>
+        <video id="vid9" playsinline preload="metadata" controls><source src="assets/a5b7cb075e47e04a2223bed2.mp4" type="video/mp4"></video>
+        <div class="playhint" id="hint9"><div class="pbtn">▶</div></div>
+      </div>
+    </div>
+  </div>
+  <div class="vreveal" id="reveal9">It's a <span style="color:var(--coral);margin-left:.3em"> GOAL. ⚽</span></div>
+</section>
+
+<!-- =========================== SCENE 10 - THE LINE =========================== -->
+<section class="scene linescene" id="s10">
+  <div class="head"><div class="eyebrow"><span class="dot"></span>The rule</div><h2 class="title">Where was the ball, really?</h2></div>
+  <div class="main">
+    <div class="linephoto">
+      <img data-asset="goal-line-closeup" alt="Ball on the goal line">
+      <div class="line-anno"><div class="line-strip" id="lineStrip"></div></div>
+      <div class="line-verlabel" id="lineVerlabel"><span class="no">Not fully across yet.</span></div>
+    </div>
+    <div class="line-right">
+      <div class="linediag">
+        <svg viewBox="0 0 420 190" width="100%" height="100%" preserveAspectRatio="xMidYMid meet">
+          <rect x="0" y="120" width="420" height="70" fill="#0f7a4d" opacity=".14"/>
+          <rect x="200" y="24" width="16" height="150" rx="3" fill="#fff" stroke="#1A3847" stroke-width="2"/>
+          <g id="diagBall" transform="translate(150,100)"><circle r="30" fill="#fff" stroke="#1A3847" stroke-width="3" filter="url(#bsh)"/><polygon points="0,-9 9,-2 6,9 -6,9 -9,-2" fill="#1A3847"/></g>
+          <filter id="bsh" x="-50%" y="-50%" width="200%" height="200%"><feDropShadow dx="0" dy="4" stdDeviation="4" flood-color="#10222C" flood-opacity="0.3"/></filter>
+        </svg>
+      </div>
+      <div class="linetoggle"><button class="tgl on" id="tglA">Touching the line</button><button class="tgl" id="tglB">Whole ball past</button></div>
+      <div class="rule">The <span class="t">whole ball</span> has to cross <b>the whole line.</b></div>
+    </div>
+  </div>
+</section>
+
+<!-- =========================== SCENE 11 - CHAPTER 1 =========================== -->
+<section class="scene chapter left" id="s11">
+  <div class="numeral">1</div>
+  <div class="cimg"><img data-asset="offside-race" alt=""></div>
+  <div class="cwrap"><div class="clabel">Chapter 1</div><div class="ctitle">What actually<br>happened?</div><div class="cinstruct">Before we trust or blame anyone, let's split the play into pieces.</div></div>
+</section>
+
+<!-- =========================== SCENE 12 - THREE LAYERS =========================== -->
+<section class="scene layers" id="s12">
+  <div class="head center"><div class="eyebrow"><span class="dot"></span>Three layers</div><h2 class="title">One play. Three different things.</h2></div>
+  <div class="main">
+    <div class="layerstack">
+      <div class="layercard" style="--lcol:var(--teal)"><div class="llab">WHAT HAPPENED</div><div class="ltext">The ball crossed the line.</div></div>
+      <div class="laydown">↓</div>
+      <div class="layercard" style="--lcol:var(--apricot)"><div class="llab">SYSTEM OUTPUT</div><div class="ltext">The technology sent a goal signal.</div></div>
+      <div class="laydown">↓</div>
+      <div class="layercard" style="--lcol:var(--periwinkle)"><div class="llab">FINAL DECISION</div><div class="ltext">The referee awarded the goal.</div></div>
+      <div class="layereq">EVENT <b>≠</b> OUTPUT <b>≠</b> DECISION</div>
+    </div>
+  </div>
+</section>
+
+<!-- =========================== SCENE 13 - MINI CHECK 1 =========================== -->
+<section class="scene check" id="s13">
+  <div class="head"><div class="eyebrow"><span class="dot"></span>Mini check 1 · See the call</div><h2 class="title">Sort each line into the right layer.</h2><p class="instruct">Tap a card, then tap where it belongs.</p></div>
+  <div class="main">
+    <div class="check-body">
+      <div class="sortlayout">
+        <div class="sortphoto"><img data-asset="offside-race" alt="A goal being scored"><div class="cap">Same play, three points of view.</div></div>
+        <div class="sortwrap">
+          <div class="tray" id="sortTray">
+            <div class="stmt" data-cat="happened">The striker's shot went into the net.</div>
+            <div class="stmt" data-cat="output">The tracking system flagged a goal.</div>
+            <div class="stmt" data-cat="decision">The referee pointed to the centre and gave it.</div>
+          </div>
+          <div class="buckets">
+            <div class="bucket" data-cat="happened" style="--bcol:var(--teal)"><div class="bhead">WHAT HAPPENED</div><div class="drop"></div></div>
+            <div class="bucket" data-cat="output" style="--bcol:var(--apricot)"><div class="bhead">SYSTEM OUTPUT</div><div class="drop"></div></div>
+            <div class="bucket" data-cat="decision" style="--bcol:var(--periwinkle)"><div class="bhead">FINAL DECISION</div><div class="drop"></div></div>
+          </div>
+        </div>
+      </div>
+      <div class="feedback" id="fb13"></div>
+    </div>
+  </div>
+</section>
+
+<!-- =========================== SCENE 14 - CHAPTER 2 =========================== -->
+<section class="scene chapter left" id="s14">
+  <div class="numeral">2</div>
+  <div class="cimg"><img data-asset="goal-camera-network" alt=""></div>
+  <span class="chapmotif cut" style="right:8%;bottom:10%;width:clamp(120px,16vw,220px);--vtn:vt-lens"><img data-asset="camera-lens" alt=""></span>
+  <div class="cwrap"><div class="clabel">Chapter 2</div><div class="ctitle">How does the<br>tech see a match?</div><div class="cinstruct">Let's give the pitch more eyes and follow the signal.</div></div>
+</section>
+
+<!-- =========================== SCENE 15 - GIVE IT MORE EYES =========================== -->
+<section class="scene check" id="s15">
+  <div class="head"><div class="eyebrow"><span class="dot"></span>More eyes</div><h2 class="title">One angle isn't enough.</h2><p class="instruct">Tap to add another camera. Watch them all point at the same moment.</p></div>
+  <div class="main" style="flex-direction:column;gap:clamp(10px,2vh,18px)">
+    <div class="photostage" id="camStage">
+      <img class="bg" data-asset="goal-camera-network" alt="Stadium with camera sight lines">
+    </div>
+    <div class="ctrlbar">
+      <button class="bigbtn teal" id="addCam">Give it another angle ›</button>
+      <div class="pipeline" id="camPipe" style="opacity:.4;transition:opacity .4s">
+        <div class="pnode" style="--acol:var(--teal)" data-p="0">CAMERAS<small>capture</small></div><span class="parr">→</span>
+        <div class="pnode" style="--acol:var(--apricot)" data-p="1">DATA<small>positions</small></div><span class="parr">→</span>
+        <div class="pnode" style="--acol:var(--coral)" data-p="2">CHECK<small>ball vs line</small></div><span class="parr">→</span>
+        <div class="pnode" style="--acol:var(--periwinkle)" data-p="3">SIGNAL<small>to the ref</small></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- =========================== SCENE 16 - TWIST =========================== -->
+<section class="scene kinetic" id="s16">
+  <span class="k-lens cut" style="--vtn:vt-lens"><img data-asset="camera-lens" alt=""></span>
+  <span class="k-goalframe cut" style="right:6%;width:clamp(120px,15vw,210px)"><img data-asset="referee-watch" alt=""></span>
+  <div class="main">
+    <div class="k-mega k-line" style="color:var(--coral)">BUT HOLD ON.</div>
+    <div class="k-mega k-line">NOT EVERY TECH<br>IS <span class="ac" style="color:var(--teal)">AI.</span></div>
+    <div class="k-sub k-line">So where does AI actually help?</div>
+  </div>
+</section>
+
+<!-- =========================== SCENE 17 - AI JOINS =========================== -->
+<section class="scene check" id="s17">
+  <div class="head"><div class="eyebrow"><span class="dot"></span>AI steps in</div><h2 class="title">Now AI joins in.</h2><p class="instruct">The camera sees a messy play. The AI turns it into clean, tracked positions.</p></div>
+  <div class="main" style="flex-direction:column;gap:clamp(10px,2vh,16px)">
+    <div class="aitrack">
+      <div class="feedpanel"><div class="zonelabel">Camera feed</div><img data-asset="player-tracking" alt="Raw camera feed of the play"></div>
+      <div class="morpharrow">→</div>
+      <div class="trackpanel" id="trackPanel">
+        <div class="zonelabel">AI tracking view</div>
+        <span class="tp-cut" id="tAtt" style="left:9%"><img data-asset="attacker-cutout" alt="Attacker"></span>
+        <span class="tp-cut" id="tDef" style="left:53%"><img data-asset="defender-cutout" alt="Defender"></span>
+        <span class="ov-mark" id="mAtt" style="left:12%;bottom:50%"></span>
+        <span class="ov-mark" id="mDef" style="left:57%;bottom:54%"></span>
+        <div class="ov-line" id="tLine" style="left:61%"></div>
+        <div class="ov-flag" id="tFlag" style="left:52%;top:10%">OFFSIDE?</div>
+      </div>
+    </div>
+    <div class="pipeline" id="trackPipe">
+      <div class="pnode" data-p="0">CAPTURE<small>the play</small></div><span class="parr">→</span>
+      <div class="pnode" data-p="1">TRACK<small>the players</small></div><span class="parr">→</span>
+      <div class="pnode" data-p="2">CHECK<small>positions</small></div><span class="parr">→</span>
+      <div class="pnode" data-p="3">FLAG<small>a maybe-offside</small></div><span class="parr">→</span>
+      <div class="pnode official" data-p="4">OFFICIAL<small>decides</small></div>
+    </div>
+    <p class="instruct" style="text-align:center;margin:0 auto;max-width:36em">The AI only <b>flags</b> a maybe-offside. A <span class="t">human still makes the final call.</span></p>
+  </div>
+</section>
+
+<!-- =========================== SCENE 18 - MINI CHECK 2 =========================== -->
+<section class="scene check" id="s18">
+  <div class="head"><div class="eyebrow"><span class="dot"></span>Mini check 2 · Follow the tech</div><h2 class="title">Put the call in order.</h2><p class="instruct">Drag the steps into order, then lock it in.</p></div>
+  <span class="sidechar" id="char18"><img data-asset="assistant-referee" alt="Assistant referee"></span>
+  <div class="main">
+    <div class="check-body" style="justify-content:center;align-items:center">
+      <div class="reorder" id="reorder18">
+        <div class="rstep" data-order="2"><span class="rgrip" aria-hidden="true">⠿</span><div class="ricon">🎥</div><div class="rlabel">Cameras capture</div><div class="rctl"><button class="rbtn up" aria-label="Move up">▲</button><button class="rbtn down" aria-label="Move down">▼</button></div></div>
+        <div class="rstep" data-order="0"><span class="rgrip" aria-hidden="true">⠿</span><div class="ricon">📍</div><div class="rlabel">System tracks</div><div class="rctl"><button class="rbtn up" aria-label="Move up">▲</button><button class="rbtn down" aria-label="Move down">▼</button></div></div>
+        <div class="rstep" data-order="3"><span class="rgrip" aria-hidden="true">⠿</span><div class="ricon">📡</div><div class="rlabel">System output</div><div class="rctl"><button class="rbtn up" aria-label="Move up">▲</button><button class="rbtn down" aria-label="Move down">▼</button></div></div>
+        <div class="rstep" data-order="1"><span class="rgrip" aria-hidden="true">⠿</span><div class="ricon"><img data-asset="referee-flag" alt=""></div><div class="rlabel">Official receives it</div><div class="rctl"><button class="rbtn up" aria-label="Move up">▲</button><button class="rbtn down" aria-label="Move down">▼</button></div></div>
+      </div>
+      <button class="bigbtn teal" id="lock18" style="align-self:center;margin-top:.4em">Lock it in ✓</button>
+      <div class="feedback" id="fb18"></div>
+    </div>
+  </div>
+</section>
+
+<!-- =========================== SCENE 19 - CHAPTER 3 =========================== -->
+<section class="scene chapter left" id="s19">
+  <div class="numeral">3</div>
+  <div class="cimg"><img data-asset="offside-tracking-closeup" alt=""></div>
+  <div class="cwrap"><div class="clabel">Chapter 3</div><div class="ctitle">Precise doesn't mean<br><span style="color:var(--coral)">all-knowing.</span></div><div class="cinstruct">A perfect measurement can still miss the story.</div></div>
+</section>
+
+<!-- =========================== SCENE 20 - WHAT CAN IT MEASURE =========================== -->
+<section class="scene check" id="s20">
+  <div class="head"><div class="eyebrow"><span class="dot"></span>Strengths</div><h2 class="title">What can it measure well?</h2><p class="instruct">Three things the system nails, one at a time.</p></div>
+  <div class="main">
+    <div class="measure2col">
+      <div class="measphoto"><div class="measchip"><span class="lv"></span>Live tracking</div><img data-asset="offside-tracking-closeup" alt="Close tracking of a player and the ball"><div class="scan"></div></div>
+      <div>
+        <div class="measlist" id="measList">
+          <div class="mcard" style="--mc:var(--teal)"><div class="mi">🏃</div><div><div class="mt">Where each player is</div><div class="md">Down to a few centimetres.</div></div></div>
+          <div class="mcard" style="--mc:var(--apricot)"><div class="mi"><img data-asset="football" alt=""></div><div><div class="mt">Where the ball is</div><div class="md">The exact spot on the pitch.</div></div></div>
+          <div class="mcard" style="--mc:var(--coral)"><div class="mi"><img data-asset="football-boot" alt=""></div><div><div class="mt">The kick moment</div><div class="md">The exact instant the foot meets the ball.</div></div></div>
+        </div>
+        <div class="measinsight" id="measInsight">Super precise. But it only measures <b>where and when</b>, not what it all means.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- =========================== SCENE 21 - WHAT MIGHT IT MISS =========================== -->
+<section class="scene check" id="s21">
+  <div class="head"><div class="eyebrow"><span class="dot"></span>Limits</div><h2 class="title">Position? Easy. The whole story? <span style="color:var(--coral)">Not always.</span></h2><p class="instruct">Tap the spots. What would you want to check?</p></div>
+  <div class="main">
+    <div class="investlayout">
+      <div class="investphoto" id="investPhoto">
+        <img class="bg" data-asset="interference-scene" alt="A crowded goalmouth moment">
+        <button class="hotspot" data-h="0" style="left:30%;top:44%">?</button>
+        <button class="hotspot" data-h="1" style="left:54%;top:32%">?</button>
+        <button class="hotspot" data-h="2" style="left:44%;top:64%">?</button>
+      </div>
+      <div class="investpanel">
+        <div class="ansitem" data-a="0"><div class="aq">In the way?</div><div class="aa">Being offside only matters if the player is actually involved in the play.</div></div>
+        <div class="ansitem" data-a="1"><div class="aq">A tiny touch?</div><div class="aa">A small deflection can change who touched the ball last.</div></div>
+        <div class="ansitem" data-a="2"><div class="aq">Fair or foul?</div><div class="aa">A push or a handball needs a human eye, not just a position.</div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- =========================== SCENE 22 - WHEN TECH FAILS =========================== -->
+<section class="scene failscene" id="s22">
+  <div class="head" style="position:absolute;top:var(--safe-top);left:var(--safe-x);z-index:6;max-width:min(560px,52vw)"><div class="eyebrow"><span class="dot"></span>When it breaks</div><h2 class="title">A camera glitches. Now what?</h2></div>
+  <div class="main" style="margin-top:clamp(70px,12vh,120px)">
+    <div class="failphoto"><img data-asset="camera-failure" alt="Broadcast cameras, one failing"><div class="glitch"></div></div>
+    <div class="failright">
+      <div class="choicerow" id="failChoice" style="flex-direction:column">
+        <div class="choice" data-r="0"><span class="cico">🤞</span><span class="ctxt">Keep trusting it</span></div>
+        <div class="choice" data-r="1"><span class="cico">🔎</span><span class="ctxt">Check another way</span></div>
+      </div>
+      <div class="feedback" id="fb22"></div>
+      <div class="failreveal" id="fail22reveal">Reliable systems need a <span class="t">backup plan.</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- =========================== SCENE 23 - MINI CHECK 3 =========================== -->
+<section class="scene check" id="s23">
+  <div class="head center"><div class="eyebrow"><span class="dot"></span>Mini check 3 · Find the limit</div><h2 class="title">It measured the position right. But the context is fuzzy.</h2></div>
+  <span class="sidechar" id="char23"><img data-asset="goalkeeper-cutout" alt="Goalkeeper contesting the ball"></span>
+  <div class="main">
+    <div class="check-body" style="align-items:center;justify-content:center">
+      <div class="choicerow" id="mc3Choice">
+        <div class="choice" data-r="0"><span class="cico">⛔</span><span class="ctxt">Auto-cancel the goal</span></div>
+        <div class="choice" data-r="1"><span class="cico">🧑‍⚖️</span><span class="ctxt">Let an official check the context</span></div>
+      </div>
+      <div class="feedback" id="fb23"></div>
+    </div>
+  </div>
+</section>
+
+<!-- =========================== SCENE 24 - CHAPTER 4 =========================== -->
+<section class="scene chapter left" id="s24">
+  <div class="numeral">4</div>
+  <div class="cimg"><img data-asset="human-review" alt=""></div>
+  <div class="cwrap"><div class="clabel">Chapter 4</div><div class="ctitle">So who gets<br>the final say?</div><div class="cinstruct">Time to decide who reviews, and who owns the call.</div></div>
+</section>
+
+<!-- =========================== SCENE 25 - MINI CHECK 4 =========================== -->
+<section class="scene check" id="s25">
+  <span class="chapmotif cut" style="right:5%;top:18%;width:clamp(90px,11vw,150px);opacity:.9"><img data-asset="referee-flag" alt=""></span>
+  <div class="head center"><div class="eyebrow"><span class="dot"></span>Mini check 4 · Three-call challenge</div><h2 class="title" id="s25title">Call 1 of 3</h2></div>
+  <div class="main" style="justify-content:center;align-items:center">
+    <div class="check-body" style="align-items:center;justify-content:center;text-align:center">
+      <p class="instruct" id="s25scenario" style="text-align:center;margin:0 auto;max-width:26em">Technology clearly confirms the ball crossed the line.</p>
+      <div class="choicerow" id="mc4Choice"></div>
+      <div class="feedback" id="fb25"></div>
+      <div id="s25synth" style="display:none;width:100%">
+        <div class="synth">
+          <div class="synthcol tech"><h4>TECHNOLOGY CAN</h4><ul><li>measure</li><li>track</li><li>flag</li><li>alert</li></ul></div>
+          <div class="synthvs">→</div>
+          <div class="synthcol human"><h4>HUMANS MUST</h4><ul><li>interpret</li><li>review</li><li>take responsibility</li></ul></div>
+        </div>
+        <div class="synthfinal">ASSIST <b>≠</b> REPLACE</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- =========================== SCENE 26 - EXIT + BADGE =========================== -->
+<section class="scene exit" id="s26">
+  <div class="exitbg"><img data-asset="final-call-world" alt=""></div>
+  <div class="head center" id="exitHead"><div class="eyebrow"><span class="dot"></span>Final level · Exit ticket</div><h2 class="title">Prove your calls.</h2></div>
+  <div class="main" id="exitMain">
+    <div class="dots" id="exitDots"><span class="d on"></span><span class="d"></span><span class="d"></span><span class="d"></span><span class="d"></span></div>
+    <div class="qcard" id="exitQ"></div>
+    <div class="exitfb" id="exitFb"></div>
+  </div>
+  <div class="main badgescene" id="badgeMain" style="display:none">
+    <div class="badgewrap">
+      <div class="particles" id="particles"></div>
+      <div class="badgecard" id="badgeCard">
+        <div class="badgemedal"><img data-asset="fair-call-badge" alt="Fair Call Reviewer badge"></div>
+        <div class="badge-title">FAIR CALL REVIEWER</div>
+        <div class="badge-awarded">Awarded to</div>
+        <div class="badge-name" id="badgeName">Reviewer</div>
+        <div class="badge-org"><span style="color:var(--lime)">●</span> FAIR PLAY REVIEW BOARD</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+</div><!-- /#app -->
+
+<footer id="chrome">
+  <div class="brand">
+    <div class="logobox"><img src="assets/b58472f5ad534bdba750eac6.webp" alt="AIStart" onerror="this.parentNode.innerHTML='<span style=\'font-family:Sora;font-weight:800;color:#008080;font-size:15px\'>AIStart</span>'"></div>
+    <button class="navbtn" id="reset" title="Reset session">↺ Reset</button>
+  </div>
+  <div class="copyright">© 2026 Slangit Technologies FZCO</div>
+  <div class="nav">
+    <div class="fontgroup" role="group" aria-label="Font size">
+      <button class="navbtn" id="fdec" aria-label="Smaller text">A−</button>
+      <button class="navbtn" id="freset" aria-label="Default text" style="font-size:.95em">A</button>
+      <button class="navbtn" id="finc" aria-label="Larger text">A+</button>
+    </div>
+    <button class="navbtn" id="back" aria-label="Previous">‹ Back</button>
+    <button class="navbtn primary" id="nextbtn" aria-label="Next">Next ›</button>
+  </div>
+</footer>
+
+<script>
+(function(){
+  "use strict";
+
+  /* =================================================================
+     ASSET MANIFEST  (single source of truth for every user asset)
+  ================================================================== */
+  const ASSET_DATA={"referee-cover.png":"assets/dea99297dc8619b70e62d18f.webp","review-board-student.png":"assets/a5bf7021a3a78cc8b26525f1.webp","goal-line-closeup.png":"assets/49c6b9a6a2fcdfc919f62cff.webp","offside-race.png":"assets/11cec6f384a161d7db80afec.webp","goal-camera-network.png":"assets/79ccd056d3e01e4d476dda76.webp","stadium-camera.png":"assets/3223a55fb68dae33116b82b2.webp","player-tracking.png":"assets/02f53adb9ee8428e36f57362.webp","offside-tracking-closeup.png":"assets/82e7dba45d5fb7d363ed5796.webp","interference-scene.png":"assets/b9b385c6ed13e35f3fab100a.webp","camera-failure.png":"assets/a19067e317a143a8a4d111fa.webp","human-review.png":"assets/33a4ffeb9a4431b1afb6f51c.webp","final-call-world.png":"assets/3e91e7b65e3032da85aec494.webp","fair-call-badge.png":"assets/5bd526ef27e79e32cb5f804c.webp","football.png":"assets/ed171d0e17b271afe69e8ceb.webp","football-boot.png":"assets/fd101e41b3b9a612f688e28c.webp","camera-lens.png":"assets/3031ca6851c311c1a31b52db.webp","goal-frame.png":"assets/6120fc087ceee9aae666c3c4.webp","referee-flag.png":"assets/be9fa64699b5de291b77084f.webp","referee-watch.png":"assets/5b15c6e4031c4ca439d545e8.webp","referee-whistle.png":"assets/2f0a8721d58af4393a9180f1.webp","assistant-referee.png":"assets/76e4e4c0b9f223529c9339ad.webp","attacker-cutout.png":"assets/67f15e560380152e8bd22cc5.webp","defender-cutout.png":"assets/78cb73fb9993ae8427f9cd2b.webp","goalkeeper-cutout.png":"assets/abfdf9d3fdc78b4556460a76.webp","stadium-crowd-layer.png":"assets/a8b28e053d95a1c8156e7433.webp"};
+  const MANIFEST={
+    'referee-cover':{file:'referee-cover.png',cls:'hero'},
+    'review-board-student':{file:'review-board-student.png',cls:'character'},
+    'goal-line-closeup':{file:'goal-line-closeup.png',cls:'action'},
+    'offside-race':{file:'offside-race.png',cls:'action'},
+    'goal-camera-network':{file:'goal-camera-network.png',cls:'hero'},
+    'stadium-camera':{file:'stadium-camera.png',cls:'object'},
+    'player-tracking':{file:'player-tracking.png',cls:'action'},
+    'offside-tracking-closeup':{file:'offside-tracking-closeup.png',cls:'action'},
+    'interference-scene':{file:'interference-scene.png',cls:'action'},
+    'camera-failure':{file:'camera-failure.png',cls:'action'},
+    'human-review':{file:'human-review.png',cls:'hero'},
+    'final-call-world':{file:'final-call-world.png',cls:'hero'},
+    'fair-call-badge':{file:'fair-call-badge.png',cls:'object'},
+    'football':{file:'football.png',cls:'object'},
+    'football-boot':{file:'football-boot.png',cls:'object'},
+    'camera-lens':{file:'camera-lens.png',cls:'object'},
+    'goal-frame':{file:'goal-frame.png',cls:'object'},
+    'referee-flag':{file:'referee-flag.png',cls:'object'},
+    'referee-watch':{file:'referee-watch.png',cls:'object'},
+    'referee-whistle':{file:'referee-whistle.png',cls:'object'},
+    'assistant-referee':{file:'assistant-referee.png',cls:'character'},
+    'attacker-cutout':{file:'attacker-cutout.png',cls:'character'},
+    'defender-cutout':{file:'defender-cutout.png',cls:'character'},
+    'goalkeeper-cutout':{file:'goalkeeper-cutout.png',cls:'character'},
+    'stadium-crowd-layer':{file:'stadium-crowd-layer.png',cls:'atmosphere'}
+  };
+  const status={}; // key -> {loaded, used, scenes:Set}
+  Object.keys(MANIFEST).forEach(k=>status[k]={loaded:false,used:false,scenes:new Set()});
+  // assets mounted dynamically at runtime (not via a static data-asset node)
+  const DYNAMIC_USED={'stadium-camera':'s15'};
+  Object.keys(DYNAMIC_USED).forEach(k=>{status[k].used=true;status[k].scenes.add(DYNAMIC_USED[k]);});
+  // preload every manifest file so the QA table reflects true load status regardless of navigation
+  Object.keys(MANIFEST).forEach(k=>{const im=new Image();im.onload=()=>status[k].loaded=true;
+    im.onerror=()=>console.error('[assets] MISSING EMBED -> '+MANIFEST[k].file+'  (key: '+k+')');im.src=ASSET_DATA[MANIFEST[k].file];});
+
+  function sceneIdOf(el){const s=el.closest('.scene');return s?s.id:'(global)';}
+  const fallbackSVG='<svg viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="9" fill="#D9F75B" opacity=".8"/><polygon points="12,7 15,10 14,14 10,14 9,10" fill="#12303d"/></svg>';
+
+  // Wire every [data-asset] img to the manifest, with load/fallback tracking
+  document.querySelectorAll('img[data-asset]').forEach(img=>{
+    const key=img.getAttribute('data-asset');const rec=MANIFEST[key];
+    status[key].used=true;status[key].scenes.add(sceneIdOf(img));
+    if(!rec){console.warn('[assets] unknown key',key);return;}
+    img.addEventListener('load',()=>{img.classList.add('ok');status[key].loaded=true;});
+    img.addEventListener('error',()=>{
+      console.error('[assets] MISSING EMBED -> '+rec.file+'  (key: '+key+')');
+      const host=img.closest('.cine,.figframe,.photostage,.linephoto,.failphoto,.sortphoto,.investphoto,.cut,.exitbg,.cimg');
+      if(host){let fb=host.querySelector('.fallback');if(!fb){fb=document.createElement('div');fb.className='fallback';fb.innerHTML=fallbackSVG+'<div class="pl">'+key.replace(/-/g,' ')+'</div>';host.appendChild(fb);}fb.classList.add('show');}
+      img.style.display='none';
+    });
+    img.src=ASSET_DATA[rec.file];
+  });
+
+  // Final asset QA table (developer console only)
+  function assetTable(){
+    const rows=Object.keys(MANIFEST).map(k=>({ASSET:k,LOADED:status[k].loaded,USED:status[k].used,SCENES:[...status[k].scenes].join(', ')}));
+    const missing=rows.filter(r=>!r.LOADED),unused=rows.filter(r=>!r.USED);
+    console.log('%c[Fair Play] Asset QA','font-weight:bold;color:#008080');
+    if(console.table)console.table(rows);
+    if(missing.length)console.warn('[assets] not loaded:',missing.map(r=>r.ASSET)); else console.log('%c[assets] all files loaded ✓','color:#0a8');
+    if(unused.length)console.warn('[assets] loaded but UNUSED (fix mapping):',unused.map(r=>r.ASSET)); else console.log('%c[assets] every asset is used ✓','color:#0a8');
+  }
+  window.addEventListener('load',()=>setTimeout(assetTable,600));
+
+  /* =================================================================
+     ENGINE
+  ================================================================== */
+  const scenes=[...document.querySelectorAll('.scene')];
+  const total=scenes.length;
+  const STORE='g8m5s1';
+  let idx=0;
+  const state=JSON.parse(localStorage.getItem(STORE)||'{}');
+  state.checks=state.checks||{};
+  function save(){try{localStorage.setItem(STORE,JSON.stringify(state));}catch(e){}}
+  const rm=window.matchMedia('(prefers-reduced-motion:reduce)').matches;
+
+  /* font scale */
+  let fs=state.fs||1;
+  function applyFs(){document.documentElement.style.setProperty('--fs',fs);}
+  applyFs();
+  document.getElementById('finc').onclick=()=>{fs=Math.min(1.25,+(fs+0.09).toFixed(2));state.fs=fs;save();applyFs();};
+  document.getElementById('fdec').onclick=()=>{fs=Math.max(0.82,+(fs-0.09).toFixed(2));state.fs=fs;save();applyFs();};
+  document.getElementById('freset').onclick=()=>{fs=1;state.fs=fs;save();applyFs();};
+
+  const backBtn=document.getElementById('back'),nextBtn=document.getElementById('nextbtn'),prog=document.getElementById('progress');
+  const vtSupported=!!document.startViewTransition && !rm;
+
+  function applyVTNames(on){
+    // give recurring motifs a shared name only on active scene so morphs work
+    document.querySelectorAll('[style*="--vtn"]').forEach(el=>{
+      const m=el.getAttribute('style').match(/--vtn:\s*([a-z0-9-]+)/i);
+      if(!m)return; el.style.viewTransitionName = on&&el.closest('.scene')===scenes[idx] ? m[1] : 'none';
+    });
+  }
+  function swap(i){
+    scenes[idx].classList.remove('active');
+    idx=i;const s=scenes[idx];s.classList.add('active');
+    backBtn.disabled=(idx===0);
+    nextBtn.textContent=(idx===total-1)?'Finish':'Next ›';
+    prog.style.width=(idx/(total-1)*100)+'%';
+    if(onEnter[s.id])onEnter[s.id](s);
+  }
+  let vtActive=false;
+  function show(i){
+    i=Math.max(0,Math.min(total-1,i));if(i===idx&&scenes[idx].classList.contains('active'))return;
+    if(vtSupported && !vtActive){
+      document.documentElement.classList.add('vt');vtActive=true;applyVTNames(true);
+      let t;try{t=document.startViewTransition(()=>{swap(i);applyVTNames(true);});}
+      catch(e){swap(i);vtActive=false;applyVTNames(false);return;}
+      // swallow all VT promise rejections (skipped/aborted transitions, e.g. hidden tab)
+      if(t.ready)t.ready.catch(()=>{});
+      if(t.updateCallbackDone)t.updateCallbackDone.catch(()=>{});
+      t.finished.catch(()=>{}).finally(()=>{vtActive=false;applyVTNames(false);});
+    } else {swap(i);}
+  }
+  nextBtn.onclick=()=>show(idx+1);
+  backBtn.onclick=()=>show(idx-1);
+  document.addEventListener('keydown',e=>{
+    if(e.target.tagName==='INPUT'||e.target.tagName==='TEXTAREA')return;
+    if(e.key==='ArrowRight'||e.key==='PageDown')show(idx+1);
+    if(e.key==='ArrowLeft'||e.key==='PageUp')show(idx-1);
+  });
+  document.getElementById('reset').onclick=()=>{
+    if(!confirm('Reset the whole session? This clears your name, votes and answers.'))return;
+    localStorage.removeItem(STORE);location.reload();
+  };
+
+  /* =================================================================
+     onEnter handlers
+  ================================================================== */
+  const onEnter={};
+  function reveal(el){el&&el.classList.add('in');}
+  function seq(items){items.forEach(it=>{if(!it.el)return;if(rm)reveal(it.el);else setTimeout(()=>reveal(it.el),it.delay);});}
+
+  /* S1 cover cinematic entrance */
+  onEnter['s1']=(s)=>{
+    const meta=s.querySelector('.cover-meta'),frame=s.querySelector('.cover-frame'),
+      lines=[...s.querySelectorAll('.cover-title .ln > span')],ball=s.querySelector('.cover-ball'),line=s.querySelector('.cover-line');
+    [meta,frame,ball,line].forEach(e=>e&&e.classList.remove('in'));lines.forEach(l=>l.classList.remove('in'));
+    seq([{el:frame,delay:200},{el:meta,delay:600}]);
+    seq(lines.map((el,i)=>({el,delay:900+i*180})));
+    seq([{el:ball,delay:1500},{el:line,delay:1400}]);
+  };
+
+  /* S2 objectives */
+  onEnter['s2']=(s)=>{const rows=[...s.querySelectorAll('.jrow')];rows.forEach(r=>r.classList.remove('in'));seq(rows.map((el,i)=>({el,delay:200+i*260})));};
+
+  /* S3 identity */
+  const nameInput=document.getElementById('nameInput'),passBtn=document.getElementById('passBtn'),cred=document.getElementById('cred'),credName=document.getElementById('credName');
+  function issuePass(){const n=(nameInput.value||'').trim();if(!n){nameInput.focus();return;}state.name=n;save();credName.textContent=n;cred.classList.add('reveal');}
+  passBtn.onclick=issuePass;
+  nameInput.addEventListener('keydown',e=>{if(e.key==='Enter'){e.preventDefault();issuePass();}});
+  onEnter['s3']=(s)=>{
+    s.querySelector('.id-student').classList.add('in');
+    if(state.name){nameInput.value=state.name;credName.textContent=state.name;cred.classList.add('reveal');}
+    else{cred.classList.remove('reveal');setTimeout(()=>nameInput.focus(),400);}
+  };
+
+  /* S4 setup */
+  onEnter['s4']=(s)=>{const ls=[...s.querySelectorAll('.k-line')],lens=s.querySelector('.k-lens'),gf=s.querySelector('.k-goalframe');
+    ls.forEach(l=>l.classList.remove('in'));lens.classList.remove('in');gf.classList.remove('in');
+    seq(ls.map((el,i)=>({el,delay:250+i*550})));seq([{el:lens,delay:400},{el:gf,delay:600}]);};
+
+  /* video helper */
+  function setupVideo(vidId,hintId,onPlay){
+    const v=document.getElementById(vidId),h=document.getElementById(hintId);
+    const start=()=>{h.classList.add('hide');v.play().catch(()=>{});if(onPlay)onPlay(v);};
+    h.onclick=start;v.addEventListener('play',()=>h.classList.add('hide'));
+    return {v,h,reset:()=>{try{v.pause();v.currentTime=0;}catch(e){}h.classList.remove('hide');}};
+  }
+  const v5=setupVideo('vid5','hint5');
+  onEnter['s5']=()=>v5.reset();
+
+  /* votes */
+  function wireVote(rowId,noteId,key){
+    const row=document.getElementById(rowId),note=document.getElementById(noteId);
+    row.querySelectorAll('.votebtn').forEach(b=>{
+      b.onclick=()=>{
+        row.querySelectorAll('.votebtn').forEach(x=>x.classList.remove('sel'));b.classList.add('sel');
+        const val=b.dataset.v;state[key]=val;save();
+        if(key==='secondVote'){note.textContent=(state.firstVote&&state.firstVote!==val)?'You switched your call. 👀':(state.firstVote?"You're sticking with it.":'Locked in.');}
+        else{note.textContent="Locked in. Let's not peek yet.";}
+        note.classList.add('show');
+      };
+    });
+    return ()=>{row.querySelectorAll('.votebtn').forEach(x=>x.classList.toggle('sel',state[key]===x.dataset.v));
+      note.classList.remove('show');note.textContent='';
+      if(state[key]){note.textContent=(key==='secondVote'?(state.firstVote&&state.firstVote!==state[key]?'You switched your call. 👀':"You're sticking with it."):"Locked in. Let's not peek yet.");note.classList.add('show');}};
+  }
+  onEnter['s6']=wireVote('vote1','note1','firstVote');
+  onEnter['s8']=wireVote('vote2','note2','secondVote');
+
+  /* timer */
+  const ring=document.getElementById('ring7'),tnum=document.getElementById('timerNum'),tbtn=document.getElementById('timerBtn');let tint=null;
+  tbtn.onclick=()=>{clearInterval(tint);let t=30;tnum.textContent=t;ring.style.setProperty('--p',0);tbtn.textContent='Talking…';
+    tint=setInterval(()=>{t--;tnum.textContent=Math.max(t,0);ring.style.setProperty('--p',((30-t)/30*100));if(t<=0){clearInterval(tint);tnum.textContent='Time!';tbtn.textContent='Restart ↺';}},1000);};
+  onEnter['s7']=()=>{clearInterval(tint);tnum.textContent=30;ring.style.setProperty('--p',0);tbtn.textContent='Start 30s ▶';};
+
+  /* S9 reveal AFTER video */
+  const reveal9=document.getElementById('reveal9');
+  const v9=setupVideo('vid9','hint9',(v)=>{v.onended=()=>reveal9.classList.add('in');setTimeout(()=>{if(!v.paused&&v.currentTime>0)reveal9.classList.add('in');},9000);});
+  onEnter['s9']=()=>{v9.reset();reveal9.classList.remove('in');};
+
+  /* S10 the line */
+  const diagBall=document.getElementById('diagBall'),lineStrip=document.getElementById('lineStrip'),lineVer=document.getElementById('lineVerlabel'),tglA=document.getElementById('tglA'),tglB=document.getElementById('tglB');
+  diagBall.style.transition='transform .7s cubic-bezier(.16,1,.3,1)';
+  function lineState(a){
+    if(a){diagBall.setAttribute('transform','translate(178,100)');lineVer.innerHTML='<span class="no">Not fully across yet. NO GOAL.</span>';lineStrip.style.background='rgba(255,181,159,.7)';tglA.classList.add('on');tglB.classList.remove('on');}
+    else{diagBall.setAttribute('transform','translate(270,100)');lineVer.innerHTML='<span class="yes">Whole ball, whole line. GOAL.</span>';lineStrip.style.background='rgba(217,247,91,.8)';tglA.classList.remove('on');tglB.classList.add('on');}
+  }
+  tglA.onclick=()=>lineState(true);tglB.onclick=()=>lineState(false);
+  onEnter['s10']=()=>lineState(true);
+
+  /* chapter dividers: reveal the bleed image */
+  ['s11','s14','s19','s24'].forEach(id=>{onEnter[id]=(s)=>{const c=s.querySelector('.cimg');if(c){c.classList.remove('in');setTimeout(()=>c.classList.add('in'),120);}};});
+
+  /* S12 layers */
+  onEnter['s12']=(s)=>{const cards=[...s.querySelectorAll('.layercard')],downs=[...s.querySelectorAll('.laydown')],eq=s.querySelector('.layereq');
+    cards.forEach(c=>c.classList.remove('in'));downs.forEach(d=>d.classList.remove('in'));eq.classList.remove('in');
+    let d=250;cards.forEach((c,i)=>{seq([{el:c,delay:d}]);d+=600;if(downs[i])seq([{el:downs[i],delay:d-260}]);});seq([{el:eq,delay:d+150}]);};
+
+  /* S13 sort */
+  (function(){
+    const tray=document.getElementById('sortTray'),fb=document.getElementById('fb13');
+    const stmts=[...tray.querySelectorAll('.stmt')],buckets=[...document.querySelectorAll('#s13 .bucket')];let selected=null;
+    function clearSel(){stmts.forEach(x=>x.classList.remove('sel'));selected=null;buckets.forEach(b=>b.classList.remove('hot'));}
+    stmts.forEach(st=>{st.tabIndex=0;
+      st.onclick=()=>{if(st.classList.contains('placed'))return;clearSel();st.classList.add('sel');selected=st;buckets.forEach(b=>b.classList.add('hot'));};
+      st.onkeydown=e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();st.click();}};});
+    buckets.forEach(b=>{const place=()=>{if(!selected)return;
+      if(selected.dataset.cat===b.dataset.cat){const chip=document.createElement('div');chip.className='chip-in';chip.style.setProperty('--bcol',getComputedStyle(b).getPropertyValue('--bcol'));chip.textContent=selected.textContent;b.querySelector('.drop').appendChild(chip);selected.classList.add('placed');clearSel();done();}
+      else{const bad=selected;bad.classList.add('shake');setTimeout(()=>bad.classList.remove('shake'),450);fb.textContent="Not quite. Ask yourself: is this what happened, what the system reported, or what the ref decided?";fb.className='feedback hint show';clearSel();}};
+      b.onclick=place;b.tabIndex=0;b.onkeydown=e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();place();}};});
+    function done(){if(stmts.every(x=>x.classList.contains('placed'))){fb.textContent='Nailed it. Event, output and decision are three different things. ✅';fb.className='feedback good show';state.checks.mc1=true;save();}else fb.classList.remove('show');}
+    onEnter['s13']=()=>{stmts.forEach(x=>x.classList.remove('placed','sel'));buckets.forEach(b=>{b.querySelector('.drop').innerHTML='';b.classList.remove('hot');});fb.classList.remove('show');fb.textContent='';selected=null;};
+  })();
+
+  /* S15 cameras: tap to add angles (overlay stadium-camera cutouts + beams) */
+  (function(){
+    const stage=document.getElementById('camStage'),addBtn=document.getElementById('addCam'),pipe=document.getElementById('camPipe');
+    const spots=[{x:8,y:10},{x:78,y:10},{x:8,y:70},{x:78,y:70}]; // percent positions of cameras (corners)
+    let cams=[],beams=[],count=0;
+    function build(){
+      cams.forEach(c=>c.remove());beams.forEach(b=>b.remove());cams=[];beams=[];count=0;
+      spots.forEach((p,i)=>{
+        const b=document.createElement('div');b.className='beam';beams.push(b);stage.appendChild(b);
+        const c=document.createElement('span');c.className='ov-cam';c.innerHTML='<img data-asset-live="stadium-camera">';
+        const im=c.firstChild;im.src=ASSET_DATA[MANIFEST['stadium-camera'].file];im.onload=()=>{};im.onerror=()=>{c.textContent='📷';};
+        c.style.left=p.x+'%';c.style.top=p.y+'%';cams.push(c);stage.appendChild(c);
+        // beam from camera toward center
+        const cx=p.x+6, cy=p.y+6, tx=50, ty=52;
+        const dx=(tx-cx), dy=(ty-cy);const len=Math.sqrt(dx*dx+dy*dy);const ang=Math.atan2(dy*stage.offsetHeight/100,dx*stage.offsetWidth/100)*180/Math.PI;
+        b.style.left=(cx+3)+'%';b.style.top=(cy+6)+'%';b.style.width=Math.sqrt(Math.pow(dx*stage.offsetWidth/100,2)+Math.pow(dy*stage.offsetHeight/100,2))+'px';b.style.transform='rotate('+ang+'deg)';
+      });
+    }
+    function addOne(){
+      if(count>=spots.length)return;
+      cams[count].classList.add('on');beams[count].classList.add('on');count++;
+      if(count>=spots.length){addBtn.textContent='All angles in ✓';addBtn.disabled=true;runPipe();}
+      else addBtn.textContent='Give it another angle ('+count+'/4) ›';
+    }
+    addBtn.onclick=addOne;
+    function runPipe(){pipe.style.opacity=1;const nodes=[...pipe.querySelectorAll('.pnode')],arrs=[...pipe.querySelectorAll('.parr')];
+      let n=0;const step=()=>{if(n>0){nodes[n-1].classList.remove('lit');nodes[n-1].classList.add('done');if(arrs[n-1])arrs[n-1].classList.add('lit');}if(n<nodes.length){nodes[n].classList.add('lit');n++;setTimeout(step,650);}};setTimeout(step,300);}
+    onEnter['s15']=()=>{build();addBtn.disabled=false;addBtn.textContent='Give it another angle ›';pipe.style.opacity=.4;
+      pipe.querySelectorAll('.pnode').forEach(nd=>nd.classList.remove('lit','done'));pipe.querySelectorAll('.parr').forEach(a=>a.classList.remove('lit'));};
+  })();
+
+  /* S16 twist */
+  onEnter['s16']=(s)=>{const ls=[...s.querySelectorAll('.k-line')],lens=s.querySelector('.k-lens'),gf=s.querySelector('.k-goalframe');
+    ls.forEach(l=>l.classList.remove('in'));lens.classList.remove('in');gf.classList.remove('in');
+    seq(ls.map((el,i)=>({el,delay:300+i*700})));seq([{el:lens,delay:400},{el:gf,delay:700}]);};
+
+  /* S17 tracking sequence */
+  onEnter['s17']=(s)=>{
+    const nodes=[...s.querySelectorAll('#trackPipe .pnode')],arrs=[...s.querySelectorAll('#trackPipe .parr')];
+    const att=document.getElementById('tAtt'),def=document.getElementById('tDef'),mA=document.getElementById('mAtt'),mD=document.getElementById('mDef'),line=document.getElementById('tLine'),flag=document.getElementById('tFlag');
+    nodes.forEach(n=>n.classList.remove('lit','done'));arrs.forEach(a=>a.classList.remove('lit'));
+    [att,def,mA,mD,line,flag].forEach(e=>e.classList.remove('on'));
+    if(rm){[att,def,mA,mD,line,flag].forEach(e=>e.classList.add('on'));nodes.forEach(n=>n.classList.add('done'));arrs.forEach(a=>a.classList.add('lit'));return;}
+    const acts=[()=>{att.classList.add('on');def.classList.add('on');},()=>{mA.classList.add('on');mD.classList.add('on');},()=>{line.classList.add('on');},()=>{flag.classList.add('on');},()=>{}];
+    let n=0;const step=()=>{if(n>0){nodes[n-1].classList.remove('lit');nodes[n-1].classList.add('done');if(arrs[n-1])arrs[n-1].classList.add('lit');}if(n<nodes.length){nodes[n].classList.add('lit');if(acts[n])acts[n]();n++;setTimeout(step,850);}};setTimeout(step,400);
+  };
+
+  /* reusable draggable reorder (mouse/trackpad via native DnD; arrows remain for keyboard/touch) */
+  function dragAfter(box,y){let closest={off:-Infinity,el:null};box.querySelectorAll('.rstep:not(.dragging)').forEach(ch=>{const b=ch.getBoundingClientRect();const off=y-b.top-b.height/2;if(off<0&&off>closest.off)closest={off,el:ch};});return closest.el;}
+  function makeReorderDraggable(box,onChange){
+    box.querySelectorAll('.rstep').forEach(st=>{
+      st.setAttribute('draggable','true');
+      st.addEventListener('dragstart',e=>{st.classList.add('dragging');try{e.dataTransfer.effectAllowed='move';e.dataTransfer.setData('text/plain','');}catch(_){}});
+      st.addEventListener('dragend',()=>{st.classList.remove('dragging');onChange&&onChange();});
+    });
+    box.addEventListener('dragover',e=>{e.preventDefault();const cur=box.querySelector('.dragging');if(!cur)return;const after=dragAfter(box,e.clientY);if(after==null)box.appendChild(cur);else box.insertBefore(cur,after);});
+    box.addEventListener('drop',e=>e.preventDefault());
+  }
+
+  /* S18 reorder (drag + arrows) */
+  (function(){
+    const box=document.getElementById('reorder18'),fb=document.getElementById('fb18'),lock=document.getElementById('lock18');
+    const steps=()=>[...box.querySelectorAll('.rstep')];
+    function move(st,dir){const arr=steps(),i=arr.indexOf(st);if(dir<0&&i>0)box.insertBefore(st,arr[i-1]);if(dir>0&&i<arr.length-1)box.insertBefore(arr[i+1],st);upd();fb.classList.remove('show');}
+    function upd(){const arr=steps();arr.forEach((st,i)=>{st.querySelector('.up').disabled=(i===0);st.querySelector('.down').disabled=(i===arr.length-1);});}
+    steps().forEach(st=>{st.querySelector('.up').onclick=()=>move(st,-1);st.querySelector('.down').onclick=()=>move(st,1);});
+    makeReorderDraggable(box,()=>{upd();fb.classList.remove('show');});
+    lock.onclick=()=>{const arr=steps(),ok=arr.every((st,i)=>+st.dataset.order===i);
+      if(ok){fb.textContent='Locked in. Capture, track, output, official. ✅';fb.className='feedback good show';state.checks.mc2=true;save();arr.forEach((st,i)=>{st.classList.add('correct');setTimeout(()=>{st.classList.add('flash');setTimeout(()=>st.classList.remove('flash'),500);},i*160);});}
+      else{fb.textContent='Close. Cameras have to capture before anything can be tracked.';fb.className='feedback hint show';}};
+    onEnter['s18']=()=>{steps().forEach(st=>st.classList.remove('correct','flash'));fb.classList.remove('show');fb.textContent='';upd();const c=document.getElementById('char18');c.classList.remove('in');setTimeout(()=>c.classList.add('in'),150);};
+  })();
+
+  /* S20 measure (clear cards reveal in sequence + closing insight) */
+  onEnter['s20']=(s)=>{const cards=[...s.querySelectorAll('.mcard')],ins=document.getElementById('measInsight');
+    cards.forEach(c=>c.classList.remove('in'));ins.classList.remove('in');
+    if(rm){cards.forEach(c=>c.classList.add('in'));ins.classList.add('in');return;}
+    cards.forEach((c,i)=>setTimeout(()=>c.classList.add('in'),350+i*700));
+    setTimeout(()=>ins.classList.add('in'),350+cards.length*700);};
+
+  /* S21 investigate */
+  (function(){
+    const spots=[...document.querySelectorAll('#s21 .hotspot')],items=[...document.querySelectorAll('#s21 .ansitem')];
+    spots.forEach(sp=>{sp.onclick=()=>{const i=+sp.dataset.h;sp.classList.add('done');items[i].classList.add('on');};});
+    onEnter['s21']=()=>{spots.forEach(sp=>sp.classList.remove('done'));items.forEach(it=>it.classList.remove('on'));};
+  })();
+
+  /* S22 fail */
+  (function(){
+    const row=document.getElementById('failChoice'),fb=document.getElementById('fb22'),rev=document.getElementById('fail22reveal');
+    row.querySelectorAll('.choice').forEach(c=>{c.onclick=()=>{row.querySelectorAll('.choice').forEach(x=>x.classList.remove('right','wrong','dim'));
+      if(c.dataset.r==='1'){c.classList.add('right');row.querySelectorAll('.choice').forEach(x=>{if(x!==c)x.classList.add('dim');});fb.textContent='Smart. A glitch is not proof.';fb.className='feedback good show';rev.classList.add('show');}
+      else{c.classList.add('wrong');fb.textContent="If we can't see it clearly, trusting it blindly is risky. What else could we do?";fb.className='feedback hint show';}};});
+    onEnter['s22']=()=>{row.querySelectorAll('.choice').forEach(x=>x.classList.remove('right','wrong','dim'));fb.classList.remove('show');fb.textContent='';rev.classList.remove('show');};
+  })();
+
+  /* S23 mc3 */
+  (function(){
+    const row=document.getElementById('mc3Choice'),fb=document.getElementById('fb23');
+    row.querySelectorAll('.choice').forEach(c=>{c.onclick=()=>{row.querySelectorAll('.choice').forEach(x=>x.classList.remove('right','wrong','dim'));
+      if(c.dataset.r==='1'){c.classList.add('right');row.querySelectorAll('.choice').forEach(x=>{if(x!==c)x.classList.add('dim');});fb.textContent='Exactly. The system measured one part of the story.';fb.className='feedback good show';state.checks.mc3=true;save();}
+      else{c.classList.add('wrong');fb.textContent='Careful. A correct position still might not explain the whole play.';fb.className='feedback hint show';}};});
+    onEnter['s23']=()=>{row.querySelectorAll('.choice').forEach(x=>x.classList.remove('right','wrong','dim'));fb.classList.remove('show');fb.textContent='';const c=document.getElementById('char23');c.classList.remove('in');setTimeout(()=>c.classList.add('in'),150);};
+  })();
+
+  /* S25 three-call */
+  (function(){
+    const calls=[
+      {t:'Call 1 of 3',s:'Technology clearly confirms the ball crossed the line.',opts:[{k:'signal',ico:'📡',txt:'Give a clear signal'},{k:'meet',ico:'🧑‍⚖️',txt:'Stop the match for a meeting'}],right:'signal',ok:'Yes. A clear measurement is exactly what tech is great at.'},
+      {t:'Call 2 of 3',s:'An offside position is detected, but the context is unclear.',opts:[{k:'auto',ico:'⛔',txt:'Auto-cancel it'},{k:'review',ico:'🧑‍⚖️',txt:'Send it for human review'}],right:'review',ok:'Right. Fuzzy context is a job for a human.'},
+      {t:'Call 3 of 3',s:'The system malfunctioned during the play.',opts:[{k:'trust',ico:'🤞',txt:'Trust it anyway'},{k:'nope',ico:'🚫',txt:"Don't rely on it blindly"}],right:'nope',ok:'Exactly. A broken system is not a reliable witness.'}
+    ];
+    let ci=0;const title=document.getElementById('s25title'),scen=document.getElementById('s25scenario'),row=document.getElementById('mc4Choice'),fb=document.getElementById('fb25'),synth=document.getElementById('s25synth');
+    function render(){const c=calls[ci];title.textContent=c.t;scen.textContent=c.s;scen.style.display='';fb.classList.remove('show');fb.textContent='';row.style.display='';synth.style.display='none';row.innerHTML='';
+      c.opts.forEach(o=>{const el=document.createElement('div');el.className='choice';el.innerHTML='<span class="cico">'+o.ico+'</span><span class="ctxt">'+o.txt+'</span>';
+        el.onclick=()=>{row.querySelectorAll('.choice').forEach(x=>x.classList.remove('right','wrong','dim'));
+          if(o.k===c.right){el.classList.add('right');row.querySelectorAll('.choice').forEach(x=>{if(x!==el)x.classList.add('dim');});fb.textContent=c.ok;fb.className='feedback good show';setTimeout(()=>{ci++;ci<calls.length?render():finish();},1200);}
+          else{el.classList.add('wrong');fb.textContent='Not the safest call. Think about what tech can and cannot judge.';fb.className='feedback hint show';}};
+        row.appendChild(el);});}
+    function finish(){state.checks.mc4=true;save();title.textContent='Three calls reviewed.';scen.style.display='none';row.style.display='none';fb.classList.remove('show');synth.style.display='block';}
+    onEnter['s25']=()=>{ci=0;render();};
+  })();
+
+  /* S26 exit + badge */
+  (function(){
+    const qs=[
+      {tag:'Q1 · See the call',q:'"The referee awarded the goal." Which layer is this?',opts:[['event','What happened'],['output','System output'],['decision','Final decision']],right:'decision',ok:'Yes. That is the human decision.'},
+      {tag:'Q2 · Follow the tech',q:'Put the flow in order:',reorder:['Capture','Track / check','Output','Official'],ok:'Perfect flow. ✅'},
+      {tag:'Q3 · Find the limit',q:'The system knows the exact position. Does it know everything about the play?',opts:[['yes','Yes'],['no','Not necessarily']],right:'no',ok:'Right. Position is only part of the story.'},
+      {tag:'Q4 · Make the decision',q:'It flags something, but the context is unclear. What should happen?',opts:[['auto','Auto decide'],['human','Human review']],right:'human',ok:'Exactly. Send it for human review.'},
+      {tag:'Q5 · Reflect',q:'Last call, in your own words: when should a human step in to check an AI decision?',reflect:true,placeholder:'Type a sentence or two. There is no single right answer.'}
+    ];
+    let qi=0;const dots=document.getElementById('exitDots').children,qcard=document.getElementById('exitQ'),efb=document.getElementById('exitFb');
+    function updDots(){[...dots].forEach((d,i)=>{d.className='d'+(i<qi?' done':i===qi?' on':'');});}
+    function next(){qi++;qi<qs.length?render():showBadge();}
+    function render(){updDots();efb.classList.remove('show');efb.textContent='';qcard.innerHTML='';const item=qs[qi];
+      const tag=document.createElement('div');tag.className='qtag';tag.textContent=item.tag;qcard.appendChild(tag);
+      const q=document.createElement('div');q.className='qq';q.textContent=item.q;qcard.appendChild(q);
+      if(item.reflect){
+        const ta=document.createElement('textarea');ta.className='reflectbox';ta.placeholder=item.placeholder;ta.value=state.reflection||'';qcard.appendChild(ta);
+        const sb=document.createElement('button');sb.className='bigbtn teal';sb.textContent='Submit reflection ✓';sb.style.marginTop='.2em';
+        sb.onclick=()=>{const v=ta.value.trim();if(v.length<4){efb.textContent='Give it a real sentence. There is no wrong answer here.';efb.className='exitfb show';efb.style.color='var(--apricot)';ta.focus();return;}state.reflection=v;save();efb.textContent='Nice thinking. That is exactly what a reviewer does. ✅';efb.className='exitfb show';efb.style.color='var(--teal)';setTimeout(next,1300);};
+        qcard.appendChild(sb);setTimeout(()=>ta.focus(),250);
+      }else if(item.reorder){const box=document.createElement('div');box.className='reorder';box.style.width='min(560px,92vw)';const order=[2,0,3,1];
+        order.forEach(oi=>{const st=document.createElement('div');st.className='rstep';st.dataset.order=oi;st.innerHTML='<span class="rgrip" aria-hidden="true">⠿</span><div class="ricon">'+['🎥','📍','📡','🧑‍⚖️'][oi]+'</div><div class="rlabel">'+item.reorder[oi]+'</div><div class="rctl"><button class="rbtn up" aria-label="Move up">▲</button><button class="rbtn down" aria-label="Move down">▼</button></div>';box.appendChild(st);});
+        qcard.appendChild(box);const upd=()=>{[...box.children].forEach((st,i)=>{st.querySelector('.up').disabled=(i===0);st.querySelector('.down').disabled=(i===box.children.length-1);});};
+        [...box.children].forEach(st=>{st.querySelector('.up').onclick=()=>{const a=[...box.children],i=a.indexOf(st);if(i>0)box.insertBefore(st,a[i-1]);upd();efb.classList.remove('show');};st.querySelector('.down').onclick=()=>{const a=[...box.children],i=a.indexOf(st);if(i<a.length-1)box.insertBefore(a[i+1],st);upd();efb.classList.remove('show');};});upd();
+        makeReorderDraggable(box,()=>{upd();efb.classList.remove('show');});
+        const lk=document.createElement('button');lk.className='bigbtn teal';lk.textContent='Lock it in ✓';lk.style.marginTop='.4em';
+        lk.onclick=()=>{const ok=[...box.children].every((st,i)=>+st.dataset.order===i);if(ok){efb.textContent=item.ok;efb.className='exitfb show';efb.style.color='var(--teal)';[...box.children].forEach((st,i)=>setTimeout(()=>{st.style.borderColor='var(--teal)';st.classList.add('flash');},i*140));setTimeout(next,1300);}else{efb.textContent='Almost. Cameras capture first, official receives last.';efb.className='exitfb show';efb.style.color='var(--apricot)';}};
+        qcard.appendChild(lk);
+      }else{const cr=document.createElement('div');cr.className='choicerow';
+        item.opts.forEach(([k,label])=>{const el=document.createElement('div');el.className='choice';el.innerHTML='<span class="ctxt">'+label+'</span>';
+          el.onclick=()=>{cr.querySelectorAll('.choice').forEach(x=>x.classList.remove('right','wrong','dim'));if(k===item.right){el.classList.add('right');cr.querySelectorAll('.choice').forEach(x=>{if(x!==el)x.classList.add('dim');});efb.textContent=item.ok;efb.className='exitfb show';efb.style.color='var(--teal)';setTimeout(next,1200);}else{el.classList.add('wrong');efb.textContent='Not quite. Think back to who owns the call.';efb.className='exitfb show';efb.style.color='var(--apricot)';}};
+          cr.appendChild(el);});qcard.appendChild(cr);}}
+    function showBadge(){document.getElementById('exitHead').style.display='none';document.getElementById('exitMain').style.display='none';const bm=document.getElementById('badgeMain');bm.style.display='flex';
+      document.getElementById('badgeName').textContent=state.name||'Reviewer';const card=document.getElementById('badgeCard');
+      requestAnimationFrame(()=>setTimeout(()=>{card.classList.add('assemble');setTimeout(()=>{card.classList.add('shine');burst();},700);},120));}
+    function burst(){if(rm)return;const box=document.getElementById('particles');box.innerHTML='';const cols=['#D9F75B','#F49E58','#008080','#7C84F7','#E86849'];
+      for(let i=0;i<48;i++){const p=document.createElement('i');p.style.background=cols[i%cols.length];const ang=(i/48)*Math.PI*2+(i%3),dist=90+((i*53)%240),dur=1000+((i*97)%800);box.appendChild(p);
+        p.animate([{transform:'translate(-50%,-50%) scale(0)',opacity:1},{transform:'translate(calc(-50% + '+Math.cos(ang)*dist+'px),calc(-50% + '+Math.sin(ang)*dist+'px)) rotate('+(i*47)+'deg) scale(1)',opacity:1,offset:.7},{transform:'translate(calc(-50% + '+Math.cos(ang)*dist*1.2+'px),calc(-50% + '+(Math.sin(ang)*dist*1.2+80)+'px)) scale(.6)',opacity:0}],{duration:dur,easing:'cubic-bezier(.16,1,.3,1)',delay:(i*20)%260,fill:'forwards'});}}
+    onEnter['s26']=()=>{qi=0;document.getElementById('exitHead').style.display='';document.getElementById('exitMain').style.display='flex';document.getElementById('badgeMain').style.display='none';const card=document.getElementById('badgeCard');card.classList.remove('assemble','shine');render();};
+  })();
+
+  /* =================================================================
+     QA harness  (window.__qa / __goto)
+  ================================================================== */
+  window.__qa=function(){
+    const problems=[];const chromeTop=document.getElementById('chrome').getBoundingClientRect().top;const vw=innerWidth,vh=innerHeight;const cur=scenes[idx];
+    cur.querySelectorAll('.title,.instruct,.cover-title,.ctitle,.k-mega,.videoframe,.cine,.photostage,.linephoto,.failphoto,.investphoto,.votebtn,.bucket,.choice,.credential,.badgecard,.qcard,.pipeline,.jrow,.reorder,.id-student,.revealgrid,.aitrack,.measure2col,.reflectbox,.measphoto').forEach(el=>{
+      const r=el.getBoundingClientRect();if(r.width===0&&r.height===0)return;
+      if(r.right>vw+1||r.left<-1)problems.push({scene:cur.id,el:(el.className||'').split(' ')[0],issue:'x-overflow'});
+      if(r.bottom>chromeTop+1)problems.push({scene:cur.id,el:(el.className||'').split(' ')[0],issue:'below-chrome',bottom:Math.round(r.bottom),ct:Math.round(chromeTop)});
+      if(r.top<-1)problems.push({scene:cur.id,el:(el.className||'').split(' ')[0],issue:'top-clip',top:Math.round(r.top)});
+    });
+    if(document.documentElement.scrollHeight>vh+1)problems.push({scene:cur.id,issue:'page-scroll'});
+    return problems;
+  };
+  window.__goto=function(i){show(i);};
+  window.__swap=function(i){i=Math.max(0,Math.min(total-1,i));swap(i);}; // direct, no view-transition (QA)
+  window.__assetTable=assetTable;
+
+  /* boot */
+  swap(0);
+})();
+</script>
+</body>
+</html>

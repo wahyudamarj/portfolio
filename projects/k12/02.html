@@ -1,0 +1,2695 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<!-- Standalone build: local JS and image assets embedded as Base64/data URIs. -->
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>How Would an AI Pick a Team? · Grade 8 · Module 5 · Session 2</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+/* ============================================================
+   FAIR PLAY REVIEW BOARD — SESSION 2
+   "How Would an AI Pick a Team?"
+   CSS is the single source of truth. Tokens → components → scenes.
+   ============================================================ */
+
+/* ---------- RESET ---------- */
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%}
+img{display:block;max-width:100%}
+button{font-family:inherit;border:none;background:none;cursor:pointer;color:inherit}
+textarea{font-family:inherit}
+:focus-visible{outline:3px solid var(--peri);outline-offset:3px}
+
+/* ---------- TOKENS ---------- */
+:root{
+  /* palette — warm light foundation + deep game panels */
+  --cream:#FBF6EC;
+  --cream-2:#F4EADA;
+  --cream-3:#EADCC6;
+  --paper:#FFFDF8;
+  --ink:#17233A;
+  --ink-soft:#425068;
+  --ink-mute:#7A879C;
+
+  --navy:#0C1B30;
+  --navy-2:#12294A;
+  --navy-3:#1C3A63;
+  --navy-line:#2E507F;
+
+  --teal:#178A9B;
+  --teal-bright:#28B7C9;
+  --teal-deep:#0E5C68;
+
+  --apricot:#F0954E;
+  --apricot-soft:#F8B87E;
+  --peri:#7E8FEE;
+  --peri-soft:#A9B4F4;
+  --lime:#AFD645;
+  --lime-soft:#C9E877;
+  --rose:#EF7A6B;
+  --gold:#F2C14E;
+
+  /* attribute colors (5 axes) */
+  --c-speed:#F0954E;
+  --c-shoot:#EF7A6B;
+  --c-pass:#7E8FEE;
+  --c-def:#28B7C9;
+  --c-team:#AFD645;
+
+  /* surfaces / depth */
+  --shadow-sm:0 2px 10px rgba(20,30,55,.10);
+  --shadow-md:0 12px 32px rgba(20,30,55,.16);
+  --shadow-lg:0 26px 60px rgba(12,20,40,.30);
+  --shadow-card:0 18px 40px rgba(12,22,46,.22);
+  --glow-teal:0 0 40px rgba(40,183,201,.45);
+  --glow-gold:0 0 46px rgba(242,193,78,.55);
+
+  --r-s:12px; --r-m:20px; --r-l:30px; --r-xl:42px;
+
+  /* motion */
+  --e-out:cubic-bezier(.22,.9,.28,1);
+  --e-soft:cubic-bezier(.4,.14,.2,1);
+  --e-spring:cubic-bezier(.34,1.4,.5,1);
+
+  /* type scale (multiplied by user font control) */
+  --fsm:1;
+  --f-display:calc(clamp(46px,6.8vw,102px) * var(--fsm));
+  --f-chapter:calc(clamp(40px,5.4vw,82px) * var(--fsm));
+  --f-title:calc(clamp(28px,3.5vw,58px) * var(--fsm));
+  --f-quest:calc(clamp(25px,2.9vw,48px) * var(--fsm));
+  --f-lead:calc(clamp(21px,2vw,33px) * var(--fsm));
+  --f-body:calc(clamp(18px,1.62vw,28px) * var(--fsm));
+  --f-ui:calc(clamp(16px,1.28vw,23px) * var(--fsm));
+  --f-micro:calc(clamp(13px,.98vw,16px) * var(--fsm));
+
+  --stage-pad:clamp(18px,3vw,54px);
+  --footer-h:clamp(58px,7.2vh,82px);
+}
+
+/* ---------- BASE ---------- */
+body{
+  font-family:'Inter',system-ui,-apple-system,'Segoe UI',sans-serif;
+  color:var(--ink);
+  background:var(--navy);
+  overflow:hidden;
+  -webkit-font-smoothing:antialiased;
+}
+h1,h2,h3,.disp,.font-disp{font-family:'Sora','Inter',sans-serif;}
+
+#app{
+  position:fixed;inset:0;
+  display:grid;
+  grid-template-rows:1fr var(--footer-h);
+  background:var(--cream);
+}
+
+/* ---------- STAGE ---------- */
+#stage{
+  position:relative;
+  overflow:hidden;
+  background:var(--cream);
+}
+.scene{
+  position:absolute;inset:0;
+  display:none;
+  padding:var(--stage-pad);
+  padding-bottom:calc(var(--stage-pad) * .6);
+}
+.scene.active{display:grid;}
+.scene-inner{
+  width:100%;height:100%;
+  max-width:1560px;margin:0 auto;
+  display:grid;
+  place-content:center;
+  align-content:center;
+  gap:clamp(14px,2.2vh,30px);
+  position:relative;
+}
+
+/* scene background variants */
+.scene[data-bg="cream"]{background:radial-gradient(120% 120% at 50% 0%,var(--cream) 0%,var(--cream-2) 78%,var(--cream-3) 100%);}
+.scene[data-bg="lab"]{background:var(--navy);}
+.scene[data-bg="learn"]{background:radial-gradient(130% 120% at 20% 0%,var(--paper) 0%,var(--cream) 55%,var(--cream-2) 100%);}
+.scene[data-bg="board"]{background:radial-gradient(120% 120% at 50% 15%,#FFFDF8 0%,var(--cream) 60%,var(--cream-3) 100%);}
+
+/* ---------- TYPOGRAPHY UTILS ---------- */
+.eyebrow{
+  font-family:'Sora';font-weight:700;letter-spacing:.28em;text-transform:uppercase;
+  font-size:var(--f-ui);color:var(--teal-deep);
+}
+.scene[data-bg="lab"] .eyebrow{color:var(--teal-bright);}
+.display{font-size:var(--f-display);font-weight:800;line-height:.98;letter-spacing:-.02em;}
+.chapter{font-size:var(--f-chapter);font-weight:800;line-height:1.0;letter-spacing:-.015em;}
+.title{font-size:var(--f-title);font-weight:700;line-height:1.05;letter-spacing:-.01em;}
+.quest{font-size:var(--f-quest);font-weight:700;line-height:1.12;}
+.lead{font-size:var(--f-lead);font-weight:500;line-height:1.32;color:var(--ink-soft);}
+.body{font-size:var(--f-body);font-weight:400;line-height:1.5;color:var(--ink-soft);}
+.ui{font-size:var(--f-ui);}
+.center{text-align:center}
+.ink-invert{color:var(--cream);}
+.scene[data-bg="lab"] .lead{color:#C7D6EC;}
+.scene[data-bg="lab"] .body{color:#B7C6DE;}
+.grad-teal{background:linear-gradient(100deg,var(--teal),var(--teal-bright));-webkit-background-clip:text;background-clip:text;color:transparent;}
+.grad-apri{background:linear-gradient(100deg,var(--apricot),var(--rose));-webkit-background-clip:text;background-clip:text;color:transparent;}
+.grad-gold{background:linear-gradient(100deg,var(--gold),var(--apricot));-webkit-background-clip:text;background-clip:text;color:transparent;}
+.hl{color:var(--teal);}
+.hl-a{color:var(--apricot);}
+
+/* ---------- FOOTER / CHROME ---------- */
+#footer{
+  display:grid;
+  grid-template-columns:1fr auto 1fr;
+  align-items:center;
+  padding:0 clamp(14px,2vw,30px);
+  background:linear-gradient(180deg,#FFFFFF,#FBF4E7);
+  border-top:2px solid var(--cream-3);
+  z-index:40;
+  box-shadow:0 -6px 24px rgba(20,30,55,.06);
+}
+.footer-left{display:flex;align-items:center;gap:14px;justify-self:start;}
+.logo-chip{
+  background:#fff;border-radius:14px;padding:8px 14px;
+  box-shadow:var(--shadow-sm);display:flex;align-items:center;
+  height:calc(var(--footer-h) - 22px);
+}
+.logo-chip img{height:100%;width:auto;object-fit:contain;}
+.reset-btn{
+  font-family:'Sora';font-weight:600;font-size:var(--f-micro);
+  color:var(--ink-mute);letter-spacing:.06em;text-transform:uppercase;
+  padding:6px 10px;border-radius:10px;transition:.2s;
+}
+.reset-btn:hover{color:var(--rose);background:rgba(239,122,107,.1);}
+
+.footer-nav{display:flex;align-items:center;gap:clamp(10px,1.4vw,20px);justify-self:center;}
+.progress-col{display:flex;flex-direction:column;align-items:center;gap:1px;min-width:66px;}
+.nav-btn{
+  font-family:'Sora';font-weight:700;font-size:var(--f-ui);
+  display:flex;align-items:center;gap:8px;
+  padding:clamp(9px,1.1vh,14px) clamp(18px,1.9vw,32px);
+  border-radius:999px;transition:transform .18s var(--e-out),box-shadow .2s,background .2s,opacity .2s;
+}
+.nav-btn.prev{background:var(--cream-2);color:var(--ink-soft);box-shadow:var(--shadow-sm);}
+.nav-btn.prev:hover{background:var(--cream-3);transform:translateX(-3px);}
+.nav-btn.next{background:linear-gradient(120deg,var(--teal),var(--teal-bright));color:#fff;box-shadow:0 8px 22px rgba(23,138,155,.4);}
+.nav-btn.next:hover{transform:translateX(3px);box-shadow:0 12px 30px rgba(23,138,155,.55);}
+.nav-btn:disabled{opacity:.32;cursor:not-allowed;transform:none!important;}
+.nav-btn.pulse{animation:navpulse 1.6s var(--e-out) infinite;}
+@keyframes navpulse{0%,100%{box-shadow:0 8px 22px rgba(23,138,155,.4)}50%{box-shadow:0 8px 30px rgba(40,183,201,.75)}}
+.progress-read{font-family:'Sora';font-weight:600;font-size:var(--f-micro);color:var(--ink-mute);min-width:66px;text-align:center;letter-spacing:.04em;}
+
+.footer-right{display:flex;align-items:center;gap:clamp(10px,1.4vw,18px);justify-self:end;}
+.copyright{font-size:var(--f-micro);color:var(--ink-mute);letter-spacing:.02em;white-space:nowrap;}
+.fs-controls{display:flex;align-items:center;gap:4px;background:var(--cream-2);border-radius:12px;padding:4px;}
+.fs-controls button{
+  font-family:'Sora';font-weight:700;width:clamp(26px,2.4vw,36px);height:clamp(26px,2.4vw,36px);
+  border-radius:9px;color:var(--ink-soft);transition:.16s;display:grid;place-items:center;
+}
+.fs-controls button:hover{background:#fff;color:var(--teal);}
+.fs-controls .fs-a{font-size:calc(var(--f-micro) + 6px);}
+.fs-controls .fs-b{font-size:calc(var(--f-micro) + 1px);}
+
+/* identity chip (persistent, top-right of stage) */
+#idchip{
+  position:absolute;top:clamp(12px,1.8vh,22px);right:clamp(14px,1.8vw,26px);
+  display:none;align-items:center;gap:10px;z-index:35;
+  background:rgba(255,255,255,.82);backdrop-filter:blur(8px);
+  border:1.5px solid var(--cream-3);border-radius:999px;
+  padding:6px 14px 6px 6px;box-shadow:var(--shadow-sm);
+  animation:chipIn .6s var(--e-spring) both;
+}
+#idchip.on-lab{background:rgba(18,41,74,.7);border-color:var(--navy-line);}
+#idchip.on-lab .idchip-name{color:#fff;}
+#idchip.on-lab .idchip-role{color:var(--teal-bright);}
+@keyframes chipIn{from{opacity:0;transform:translateY(-14px) scale(.9)}to{opacity:1;transform:none}}
+.idchip-badge{width:clamp(30px,3vw,42px);height:clamp(30px,3vw,42px);border-radius:50%;
+  background:conic-gradient(from 210deg,var(--teal),var(--peri),var(--apricot),var(--lime),var(--teal));
+  display:grid;place-items:center;box-shadow:0 3px 10px rgba(0,0,0,.2);}
+.idchip-badge span{font-family:'Sora';font-weight:800;color:#fff;font-size:var(--f-ui);}
+.idchip-txt{display:flex;flex-direction:column;line-height:1.05;}
+.idchip-name{font-family:'Sora';font-weight:700;font-size:var(--f-ui);color:var(--ink);}
+.idchip-role{font-size:var(--f-micro);color:var(--teal-deep);font-weight:600;letter-spacing:.05em;}
+
+/* ---------- BUTTONS / GENERAL ---------- */
+.btn{
+  font-family:'Sora';font-weight:700;font-size:var(--f-ui);
+  padding:clamp(12px,1.5vh,18px) clamp(24px,2.4vw,40px);
+  border-radius:999px;transition:transform .18s var(--e-out),box-shadow .2s,background .2s;
+  display:inline-flex;align-items:center;gap:10px;
+}
+.btn-primary{background:linear-gradient(120deg,var(--teal),var(--teal-bright));color:#fff;box-shadow:0 10px 26px rgba(23,138,155,.4);}
+.btn-primary:hover{transform:translateY(-3px);box-shadow:0 16px 36px rgba(40,183,201,.55);}
+.btn-apri{background:linear-gradient(120deg,var(--apricot),var(--rose));color:#fff;box-shadow:0 10px 26px rgba(240,149,78,.42);}
+.btn-apri:hover{transform:translateY(-3px);box-shadow:0 16px 36px rgba(239,122,107,.55);}
+.btn-ghost{background:rgba(255,255,255,.1);color:#fff;border:2px solid rgba(255,255,255,.35);}
+.btn-ghost:hover{background:rgba(255,255,255,.2);}
+.btn-lg{font-size:var(--f-lead);padding:clamp(14px,1.9vh,22px) clamp(30px,3vw,52px);}
+
+/* pill / tag */
+.pill{display:inline-flex;align-items:center;gap:8px;font-family:'Sora';font-weight:700;
+  font-size:var(--f-ui);padding:8px 18px;border-radius:999px;letter-spacing:.02em;}
+.pill-teal{background:rgba(40,183,201,.16);color:var(--teal-deep);}
+.pill-apri{background:rgba(240,149,78,.18);color:#B4611F;}
+.pill-navy{background:var(--navy-2);color:var(--teal-bright);}
+
+/* ---------- KINETIC LINES ---------- */
+.kin{opacity:0;transform:translateY(26px);}
+.kin.show{animation:kinIn .7s var(--e-out) forwards;}
+@keyframes kinIn{to{opacity:1;transform:none}}
+.kin-big{opacity:0;transform:translateY(30px) scale(.96);}
+.kin-big.show{animation:kinBig .8s var(--e-spring) forwards;}
+@keyframes kinBig{to{opacity:1;transform:none}}
+.arrow-down{font-size:var(--f-lead);color:var(--apricot);opacity:0;transform:scale(.4);}
+.arrow-down.show{animation:kinBig .5s var(--e-spring) forwards;}
+
+/* reveal helper */
+.rv{opacity:0;transform:translateY(22px);}
+.rv.show{animation:kinIn .7s var(--e-out) forwards;}
+.dly1{animation-delay:.12s}.dly2{animation-delay:.26s}.dly3{animation-delay:.42s}
+.dly4{animation-delay:.6s}.dly5{animation-delay:.8s}.dly6{animation-delay:1s}.dly7{animation-delay:1.25s}.dly8{animation-delay:1.5s}
+
+/* ============================================================
+   COVER (Scene 1)
+   ============================================================ */
+.cover-wrap{position:absolute;inset:0;overflow:hidden;}
+.cover-img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:center 42%;}
+.cover-crowd{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:0;mix-blend-mode:screen;}
+.cover-scrim{position:absolute;inset:0;background:
+  linear-gradient(180deg,rgba(8,18,34,.55) 0%,rgba(8,18,34,.12) 32%,rgba(8,18,34,.25) 66%,rgba(8,18,34,.86) 100%);}
+.cover-vig{position:absolute;inset:0;box-shadow:inset 0 0 240px rgba(6,12,26,.7);}
+.cover-content{position:absolute;left:0;right:0;bottom:clamp(26px,6vh,70px);
+  display:grid;justify-items:center;gap:clamp(14px,2.4vh,28px);text-align:center;padding:0 6vw;z-index:5;}
+.cover-meta{position:absolute;top:clamp(20px,4vh,46px);left:0;right:0;text-align:center;
+  opacity:0;letter-spacing:.36em;color:#fff;font-family:'Sora';font-weight:700;z-index:6;
+  font-size:var(--f-ui);text-transform:uppercase;text-shadow:0 2px 16px rgba(0,0,0,.6);}
+.cover-meta b{color:var(--teal-bright);font-weight:700;}
+.cover-title{color:#fff;text-shadow:0 8px 40px rgba(0,0,0,.5);position:relative;}
+.cover-title .cl{display:block;overflow:hidden;}
+.cover-title .cl span{display:block;transform:translateY(110%);}
+.cover-ball{position:absolute;width:clamp(90px,13vw,190px);bottom:clamp(-20px,-2vh,-10px);right:clamp(4%,7vw,12%);
+  opacity:0;filter:drop-shadow(0 20px 30px rgba(0,0,0,.5));z-index:6;}
+.cover-cta{margin-top:8px;opacity:0;}
+.cover-title-badge{position:absolute;top:clamp(22px,4vh,44px);left:50%;transform:translateX(-50%);
+  z-index:6;opacity:0;}
+
+/* ============================================================
+   OBJECTIVES (Scene 2) — learning path
+   ============================================================ */
+.path{display:flex;align-items:center;justify-content:center;gap:clamp(10px,1.8vw,40px);flex-wrap:nowrap;width:100%;}
+.path-node{display:flex;flex-direction:column;align-items:center;gap:10px;position:relative;
+  padding:0;flex:0 0 auto;}
+.path-verb{font-family:'Sora';font-weight:800;font-size:clamp(22px,2.9vw,50px);letter-spacing:-.02em;line-height:1;
+  opacity:0;transform:translateY(30px) scale(.9);white-space:nowrap;display:flex;flex-direction:column;align-items:center;gap:8px;}
+.path-verb.show{animation:kinBig .7s var(--e-spring) forwards;}
+.pv-explain{color:var(--apricot);}
+.pv-interpret{color:var(--teal);}
+.pv-compare{color:var(--peri);}
+.pv-evaluate{color:#8FB024;}
+.path-obj{font-size:var(--f-ui);color:var(--ink-soft);max-width:16ch;text-align:center;opacity:0;font-weight:500;line-height:1.3;}
+.path-obj.show{animation:kinIn .6s var(--e-out) forwards;}
+.path-arrow{font-size:clamp(20px,2.2vw,40px);color:var(--cream-3);opacity:0;font-family:'Sora';flex-shrink:0;align-self:flex-start;margin-top:clamp(28px,3.4vw,64px);}
+.path-arrow.show{animation:kinIn .5s var(--e-out) forwards;}
+.obj-num{font-family:'Sora';font-weight:800;font-size:var(--f-micro);color:#fff;
+  background:currentColor;width:1.7em;height:1.7em;border-radius:50%;display:grid;place-items:center;}
+.obj-num span{color:#fff;}
+@media (max-width:900px){.path{flex-wrap:wrap;}.path-arrow{display:none;}}
+
+/* ============================================================
+   IDENTITY (Scene 3)
+   ============================================================ */
+.id-grid{display:grid;grid-template-columns:1.05fr .95fr;gap:clamp(20px,3vw,60px);align-items:center;width:100%;}
+.id-portrait{position:relative;display:grid;place-items:center;}
+.id-portrait img{height:min(62vh,520px);width:auto;object-fit:contain;filter:drop-shadow(0 30px 40px rgba(20,30,55,.28));
+  transform:translateY(20px) scale(.96);opacity:0;}
+.id-portrait.in img{animation:portraitIn .9s var(--e-out) forwards;}
+@keyframes portraitIn{to{opacity:1;transform:none}}
+.id-glow{position:absolute;bottom:6%;width:70%;height:26%;background:radial-gradient(ellipse,rgba(40,183,201,.4),transparent 70%);filter:blur(24px);z-index:-1;}
+.id-panel{display:grid;gap:clamp(14px,2vh,24px);align-content:center;}
+.name-field{display:flex;gap:12px;flex-wrap:wrap;}
+.name-input{flex:1;min-width:220px;font-family:'Sora';font-weight:600;font-size:var(--f-lead);
+  padding:clamp(12px,1.6vh,18px) clamp(18px,2vw,26px);border-radius:16px;border:2.5px solid var(--cream-3);
+  background:#fff;color:var(--ink);transition:.2s;box-shadow:var(--shadow-sm);}
+.name-input:focus{border-color:var(--teal);outline:none;box-shadow:0 0 0 4px rgba(40,183,201,.16);}
+/* credential card */
+.cred{background:linear-gradient(135deg,var(--navy-2),var(--navy-3));border-radius:var(--r-l);
+  padding:clamp(18px,2.4vw,30px);color:#fff;box-shadow:var(--shadow-lg);position:relative;overflow:hidden;
+  border:1.5px solid var(--navy-line);}
+.cred::after{content:"";position:absolute;top:-40%;right:-10%;width:60%;height:180%;
+  background:linear-gradient(120deg,transparent,rgba(255,255,255,.14),transparent);transform:rotate(18deg);}
+.cred-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;}
+.cred-seal{width:clamp(42px,4vw,58px);height:clamp(42px,4vw,58px);border-radius:50%;
+  background:conic-gradient(from 200deg,var(--teal-bright),var(--peri),var(--lime),var(--teal-bright));
+  display:grid;place-items:center;box-shadow:0 4px 14px rgba(0,0,0,.3);}
+.cred-seal span{font-family:'Sora';font-weight:800;font-size:var(--f-lead);color:#fff;}
+.cred-org{font-family:'Sora';font-weight:700;letter-spacing:.14em;font-size:var(--f-micro);color:var(--teal-bright);text-transform:uppercase;}
+.cred-name{font-family:'Sora';font-weight:800;font-size:clamp(24px,3vw,44px);margin:6px 0 2px;}
+.cred-role{font-size:var(--f-ui);color:var(--peri-soft);font-weight:600;}
+.cred-foot{display:flex;justify-content:space-between;margin-top:16px;font-size:var(--f-micro);color:#9FB2CF;letter-spacing:.04em;}
+
+/* ============================================================
+   SQUAD LAB shared
+   ============================================================ */
+.lab-bg{position:absolute;inset:0;overflow:hidden;}
+.lab-bg img{width:100%;height:100%;object-fit:cover;object-position:center 60%;filter:saturate(.82) brightness(.8);}
+.lab-bg::after{content:"";position:absolute;inset:0;background:
+  radial-gradient(95% 85% at 50% 46%,rgba(8,17,32,.46),rgba(8,17,32,.7) 100%),
+  linear-gradient(180deg,rgba(8,17,32,.9) 0%,rgba(8,17,32,.64) 32%,rgba(8,17,32,.62) 60%,rgba(8,17,32,.94) 100%);}
+.lab-veil{position:absolute;inset:0;background:radial-gradient(120% 90% at 50% 40%,transparent,rgba(8,17,32,.45));}
+.scene[data-bg="lab"] .ink-invert,
+.scene[data-bg="lab"] .lead,
+.scene[data-bg="lab"] .title,
+.scene[data-bg="lab"] .quest,
+.scene[data-bg="lab"] .display{text-shadow:0 2px 16px rgba(0,0,0,.6);}
+/* gradient (clipped) text must not carry a shadow — it shows through as a black halo */
+.grad-teal,.grad-apri,.grad-gold{text-shadow:none;}
+.lab-content{position:relative;z-index:3;width:100%;height:100%;display:grid;place-content:center;align-content:center;gap:clamp(12px,2vh,26px);}
+
+/* player card system (original rounded game cards) */
+.card-row{display:flex;justify-content:center;gap:clamp(10px,1.3vw,22px);flex-wrap:nowrap;}
+.pcard{
+  --accent:var(--teal-bright);
+  position:relative;width:clamp(128px,12.2vw,196px);border-radius:26px;
+  background:linear-gradient(170deg,#FFFDF8,#F3E8D5);
+  box-shadow:var(--shadow-card);overflow:hidden;
+  cursor:pointer;transition:transform .3s var(--e-out),box-shadow .3s,filter .3s;
+  border:2.5px solid rgba(255,255,255,.7);
+  transform:translateY(40px) scale(.9);opacity:0;
+  display:flex;flex-direction:column;
+}
+.pcard.dealt{animation:dealIn .7s var(--e-spring) forwards;}
+@keyframes dealIn{to{opacity:1;transform:none}}
+.pcard:hover{transform:translateY(-8px) scale(1.03);box-shadow:0 30px 56px rgba(12,22,46,.34);}
+.pcard::before{content:"";position:absolute;top:0;left:0;right:0;height:46%;
+  background:linear-gradient(160deg,var(--accent),transparent);opacity:.9;}
+.pcard-top{position:relative;height:clamp(120px,15vh,168px);overflow:hidden;
+  background:radial-gradient(120% 100% at 50% 0%,color-mix(in srgb,var(--accent) 60%,#fff),transparent);}
+.pcard-img{position:absolute;top:-4%;left:50%;transform:translateX(-50%);width:118%;height:auto;max-width:none;
+  filter:drop-shadow(0 8px 12px rgba(0,0,0,.22));}
+.pcard-role{position:absolute;top:10px;left:10px;font-family:'Sora';font-weight:800;font-size:var(--f-micro);
+  color:#fff;background:rgba(12,27,48,.55);backdrop-filter:blur(4px);padding:4px 10px;border-radius:999px;letter-spacing:.08em;text-transform:uppercase;z-index:2;}
+.pcard-body{padding:clamp(10px,1.3vh,16px) clamp(12px,1vw,18px) clamp(12px,1.5vh,18px);background:linear-gradient(180deg,#FFFDF8,#F5EBD9);position:relative;z-index:2;flex:1;}
+.pcard-name{font-family:'Sora';font-weight:800;font-size:clamp(19px,1.6vw,27px);color:var(--ink);line-height:1;}
+.pcard-tag{font-size:var(--f-micro);font-weight:700;color:var(--teal-deep);letter-spacing:.06em;margin-top:3px;text-transform:uppercase;}
+.pcard-cues{display:flex;flex-wrap:wrap;gap:5px;margin-top:9px;}
+.cue{font-size:var(--f-micro);font-weight:600;color:var(--ink-soft);background:rgba(126,143,238,.14);
+  padding:3px 9px;border-radius:8px;}
+.pcard .pick-badge{position:absolute;inset:0;background:rgba(23,138,155,.28);backdrop-filter:blur(1px);
+  display:grid;place-items:center;opacity:0;transition:.25s;z-index:5;pointer-events:none;}
+.pcard .pick-badge span{font-family:'Sora';font-weight:800;font-size:clamp(30px,3vw,48px);color:#fff;
+  background:var(--teal);width:1.7em;height:1.7em;border-radius:50%;display:grid;place-items:center;
+  box-shadow:0 8px 24px rgba(0,0,0,.35);transform:scale(.5);transition:.3s var(--e-spring);}
+.pcard.picked{border-color:var(--teal-bright);box-shadow:0 0 0 4px rgba(40,183,201,.5),var(--shadow-card);}
+.pcard.picked .pick-badge{opacity:1;}
+.pcard.picked .pick-badge span{transform:scale(1);}
+.pcard.dim{filter:grayscale(.4) brightness(.9);opacity:.6;}
+
+/* mini pitch */
+.pitch{position:relative;border-radius:24px;background:
+  linear-gradient(160deg,#2A915A 0%,#1C7A47 45%,#155F38 100%);border:4px solid rgba(255,255,255,.35);
+  box-shadow:inset 0 0 80px rgba(0,0,0,.45),var(--shadow-lg);overflow:hidden;}
+.pitch::before{content:"";position:absolute;inset:0;background:
+  repeating-linear-gradient(90deg,rgba(255,255,255,.07) 0 8%,rgba(0,0,0,.05) 8% 16%);}
+.pitch::after{content:"";position:absolute;inset:0;box-shadow:inset 0 0 120px rgba(0,0,0,.35);pointer-events:none;}
+.pitch-line{position:absolute;border:2px solid rgba(255,255,255,.4);}
+.pitch-slot{position:absolute;display:grid;place-items:center;transform:translate(-50%,-50%);}
+.pitch-token{width:clamp(78px,8vw,120px);opacity:0;transform:scale(.4) translateY(30px);}
+.pitch-token.in{animation:tokenIn .6s var(--e-spring) forwards;}
+@keyframes tokenIn{to{opacity:1;transform:scale(1) translateY(0)}}
+.pitch-token img{width:100%;filter:drop-shadow(0 10px 14px rgba(0,0,0,.4));}
+.pitch-token .pt-name{font-family:'Sora';font-weight:800;color:#fff;font-size:var(--f-ui);text-align:center;
+  text-shadow:0 2px 6px rgba(0,0,0,.5);margin-top:2px;}
+
+/* ============================================================
+   LEARNING CARDS / CHAINS
+   ============================================================ */
+.l-card{background:var(--paper);border-radius:var(--r-l);padding:clamp(18px,2.4vw,34px);
+  box-shadow:var(--shadow-md);border:2px solid var(--cream-3);}
+.chain{display:flex;flex-direction:column;align-items:center;gap:clamp(8px,1.4vh,18px);}
+.chain-node{background:#fff;border-radius:var(--r-m);padding:clamp(12px,1.6vh,20px) clamp(22px,2.5vw,40px);
+  box-shadow:var(--shadow-sm);border:2px solid var(--cream-3);text-align:center;min-width:clamp(220px,26vw,360px);}
+.chain-label{font-family:'Sora';font-weight:700;letter-spacing:.16em;font-size:var(--f-micro);color:var(--teal-deep);text-transform:uppercase;}
+.chain-val{font-family:'Sora';font-weight:800;font-size:var(--f-title);color:var(--ink);line-height:1.05;margin-top:2px;}
+.chain-multi{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin-top:6px;}
+.chain-arrow{color:var(--apricot);font-size:var(--f-lead);}
+
+/* 4 perspectives */
+.persp-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:clamp(12px,1.6vw,22px);max-width:640px;}
+.persp{background:#fff;border-radius:var(--r-m);padding:clamp(14px,1.8vh,22px);box-shadow:var(--shadow-sm);
+  border-left:6px solid var(--accent,var(--teal));display:flex;gap:14px;align-items:flex-start;opacity:0;transform:translateX(-16px);}
+.persp.show{animation:perspIn .6s var(--e-out) forwards;}
+@keyframes perspIn{to{opacity:1;transform:none}}
+.persp-ico{font-size:clamp(26px,2.6vw,40px);line-height:1;}
+.persp h4{font-family:'Sora';font-weight:800;font-size:var(--f-body);color:var(--ink);}
+.persp p{font-size:var(--f-ui);color:var(--ink-soft);margin-top:2px;line-height:1.3;}
+
+/* ============================================================
+   RADAR / COMPARE
+   ============================================================ */
+.compare-stage{display:grid;grid-template-columns:1fr 1fr;gap:clamp(34px,5vw,92px);align-items:center;width:100%;}
+.radar-box{position:relative;display:grid;place-items:center;padding:0 clamp(30px,3vw,50px);}
+.radar-svg{width:100%;height:auto;max-height:56vh;overflow:visible;}
+.radar-grid-line{fill:none;stroke:rgba(126,143,238,.28);stroke-width:1.2;}
+.radar-spoke{stroke:rgba(126,143,238,.35);stroke-width:1.2;}
+.radar-axis-label{font-family:'Sora';font-weight:700;font-size:15px;fill:var(--ink-soft);}
+.scene[data-bg="lab"] .radar-axis-label{fill:#CFE0F2;}
+.scene[data-bg="lab"] .radar-grid-line{stroke:rgba(120,150,200,.28);}
+.scene[data-bg="lab"] .radar-spoke{stroke:rgba(120,150,200,.32);}
+.radar-poly{transform-origin:center;transform:scale(0);transition:transform .9s var(--e-out),opacity .6s;opacity:0;}
+.radar-poly.drawn{transform:scale(1);opacity:1;}
+.radar-dot{opacity:0;transition:opacity .3s;}
+.radar-dot.drawn{opacity:1;}
+
+/* stat strips */
+.stat-strips{display:grid;gap:clamp(7px,1vh,13px);}
+.stat-row{display:grid;grid-template-columns:auto 1fr auto;gap:12px;align-items:center;}
+.stat-name{font-family:'Sora';font-weight:700;font-size:var(--f-ui);width:clamp(78px,7vw,110px);color:var(--ink);}
+.scene[data-bg="lab"] .stat-name{color:#EAF1FA;}
+.cmp-legend{margin-bottom:clamp(10px,1.6vh,18px);}
+.stat-strips{margin-bottom:2px;}
+.stat-track{height:clamp(12px,1.5vh,18px);background:var(--cream-3);border-radius:999px;overflow:hidden;position:relative;}
+.scene[data-bg="lab"] .stat-track{background:rgba(255,255,255,.12);}
+.stat-fill{height:100%;border-radius:999px;width:0;transition:width .9s var(--e-out);}
+.stat-num{font-family:'Sora';font-weight:800;font-size:var(--f-ui);width:2.4em;text-align:right;}
+.stat-fill.a-speed{background:linear-gradient(90deg,var(--c-speed),#f7b878);}
+.stat-fill.a-shoot{background:linear-gradient(90deg,var(--c-shoot),#f7a99c);}
+.stat-fill.a-pass{background:linear-gradient(90deg,var(--c-pass),#b3bdf7);}
+.stat-fill.a-def{background:linear-gradient(90deg,var(--c-def),#7fd9e4);}
+.stat-fill.a-team{background:linear-gradient(90deg,var(--c-team),#d3ec8f);}
+
+/* legend + player switch */
+.cmp-legend{display:flex;gap:18px;flex-wrap:wrap;margin-bottom:8px;}
+.leg-item{display:flex;align-items:center;gap:9px;font-family:'Sora';font-weight:700;font-size:var(--f-ui);color:var(--ink);}
+.scene[data-bg="lab"] .leg-item{color:#FFFFFF;}
+.scene[data-bg="lab"] .pin-btn{color:#EAF1FA;background:rgba(40,183,201,.28);}
+.leg-swatch{width:18px;height:18px;border-radius:6px;}
+.player-switch{display:flex;gap:8px;flex-wrap:wrap;margin-top:6px;}
+.switch-chip{font-family:'Sora';font-weight:700;font-size:var(--f-ui);padding:8px 16px;border-radius:999px;
+  background:#fff;color:var(--ink-soft);box-shadow:var(--shadow-sm);border:2px solid transparent;transition:.18s;}
+.scene[data-bg="lab"] .switch-chip{background:rgba(255,255,255,.12);color:#FFFFFF;}
+.switch-chip:hover{transform:translateY(-2px);}
+.switch-chip.active{border-color:var(--accent2,var(--rose));color:var(--rose);background:rgba(239,122,107,.12);}
+.pin-btn{font-family:'Sora';font-weight:700;font-size:var(--f-ui);padding:8px 16px;border-radius:999px;
+  background:rgba(40,183,201,.16);color:var(--teal-deep);display:inline-flex;gap:8px;align-items:center;}
+
+/* ============================================================
+   PRIORITY / RANKING LAB
+   ============================================================ */
+.lab-3col{display:grid;grid-template-columns:1.15fr 1.15fr 1fr;gap:clamp(14px,1.8vw,30px);width:100%;align-items:stretch;}
+.lab-panel{background:rgba(11,24,45,.82);backdrop-filter:blur(10px);border:1.5px solid var(--navy-line);
+  border-radius:var(--r-l);padding:clamp(12px,1.4vw,20px);display:flex;flex-direction:column;gap:clamp(5px,.8vh,10px);}
+.lab-panel h3{font-family:'Sora';font-weight:800;font-size:var(--f-body);color:#fff;display:flex;align-items:center;gap:8px;}
+.lab-panel .sub{font-size:var(--f-micro);color:#9FB2CF;letter-spacing:.05em;text-transform:uppercase;font-weight:600;}
+.lab-panel [id$="Radar"]{display:grid;place-items:center;padding:6px clamp(24px,2.4vw,42px);}
+.lab-panel .radar-svg{max-height:min(32vh,250px);}
+.lab-panel .radar-axis-label{font-size:13px;}
+
+/* priority control */
+.prio-ctrl{background:rgba(255,255,255,.06);border-radius:var(--r-m);padding:clamp(6px,.9vh,12px);border:1.5px solid rgba(255,255,255,.1);}
+.prio-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:5px;}
+.prio-name{font-family:'Sora';font-weight:800;font-size:var(--f-ui);color:#fff;display:flex;align-items:center;gap:8px;}
+.prio-dot{width:14px;height:14px;border-radius:50%;}
+.prio-pips{display:flex;gap:5px;}
+.pip{width:clamp(14px,1.4vw,20px);height:clamp(14px,1.4vw,20px);border-radius:5px;background:rgba(255,255,255,.16);transition:.25s var(--e-spring);}
+.pip.on{background:var(--pc,var(--teal-bright));box-shadow:0 0 12px var(--pc,var(--teal-bright));transform:scale(1.06);}
+.prio-btns{display:flex;gap:8px;}
+.prio-btns button{width:clamp(30px,3vw,42px);height:clamp(30px,3vw,42px);border-radius:12px;
+  background:rgba(255,255,255,.12);color:#fff;font-family:'Sora';font-weight:800;font-size:var(--f-lead);
+  display:grid;place-items:center;transition:.15s;}
+.prio-btns button:hover:not(:disabled){background:var(--teal);}
+.prio-btns button:disabled{opacity:.28;cursor:not-allowed;}
+.budget{display:flex;align-items:center;gap:10px;font-family:'Sora';font-weight:800;color:#fff;font-size:var(--f-ui);}
+.budget-dots{display:flex;gap:5px;}
+.bd{width:14px;height:14px;border-radius:50%;background:rgba(255,255,255,.18);transition:.2s;}
+.bd.on{background:var(--gold);box-shadow:0 0 10px var(--gold);}
+
+/* ranking list */
+.rank-list{position:relative;display:flex;flex-direction:column;gap:clamp(5px,.75vh,9px);}
+.rank-row{display:grid;grid-template-columns:auto auto 1fr auto;gap:clamp(7px,.9vw,14px);align-items:center;
+  background:linear-gradient(100deg,#FFFDF8,#F3E8D5);border-radius:15px;padding:clamp(5px,.7vh,9px) clamp(10px,1.1vw,16px);
+  box-shadow:var(--shadow-sm);border:2px solid transparent;will-change:transform;}
+.rank-row.top{border-color:var(--gold);box-shadow:0 0 0 3px rgba(242,193,78,.4),var(--shadow-md);}
+.rank-pos{font-family:'Sora';font-weight:800;font-size:var(--f-quest);color:var(--ink-mute);width:1.5em;text-align:center;line-height:1;}
+.rank-row.top .rank-pos{color:var(--gold);}
+.rank-face{width:clamp(38px,3.8vw,52px);height:clamp(38px,3.8vw,52px);border-radius:12px;overflow:hidden;position:relative;
+  background:radial-gradient(120% 100% at 50% 20%,color-mix(in srgb,var(--accent) 55%,#fff),#EADCC6);flex-shrink:0;}
+.rank-face img{position:absolute;top:0;left:50%;transform:translateX(-50%);width:220%;height:auto;max-width:none;}
+.rank-info{min-width:0;}
+.rank-name{font-family:'Sora';font-weight:800;font-size:var(--f-body);color:var(--ink);line-height:1;}
+.rank-tag{font-size:var(--f-micro);color:var(--teal-deep);font-weight:600;text-transform:uppercase;letter-spacing:.05em;}
+.rank-fit{text-align:right;}
+.rank-fit-num{font-family:'Sora';font-weight:800;font-size:var(--f-quest);color:var(--teal);line-height:1;transition:color .3s;}
+.rank-fit-lbl{font-size:var(--f-micro);color:var(--ink-mute);font-weight:700;letter-spacing:.1em;text-transform:uppercase;}
+.rank-row.top .rank-fit-num{color:var(--apricot);}
+.rank-row.rising{animation:rowGlow 1s var(--e-out);}
+@keyframes rowGlow{0%,100%{box-shadow:var(--shadow-sm)}40%{box-shadow:0 0 0 4px rgba(175,214,69,.6),0 12px 30px rgba(175,214,69,.4)}}
+
+/* goal / mission card */
+.mission-card{display:flex;align-items:center;gap:clamp(14px,1.8vw,26px);background:rgba(11,24,45,.86);
+  border:1.5px solid var(--navy-line);border-radius:var(--r-l);padding:clamp(8px,1.2vh,16px) clamp(18px,2vw,32px);backdrop-filter:blur(8px);box-shadow:var(--shadow-lg);}
+.coach-mini{height:clamp(66px,8.5vh,116px);width:auto;filter:drop-shadow(0 10px 18px rgba(0,0,0,.4));flex-shrink:0;}
+.mission-card.compact .coach-mini{height:clamp(58px,7vh,92px);}
+.mission-card.compact .mbrief{font-size:clamp(19px,2.2vw,34px);}
+.mission-card.compact .msub{font-size:var(--f-micro);}
+.win-overlay{position:absolute;left:0;right:0;bottom:clamp(10px,2vh,24px);margin:0 auto;width:max-content;z-index:50;
+  background:rgba(12,22,46,.92);border:2px solid var(--lime);border-radius:var(--r-m);padding:clamp(10px,1.4vh,18px) clamp(20px,2.4vw,40px);
+  text-align:center;box-shadow:var(--glow-gold);backdrop-filter:blur(6px);animation:kinBig .6s var(--e-spring) both;max-width:92vw;}
+.mission-txt .mlabel{font-family:'Sora';font-weight:700;letter-spacing:.16em;font-size:var(--f-micro);color:var(--teal-bright);text-transform:uppercase;}
+.mission-txt .mbrief{font-family:'Sora';font-weight:800;font-size:var(--f-quest);color:#fff;line-height:1.05;}
+.mission-txt .msub{font-size:var(--f-ui);color:#B7C6DE;margin-top:4px;}
+
+/* coach speech (missions in lab) */
+.coach-stage{display:flex;align-items:flex-end;gap:clamp(16px,2.4vw,44px);justify-content:center;}
+.coach-fig{height:min(60vh,520px);width:auto;filter:drop-shadow(0 24px 34px rgba(0,0,0,.4));
+  transform:translateX(-40px);opacity:0;flex-shrink:0;}
+.coach-fig.in{animation:coachIn .8s var(--e-out) forwards;}
+@keyframes coachIn{to{opacity:1;transform:none}}
+.speech{background:#fff;border-radius:28px;padding:clamp(20px,2.6vw,40px);box-shadow:var(--shadow-lg);position:relative;max-width:640px;
+  transform:translateY(20px) scale(.94);opacity:0;}
+.speech.in{animation:kinBig .7s var(--e-spring) .2s forwards;}
+.speech::before{content:"";position:absolute;left:-18px;bottom:60px;border:14px solid transparent;border-right-color:#fff;}
+
+/* ============================================================
+   FUNNEL / HUB (Chapter 4)
+   ============================================================ */
+.world-scene{position:relative;width:100%;height:100%;display:grid;place-content:center;}
+.world-bg{position:absolute;inset:0;border-radius:var(--r-xl);overflow:hidden;box-shadow:var(--shadow-lg);}
+.world-bg img{width:100%;height:100%;object-fit:cover;}
+.world-bg::after{content:"";position:absolute;inset:0;background:
+  radial-gradient(80% 70% at 50% 52%,rgba(6,13,26,.74),rgba(6,13,26,.5) 60%,rgba(6,13,26,.72) 100%),
+  linear-gradient(180deg,rgba(8,17,32,.5),rgba(8,17,32,.82));}
+.world-scene .ink-invert,.world-scene .lead,.world-scene .quest,.world-scene .title{text-shadow:0 2px 18px rgba(0,0,0,.6);}
+.world-scene .pill-navy{background:rgba(8,17,32,.75);}
+.funnel-flow{position:relative;z-index:3;display:flex;align-items:center;justify-content:center;gap:clamp(8px,1.4vw,24px);flex-wrap:wrap;}
+.flow-step{background:rgba(255,255,255,.92);border-radius:var(--r-m);padding:clamp(12px,1.6vh,20px) clamp(16px,1.8vw,28px);
+  text-align:center;box-shadow:var(--shadow-md);opacity:0;transform:translateY(20px) scale(.9);min-width:clamp(120px,13vw,180px);}
+.flow-step.show{animation:kinBig .6s var(--e-spring) forwards;}
+.flow-step .fs-n{font-family:'Sora';font-weight:800;font-size:var(--f-title);color:var(--teal);line-height:1;}
+.flow-step .fs-l{font-family:'Sora';font-weight:700;font-size:var(--f-ui);color:var(--ink);margin-top:3px;}
+.flow-arrow{color:var(--gold);font-size:clamp(22px,2.4vw,40px);font-family:'Sora';opacity:0;}
+.flow-arrow.show{animation:kinIn .4s var(--e-out) forwards;}
+.mrr{display:flex;gap:clamp(10px,1.4vw,22px);justify-content:center;flex-wrap:wrap;}
+.mrr-chip{font-family:'Sora';font-weight:800;font-size:var(--f-title);padding:clamp(10px,1.4vh,18px) clamp(20px,2.4vw,38px);
+  border-radius:var(--r-m);color:#fff;opacity:0;transform:scale(.7);}
+.mrr-chip.show{animation:kinBig .6s var(--e-spring) forwards;}
+
+/* recommendation reveal */
+.reco-stack{position:relative;width:clamp(200px,22vw,300px);height:clamp(280px,40vh,420px);margin:0 auto;}
+.reco-card{position:absolute;inset:0;border-radius:26px;background:linear-gradient(170deg,#FFFDF8,#F3E8D5);
+  box-shadow:var(--shadow-card);border:2.5px solid rgba(255,255,255,.7);overflow:hidden;transition:transform .8s var(--e-out),opacity .8s;}
+.reco-winner{position:relative;z-index:10;}
+
+/* ============================================================
+   EXIT TICKET / REPORT / BADGE
+   ============================================================ */
+.exit-grid{display:grid;grid-template-columns:auto 1fr;gap:clamp(20px,3vw,50px);align-items:center;width:100%;}
+.clip-fig{height:min(66vh,560px);width:auto;filter:drop-shadow(0 26px 36px rgba(20,30,55,.24));
+  transform:rotate(-4deg) translateY(16px);opacity:0;}
+.clip-fig.in{animation:portraitIn .8s var(--e-out) forwards;}
+.exit-form{display:grid;gap:clamp(14px,2vh,24px);}
+.prompt-block label{display:block;font-family:'Sora';font-weight:800;font-size:var(--f-quest);color:var(--ink);line-height:1.1;margin-bottom:10px;}
+.prompt-block .starter{color:var(--teal);}
+.ta{width:100%;font-family:'Inter';font-size:var(--f-body);line-height:1.5;color:var(--ink);
+  padding:clamp(12px,1.6vh,18px);border-radius:16px;border:2.5px solid var(--cream-3);background:#fff;resize:none;
+  box-shadow:var(--shadow-sm);transition:.2s;}
+.ta:focus{border-color:var(--teal);outline:none;box-shadow:0 0 0 4px rgba(40,183,201,.14);}
+
+.report-grid{display:grid;grid-template-columns:1.15fr .85fr;gap:clamp(20px,2.6vw,44px);width:100%;align-items:start;}
+.report-card{background:linear-gradient(160deg,var(--navy-2),var(--navy-3));border-radius:var(--r-l);
+  padding:clamp(20px,2.6vw,36px);color:#fff;box-shadow:var(--shadow-lg);border:1.5px solid var(--navy-line);}
+.report-q{margin-bottom:20px;}
+.report-q .rq-lbl{font-family:'Sora';font-weight:700;letter-spacing:.1em;font-size:var(--f-micro);color:var(--teal-bright);text-transform:uppercase;}
+.report-q .rq-ans{font-size:var(--f-body);line-height:1.45;color:#EAF1FA;margin-top:6px;font-style:italic;border-left:3px solid var(--teal-bright);padding-left:14px;}
+.checklist{display:grid;gap:clamp(8px,1.2vh,14px);}
+.check-item{display:flex;gap:12px;align-items:flex-start;background:#fff;border-radius:16px;padding:clamp(11px,1.4vh,16px) clamp(14px,1.6vw,20px);
+  box-shadow:var(--shadow-sm);opacity:0;transform:translateX(-14px);}
+.check-item.show{animation:perspIn .5s var(--e-out) forwards;}
+.check-ico{color:var(--lime);font-size:var(--f-lead);line-height:1;flex-shrink:0;filter:saturate(.9) brightness(.85);}
+.check-item p{font-size:var(--f-ui);color:var(--ink-soft);font-weight:500;line-height:1.3;}
+.check-item b{color:var(--ink);font-weight:700;}
+
+/* badge */
+.badge-scene{position:relative;display:grid;place-items:center;width:100%;height:100%;overflow:hidden;}
+.badge-rays{position:absolute;width:150vmax;height:150vmax;
+  background:conic-gradient(from 0deg,transparent 0 8deg,rgba(242,193,78,.10) 8deg 16deg,transparent 16deg 24deg);
+  animation:spin 40s linear infinite;opacity:0;transition:opacity 1s;}
+.badge-rays.on{opacity:1;}
+@keyframes spin{to{transform:rotate(360deg)}}
+.badge-core{position:relative;z-index:3;display:grid;justify-items:center;gap:clamp(12px,2vh,24px);text-align:center;}
+.badge-img{width:clamp(200px,26vw,340px);filter:drop-shadow(0 26px 44px rgba(12,20,40,.4));
+  transform:scale(.4) rotate(-20deg);opacity:0;}
+.badge-img.in{animation:badgePop 1s var(--e-spring) forwards;}
+@keyframes badgePop{to{transform:none;opacity:1}}
+.badge-img.shine{animation:badgePop 1s var(--e-spring) forwards, badgeShine 2.4s 1s ease-in-out;}
+@keyframes badgeShine{0%,100%{filter:drop-shadow(0 26px 44px rgba(12,20,40,.4))}50%{filter:drop-shadow(0 26px 44px rgba(12,20,40,.4)) drop-shadow(0 0 40px rgba(242,193,78,.8))}}
+.badge-converge{position:absolute;width:14px;height:14px;border-radius:50%;z-index:2;opacity:0;}
+
+/* discussion banner */
+.disc{display:flex;align-items:center;gap:14px;background:rgba(240,149,78,.14);border:2px dashed var(--apricot-soft);
+  border-radius:var(--r-m);padding:clamp(12px,1.6vh,18px) clamp(18px,2vw,28px);}
+.disc-ico{font-size:clamp(24px,2.6vw,38px);}
+.disc p{font-size:var(--f-ui);color:#9A5A22;font-weight:600;}
+.disc b{color:#7A3F12;}
+.scene[data-bg="lab"] .disc{background:rgba(240,149,78,.2);}
+.scene[data-bg="lab"] .disc p{color:#F8D7B4;}
+.scene[data-bg="lab"] .disc b{color:#fff;}
+
+/* think-pair-share steps */
+.tps{display:flex;gap:clamp(12px,1.8vw,30px);justify-content:center;flex-wrap:wrap;}
+.tps-step{background:#fff;border-radius:var(--r-m);padding:clamp(14px,1.8vh,24px);box-shadow:var(--shadow-sm);
+  display:grid;justify-items:center;gap:8px;min-width:clamp(140px,15vw,200px);text-align:center;
+  border-top:5px solid var(--accent,var(--teal));}
+.tps-ico{font-size:clamp(30px,3vw,48px);}
+.tps-t{font-family:'Sora';font-weight:800;font-size:var(--f-body);color:var(--ink);}
+.tps-d{font-size:var(--f-ui);color:var(--ink-soft);}
+
+/* toast / success */
+.toast{position:absolute;top:clamp(14px,3vh,30px);left:50%;transform:translateX(-50%) translateY(-24px);
+  background:var(--lime);color:#33470D;font-family:'Sora';font-weight:800;font-size:var(--f-body);
+  padding:12px 26px;border-radius:999px;box-shadow:var(--shadow-md);opacity:0;z-index:60;pointer-events:none;}
+.toast.show{animation:toastIn 2.6s var(--e-out);}
+@keyframes toastIn{0%{opacity:0;transform:translateX(-50%) translateY(-24px)}12%,80%{opacity:1;transform:translateX(-50%) translateY(0)}100%{opacity:0;transform:translateX(-50%) translateY(-24px)}}
+
+/* confetti */
+.confetti{position:absolute;width:12px;height:16px;top:-20px;z-index:55;opacity:0;pointer-events:none;}
+.confetti.go{animation:fall 2.4s ease-in forwards;}
+@keyframes fall{0%{opacity:1;transform:translateY(0) rotate(0)}100%{opacity:0;transform:translateY(90vh) rotate(720deg)}}
+
+/* helper note */
+.sim-note{font-size:var(--f-micro);color:var(--ink-mute);font-style:italic;display:flex;gap:8px;align-items:center;
+  background:rgba(126,143,238,.1);padding:8px 14px;border-radius:10px;max-width:60ch;}
+.scene[data-bg="lab"] .sim-note{color:#9FB2CF;background:rgba(126,143,238,.14);}
+
+/* generic layout helpers */
+.stack{display:grid;gap:clamp(10px,1.6vh,20px);}
+.stack-c{display:grid;gap:clamp(10px,1.6vh,20px);justify-items:center;text-align:center;}
+.row{display:flex;gap:clamp(10px,1.4vw,20px);align-items:center;}
+.row-c{display:flex;gap:clamp(10px,1.4vw,20px);align-items:center;justify-content:center;flex-wrap:wrap;}
+.wrap{flex-wrap:wrap}
+.mt{margin-top:clamp(8px,1.6vh,20px);}
+.mw{max-width:min(92vw,1100px);}
+.mw-s{max-width:min(90vw,760px);}
+.hidden{display:none!important;}
+
+/* morph role scene */
+.morph-stage{display:grid;grid-template-columns:1fr auto 1fr;gap:clamp(16px,2.4vw,44px);align-items:center;width:100%;}
+.morph-player{position:relative;display:grid;place-items:center;}
+.morph-player img{height:min(48vh,410px);width:auto;max-width:100%;filter:drop-shadow(0 24px 30px rgba(20,30,55,.25));}
+.role-col{display:flex;flex-direction:column;gap:clamp(10px,1.6vh,18px);justify-content:center;}
+.role-badge{font-family:'Sora';font-weight:800;font-size:var(--f-title);padding:clamp(8px,1.2vh,14px) clamp(20px,2vw,34px);
+  border-radius:16px;color:#fff;box-shadow:var(--shadow-md);white-space:nowrap;letter-spacing:.02em;
+  transform:scale(.8);}
+.role-badge.pop{transform:scale(1);}
+.role-attacker{background:linear-gradient(120deg,var(--apricot),var(--rose));}
+.role-defender{background:linear-gradient(120deg,var(--teal),var(--teal-bright));}
+.hi-list{display:grid;gap:10px;}
+.hi-item{font-family:'Sora';font-weight:700;font-size:var(--f-lead);padding:10px 22px;border-radius:14px;
+  background:#fff;box-shadow:var(--shadow-sm);opacity:0;transform:translateX(14px);}
+.hi-item.show{animation:perspIn .5s var(--e-out) forwards;}
+
+/* numbers vs judgement */
+.nj-grid{display:grid;grid-template-columns:1fr 1fr;gap:clamp(16px,2.2vw,36px);width:100%;}
+.nj-card{border-radius:var(--r-l);overflow:hidden;box-shadow:var(--shadow-md);position:relative;background:#fff;}
+.nj-img{width:100%;height:clamp(150px,26vh,280px);object-fit:cover;}
+.nj-body{padding:clamp(14px,1.8vh,24px);}
+.nj-tag{font-family:'Sora';font-weight:800;letter-spacing:.08em;font-size:var(--f-ui);text-transform:uppercase;}
+.nj-tag.meas{color:var(--apricot);}
+.nj-tag.judge{color:var(--peri);}
+.nj-body h4{font-family:'Sora';font-weight:800;font-size:var(--f-body);color:var(--ink);margin:2px 0;}
+.nj-body p{font-size:var(--f-ui);color:var(--ink-soft);line-height:1.35;}
+
+@media (max-width:920px){
+  .lab-3col{grid-template-columns:1fr;}
+  .compare-stage,.id-grid,.exit-grid,.report-grid,.morph-stage{grid-template-columns:1fr;}
+}
+/* height-aware safety */
+@media (max-height:800px){
+  .mission-card.compact{padding:5px clamp(16px,2vw,28px);}
+  .mission-card.compact .coach-mini{height:clamp(50px,6.2vh,78px);}
+  .mission-card.compact .mbrief{font-size:clamp(18px,2vw,28px);}
+  .mission-card.compact .msub{font-size:var(--f-micro);}
+  .rank-list{gap:clamp(4px,.5vh,7px);}
+  .rank-row{padding:clamp(3px,.45vh,7px) clamp(10px,1.1vw,16px);}
+  .rank-face{width:clamp(34px,3.4vw,46px);height:clamp(34px,3.4vw,46px);}
+  .lab-panel [id$="Radar"]{padding:2px clamp(20px,2vw,36px);}
+}
+@media (max-height:760px){
+  :root{--footer-h:clamp(52px,7vh,68px);}
+  .persp p,.nj-body p{line-height:1.25;}
+  .rank-list{gap:clamp(4px,.6vh,8px);}
+}
+
+/* ============================================================
+   SCREEN-READER-ONLY / LIVE REGIONS
+   ============================================================ */
+.sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;
+  clip:rect(0,0,0,0);white-space:nowrap;border:0;}
+.status-line{font-size:var(--f-ui);font-weight:600;color:var(--ink-soft);}
+.scene[data-bg="lab"] .status-line{color:#C7D6EC;}
+
+#nextHint{max-width:min(30vw,220px);color:var(--ink-mute);font-family:'Sora';font-weight:600;
+  font-size:calc(var(--f-micro) - 2px);line-height:1.2;text-align:center;letter-spacing:.01em;
+  overflow:hidden;text-overflow:ellipsis;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;}
+
+/* ============================================================
+   INSTRUCTION PATTERN CHIP (every scene shows one clear direction)
+   ============================================================ */
+.instr{display:flex;gap:12px;align-items:flex-start;border-radius:var(--r-m);
+  padding:clamp(10px,1.4vh,16px) clamp(16px,1.8vw,26px);max-width:min(92vw,760px);
+  background:rgba(40,183,201,.12);border:2px solid rgba(40,183,201,.35);}
+.instr b{color:var(--ink);}
+.instr p{font-size:var(--f-ui);color:var(--ink-soft);font-weight:500;line-height:1.35;margin:0;}
+.instr .instr-tag{font-family:'Sora';font-weight:800;font-size:var(--f-micro);letter-spacing:.08em;
+  text-transform:uppercase;flex-shrink:0;padding:5px 10px;border-radius:8px;white-space:nowrap;}
+.instr.act{background:rgba(240,149,78,.14);border-color:rgba(240,149,78,.4);}
+.instr.act .instr-tag{background:var(--apricot);color:#fff;}
+.instr.obs{background:rgba(40,183,201,.12);border-color:rgba(40,183,201,.35);}
+.instr.obs .instr-tag{background:var(--teal);color:#fff;}
+.instr.dis{background:rgba(126,143,238,.14);border-color:rgba(126,143,238,.4);}
+.instr.dis .instr-tag{background:var(--peri);color:#fff;}
+.instr.ref{background:rgba(175,214,69,.16);border-color:rgba(175,214,69,.42);}
+.instr.ref .instr-tag{background:#7A9426;color:#fff;}
+.scene[data-bg="lab"] .instr{background:rgba(255,255,255,.08);}
+.scene[data-bg="lab"] .instr p{color:#DCE8F5;}
+
+/* ============================================================
+   COMPARE MODE — 3-BOARD LAYOUT
+   ============================================================ */
+.cmp3-grid{display:grid;grid-template-columns:minmax(180px,1fr) minmax(360px,1.6fr) minmax(180px,1fr);
+  gap:clamp(14px,2vw,30px);align-items:stretch;width:100%;}
+.cmp-side{background:rgba(16,32,58,.72);border:1.5px solid var(--navy-line);border-radius:var(--r-l);
+  padding:clamp(14px,1.8vh,24px) clamp(12px,1.4vw,20px);display:flex;flex-direction:column;align-items:center;
+  gap:8px;text-align:center;box-shadow:var(--shadow-card);position:relative;overflow:hidden;}
+.cmp-side::before{content:"";position:absolute;inset:0;border-radius:inherit;pointer-events:none;
+  box-shadow:inset 0 0 0 2px var(--accent,transparent);opacity:.55;}
+.cmp-photo{width:clamp(96px,10vw,140px);height:clamp(120px,12.5vw,175px);border-radius:18px;overflow:hidden;
+  position:relative;background:radial-gradient(120% 100% at 50% 15%,color-mix(in srgb,var(--accent,#28B7C9) 55%,#12294A),#0C1B30);
+  box-shadow:0 10px 26px rgba(0,0,0,.35);flex-shrink:0;}
+.cmp-photo img{position:absolute;top:0;left:50%;transform:translateX(-50%);width:108%;height:auto;max-width:none;
+  filter:drop-shadow(0 6px 10px rgba(0,0,0,.3));transition:opacity .5s var(--e-out);}
+.cmp-pname{font-family:'Sora';font-weight:800;font-size:var(--f-title);color:#fff;line-height:1;}
+.cmp-prole{font-size:var(--f-ui);color:var(--teal-bright);font-weight:700;text-transform:uppercase;letter-spacing:.05em;}
+.cmp-ptag{font-size:var(--f-micro);color:#9FB2CF;font-weight:600;}
+.cmp-pin{font-family:'Sora';font-weight:700;font-size:var(--f-micro);background:rgba(242,193,78,.2);
+  color:var(--gold);padding:4px 12px;border-radius:999px;letter-spacing:.05em;text-transform:uppercase;}
+.cmp-center{display:flex;flex-direction:column;align-items:center;gap:6px;justify-content:center;min-height:0;}
+.cmp-summary{font-size:var(--f-micro);color:#EAF1FA;font-weight:600;text-align:center;max-width:52ch;
+  background:rgba(255,255,255,.07);border-radius:12px;padding:4px 12px;line-height:1.25;min-height:1.8em;}
+.cmp-switcher{display:flex;gap:8px;flex-wrap:wrap;justify-content:center;margin-top:4px;}
+.cmp-center .radar-svg{width:100%;height:auto;max-width:min(23vh,185px);max-height:min(23vh,185px);}
+
+/* skill comparison table — A and B aligned side-by-side, one row per stat */
+.skillrows{display:grid;gap:clamp(2px,.4vh,5px);width:100%;margin-top:2px;}
+.skillrow{display:grid;grid-template-columns:minmax(64px,auto) 1fr 1fr clamp(2.6em,4vw,3.4em);
+  gap:6px 8px;align-items:center;min-width:0;}
+.skillrow.head{padding-bottom:2px;border-bottom:1px solid rgba(255,255,255,.14);margin-bottom:2px;}
+.sk-head{font-family:'Sora';font-weight:800;font-size:var(--f-micro);color:#9FB2CF;text-align:center;
+  text-transform:uppercase;letter-spacing:.04em;}
+.skillrow .sk-label{font-family:'Sora';font-weight:700;font-size:var(--f-micro);color:#EAF1FA;min-width:0;
+  overflow-wrap:break-word;text-align:left;}
+.sk-val{display:grid;grid-template-columns:8px 1fr clamp(2em,3vw,2.6em);align-items:center;gap:5px;min-width:0;}
+.sk-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0;}
+.sk-bar-mini{height:clamp(5px,.7vh,8px);background:rgba(255,255,255,.14);border-radius:999px;overflow:hidden;min-width:0;}
+.sk-fill{display:block;height:100%;border-radius:999px;width:0;transition:width .6s var(--e-out);}
+.sk-num{font-family:'Sora';font-weight:800;font-size:var(--f-ui);text-align:right;white-space:nowrap;color:#fff;}
+.sk-delta{font-family:'Sora';font-weight:800;font-size:var(--f-micro);text-align:center;white-space:nowrap;
+  border-radius:8px;padding:1px 6px;justify-self:end;}
+.sk-delta.pos{background:rgba(175,214,69,.22);color:#C9E877;}
+.sk-delta.neg{background:rgba(239,122,107,.22);color:#F7B4A9;}
+.sk-delta.even{background:rgba(255,255,255,.12);color:#B7C6DE;}
+
+/* ============================================================
+   TRADE-OFF GLOSSARY BOARD
+   ============================================================ */
+.glossary-board{position:relative;display:grid;grid-template-columns:1fr 1fr;border-radius:var(--r-l);
+  overflow:hidden;box-shadow:var(--shadow-lg);border:2px solid rgba(255,255,255,.14);max-width:min(92vw,760px);}
+.gloss-half{padding:clamp(20px,2.8vw,40px) clamp(18px,2.4vw,32px);position:relative;}
+.gloss-half.a{background:linear-gradient(150deg,rgba(240,149,78,.32),rgba(240,149,78,.08));}
+.gloss-half.b{background:linear-gradient(210deg,rgba(126,143,238,.32),rgba(40,183,201,.1));}
+.gloss-mid{position:absolute;left:50%;top:0;bottom:0;width:2px;background:rgba(255,255,255,.25);
+  transform:translateX(-50%);z-index:2;}
+.gloss-center{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);z-index:3;
+  width:clamp(46px,4.4vw,62px);height:clamp(46px,4.4vw,62px);border-radius:50%;
+  background:radial-gradient(circle,#fff,rgba(255,255,255,.85));display:grid;place-items:center;
+  box-shadow:0 6px 18px rgba(0,0,0,.35);font-size:clamp(20px,2vw,28px);}
+.gloss-tag{grid-column:1/-1;text-align:center;padding:clamp(12px,1.6vh,18px) 0 4px;
+  font-family:'Sora';font-weight:800;letter-spacing:.24em;font-size:var(--f-micro);color:var(--gold);
+  text-transform:uppercase;}
+.gloss-title{grid-column:1/-1;text-align:center;font-family:'Sora';font-weight:800;
+  font-size:var(--f-chapter);color:#fff;line-height:1;position:relative;padding-bottom:8px;}
+.gloss-title span{position:relative;display:inline-block;}
+.gloss-title span::after{content:"";position:absolute;left:0;bottom:-4px;height:.14em;width:0;
+  background:linear-gradient(90deg,var(--apricot),var(--peri));border-radius:4px;}
+.gloss-title span.wipe::after{animation:glossWipe 1s var(--e-out) .2s forwards;}
+@keyframes glossWipe{to{width:100%}}
+.gloss-def{grid-column:1/-1;text-align:center;font-size:var(--f-lead);color:#EAF1FA;font-weight:500;
+  line-height:1.4;padding:6px clamp(18px,2.4vw,32px) 0;max-width:56ch;margin:0 auto;}
+.gloss-example{grid-column:1/-1;text-align:center;font-size:var(--f-ui);color:#B7C6DE;font-style:italic;
+  padding:8px clamp(18px,2.4vw,32px) clamp(16px,2vh,22px);}
+
+/* ============================================================
+   MOTION SAFETY
+   ============================================================ */
+@media (prefers-reduced-motion: reduce){
+  *,*::before,*::after{animation-duration:.001ms!important;animation-iteration-count:1!important;
+    transition-duration:.001ms!important;scroll-behavior:auto!important;}
+  .badge-rays{display:none;}
+}
+body.reduced-motion .kin,body.reduced-motion .kin-big,body.reduced-motion .rv,
+body.reduced-motion .path-verb,body.reduced-motion .path-obj,body.reduced-motion .path-arrow,
+body.reduced-motion .persp,body.reduced-motion .check-item,body.reduced-motion .flow-step,
+body.reduced-motion .flow-arrow,body.reduced-motion .mrr-chip,body.reduced-motion .hi-item{
+  opacity:1!important;transform:none!important;}
+body.reduced-motion .radar-poly,body.reduced-motion .radar-dot{opacity:1!important;transform:none!important;}
+body.reduced-motion .pcard,body.reduced-motion .pitch-token,body.reduced-motion .badge-img,
+body.reduced-motion .id-portrait img,body.reduced-motion .clip-fig,body.reduced-motion .coach-fig{
+  opacity:1!important;transform:none!important;}
+
+@media (max-width:1000px){
+  .cmp3-grid{grid-template-columns:1fr;}
+  .glossary-board{grid-template-columns:1fr;}
+  .gloss-mid{display:none;}
+}
+
+/* ============================================================
+   MAX TEXT SIZE — compress decorative spacing, never the text
+   ============================================================ */
+body.fs-max{--stage-pad:clamp(8px,1.2vw,20px);}
+body.fs-max .scene-inner,body.fs-max .lab-content{gap:5px!important;}
+body.fs-max .mission-card{padding:4px clamp(10px,1.4vw,20px)!important;gap:8px!important;}
+body.fs-max .coach-mini{height:clamp(36px,5vh,54px)!important;}
+body.fs-max .mission-card.compact .coach-mini{height:clamp(30px,4vh,44px)!important;}
+body.fs-max .l-card{padding:8px 14px!important;}
+body.fs-max .card-row{gap:6px!important;}
+body.fs-max .pcard-top{height:clamp(70px,9vh,110px)!important;}
+body.fs-max .pcard-body{padding:5px 8px 7px!important;}
+body.fs-max .pcard-cues{margin-top:3px!important;gap:3px!important;}
+body.fs-max .persp-grid{gap:6px!important;}
+body.fs-max .persp{padding:6px 10px!important;gap:8px!important;}
+body.fs-max .chain{gap:3px!important;}
+body.fs-max .chain-node{padding:5px 12px!important;}
+body.fs-max .lab-3col{gap:6px!important;}
+body.fs-max .lab-panel{padding:8px!important;gap:3px!important;}
+body.fs-max .cmp3-grid{gap:6px!important;}
+body.fs-max .cmp-side{padding:6px!important;gap:3px!important;}
+body.fs-max .cmp-photo{width:clamp(64px,7vw,96px)!important;height:clamp(80px,8.5vw,120px)!important;}
+body.fs-max .instr{padding:5px 10px!important;gap:6px!important;}
+body.fs-max .tps{gap:5px!important;}
+body.fs-max .tps-step{padding:6px!important;}
+body.fs-max .stat-strips,body.fs-max .skillrows{gap:2px!important;}
+body.fs-max .rank-list{gap:3px!important;}
+body.fs-max .rank-row{padding:3px clamp(8px,1vw,14px)!important;}
+body.fs-max .prio-ctrl{padding:4px 8px!important;}
+body.fs-max .exit-grid,body.fs-max .report-grid{gap:10px!important;}
+body.fs-max .checklist{gap:3px!important;}
+body.fs-max .check-item{padding:4px 10px!important;}
+body.fs-max .clip-fig,body.fs-max .id-portrait img{height:min(30vh,260px)!important;}
+body.fs-max .radar-box{padding:0!important;}
+body.fs-max .radar-svg{max-height:30vh!important;}
+body.fs-max .compare-stage{gap:12px!important;}
+body.fs-max .compare-stage .stack{gap:4px!important;}
+body.fs-max .glossary-board .gloss-half{padding:8px clamp(10px,1.4vw,20px)!important;}
+body.fs-max .gloss-tag{padding:6px 0 2px!important;}
+body.fs-max .gloss-def{padding-top:2px!important;}
+body.fs-max .gloss-example{padding-bottom:6px!important;}
+body.fs-max .title,body.fs-max .quest{line-height:1.02!important;}
+body.fs-max .switch-chip,body.fs-max .pin-btn{padding:4px 10px!important;}
+body.fs-max .player-switch,body.fs-max .cmp-switcher{gap:4px!important;}
+body.fs-max .lab-panel h3{margin-bottom:0!important;}
+body.fs-max .lab-panel .sub{margin-bottom:0!important;}
+body.fs-max .pip{width:9px!important;height:9px!important;border-radius:3px!important;}
+body.fs-max .prio-btns button{width:22px!important;height:22px!important;border-radius:7px!important;font-size:14px!important;}
+body.fs-max .prio-pips{gap:2px!important;}
+body.fs-max .prio-btns{gap:4px!important;}
+body.fs-max #labObs,body.fs-max #mc3Why{padding:4px 8px!important;}
+body.fs-max .rank-list{gap:2px!important;}
+body.fs-max .rank-row{padding:2px clamp(6px,.8vw,10px)!important;}
+body.fs-max .rank-face{width:26px!important;height:26px!important;border-radius:7px!important;}
+body.fs-max .cmp-center .radar-svg{max-width:min(16vh,130px)!important;max-height:min(16vh,130px)!important;}
+body.fs-max .cmp-side{gap:2px!important;}
+body.fs-max .cmp-photo{width:clamp(50px,6vw,76px)!important;height:clamp(62px,7.5vw,96px)!important;}
+body.fs-max .cmp-summary{padding:2px 8px!important;min-height:0!important;line-height:1.15!important;}
+body.fs-max .cmp-legend{margin-bottom:0!important;}
+body.fs-max .rank-pos,body.fs-max .rank-fit-num{font-size:var(--f-lead)!important;}
+body.fs-max .rank-tag{display:none!important;}
+</style>
+</head>
+<body>
+<div id="app">
+  <div id="stage">
+    <div id="idchip">
+      <div class="idchip-badge"><span id="idInitial">R</span></div>
+      <div class="idchip-txt">
+        <span class="idchip-name" id="idName">Reviewer</span>
+        <span class="idchip-role">Review Board · S2</span>
+      </div>
+    </div>
+    <div id="toast" class="toast"></div>
+    <div id="liveRegion" class="sr-only" aria-live="polite" role="status"></div>
+    <!-- scenes injected here -->
+  </div>
+
+  <footer id="footer">
+    <div class="footer-left">
+      <div class="logo-chip"><img src="assets/b58472f5ad534bdba750eac6.webp" alt="aiSTART"></div>
+      <button class="reset-btn" id="resetBtn" title="Reset this session">Reset</button>
+    </div>
+    <div class="footer-nav">
+      <button class="nav-btn prev" id="prevBtn">‹ Back</button>
+      <div class="progress-col">
+        <div class="progress-read" id="progRead">1 / 29</div>
+        <div id="nextHint" class="hidden" role="status"></div>
+      </div>
+      <button class="nav-btn next" id="nextBtn">Next ›</button>
+    </div>
+    <div class="footer-right">
+      <div class="fs-controls" title="Text size">
+        <button class="fs-b" id="fsDown" aria-label="Smaller text">A−</button>
+        <button class="fs-a" id="fsReset" aria-label="Reset text size">A</button>
+        <button id="fsUp" aria-label="Larger text" style="font-size:calc(var(--f-micro) + 9px)">A+</button>
+      </div>
+      <div class="copyright">© 2026 Slangit Technologies FZCO</div>
+    </div>
+  </footer>
+</div>
+<script>
+const __ASSET_DATA__={"assets/aistart-logo.png":"assets/b58472f5ad534bdba750eac6.webp","assets/amara-player.png":"assets/84fce6c47b202c1a37757949.webp","assets/amara-sprint-shot-action.png":"assets/e83ba7105fb1294d68fdd128.webp","assets/coach-cutout.png":"assets/9906625cea49dcf92d854a3c.webp","assets/football.png":"assets/1fc7800f6d5e5d71d9ed67da.webp","assets/leo-player.png":"assets/1e4576281e0d007aeb83280c.webp","assets/maya-pass-action.png":"assets/12dd488df0b5de9ae4646ced.webp","assets/maya-player.png":"assets/144596914275ef8d3b856814.webp","assets/niko-defend-action.png":"assets/fdd930373e69d4749233cd91.webp","assets/niko-player.png":"assets/4b38d54cac846aa27fa054ec.webp","assets/review-board-student.png":"assets/0405469079427a6fe16b1e74.webp","assets/review-clipboard.png":"assets/c776e5471bff5b2b9650ca04.webp","assets/scouting-analysis-hub.png":"assets/004dd79fa7f03e7011ae8749.webp","assets/selection-funnel-world.png":"assets/e6c077aa48614623a1b7a7e3.webp","assets/selection-strategist-badge.png":"assets/2a299a329c3694c3431b21fa.webp","assets/session2-cover.png":"assets/8d06aa3390b7641a2d552f72.webp","assets/sofia-player.png":"assets/dd2672dcfe6a3ccd0cbdd444.webp","assets/squadlab-background.png":"assets/0f81b9b856ee1e8717b7a3a8.webp","assets/stadium-crowd-layer.png":"assets/3f49a8931de9d7924f56364b.webp","assets/zane-player.png":"assets/9d6bc64158fa6024e1d8c97f.webp"};
+const A=(p)=>__ASSET_DATA__[p]||p;
+/* ============================================================
+   FAIR PLAY REVIEW BOARD — SESSION 2  ·  app.js
+   "How Would an AI Pick a Team?"
+   Revision 2: evidence-driven state, consolidated scenes,
+   redesigned Compare Mode, accessibility pass.
+   ============================================================ */
+
+/* ---------- PLAYER DATA (fictional, clear trade-offs) ---------- */
+const ATTRS = [
+  {k:'speed',    label:'Speed',    cls:'a-speed', color:'var(--c-speed)'},
+  {k:'shooting', label:'Shooting', cls:'a-shoot', color:'var(--c-shoot)'},
+  {k:'passing',  label:'Passing',  cls:'a-pass',  color:'var(--c-pass)'},
+  {k:'defending',label:'Defending',cls:'a-def',   color:'var(--c-def)'},
+  {k:'teamwork', label:'Teamwork', cls:'a-team',  color:'var(--c-team)'},
+];
+
+const PLAYERS = {
+  maya:  {name:'Maya',  role:'Midfielder', tag:'Playmaker', accent:'#28B7C9', img:A('assets/maya-player.png'),
+          cues:['Great vision','Team-first'], speed:62, shooting:55, passing:90, defending:48, teamwork:92},
+  amara: {name:'Amara', role:'Forward',    tag:'Speedster', accent:'#EF7A6B', img:A('assets/amara-player.png'),
+          cues:['Lightning pace','Loves to score'], speed:94, shooting:88, passing:60, defending:45, teamwork:58},
+  leo:   {name:'Leo',   role:'Midfielder', tag:'Connector', accent:'#7E8FEE', img:A('assets/leo-player.png'),
+          cues:['Links play','Reliable'], speed:66, shooting:62, passing:85, defending:70, teamwork:84},
+  zane:  {name:'Zane',  role:'Winger',     tag:'All-Action',accent:'#F0954E', img:A('assets/zane-player.png'),
+          cues:['Quick and strong','Attacking'], speed:82, shooting:80, passing:72, defending:68, teamwork:70},
+  niko:  {name:'Niko',  role:'Defender',   tag:'The Wall',  accent:'#178A9B', img:A('assets/niko-player.png'),
+          cues:['Rock solid','Reads danger'], speed:58, shooting:50, passing:66, defending:92, teamwork:88},
+  sofia: {name:'Sofia', role:'Utility',    tag:'All-Rounder',accent:'#8F9C3A', img:A('assets/sofia-player.png'),
+          cues:['Does everything','Steady'], speed:74, shooting:72, passing:74, defending:70, teamwork:74},
+};
+const PKEYS = ['maya','amara','leo','zane','niko','sofia'];
+const DEFAULT_WEIGHTS = {speed:2, shooting:2, teamwork:2};
+const BUDGET = 6;
+
+/* ---------- ACCESSIBILITY: reduced motion ---------- */
+const reducedMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+if(reducedMotion) document.body.classList.add('reduced-motion');
+
+/* ---------- STATE ---------- */
+const STORE_KEY = 'g8m5s2_session_v2';
+
+function freshState(){
+  return {
+    name:'', returning:false,
+    team1:null, team1Reason:'',
+    team2:null, team2Decision:'', team2Reason:'',
+    missionCompareNote:'',
+    explainEvidence:{answer:'', complete:false},
+    interpretEvidence:{pick:'', evidence:'', complete:false},
+    compareEvidence:{labChanged:false, labObservation:'', mayaTop2:false, mayaPriority:'', mayaWhy:'', complete:false},
+    evaluateEvidence:{note:'', decision:'', reason:'', complete:false},
+    labWeights:{...DEFAULT_WEIGHTS},
+    recommendationRun:false, recommendationResult:'',
+    reviewDecision:'',
+    exitReflection:'',
+    badgeEligible:false,
+  };
+}
+const state = freshState();
+
+function isMeaningful(text, minWords){
+  minWords = minWords || 3;
+  if(!text) return false;
+  const words = String(text).trim().split(/\s+/).filter(Boolean);
+  return words.length >= minWords;
+}
+
+function computeBadgeEligible(){
+  return !!(state.explainEvidence.complete && state.interpretEvidence.complete &&
+    state.compareEvidence.complete && state.evaluateEvidence.complete &&
+    isMeaningful(state.exitReflection, 4));
+}
+
+function saveState(){
+  try{
+    state.badgeEligible = computeBadgeEligible();
+    localStorage.setItem(STORE_KEY, JSON.stringify({v:2, current, state}));
+  }catch(e){/* storage unavailable — session still works in-memory */}
+}
+
+function loadState(){
+  try{
+    const raw = localStorage.getItem(STORE_KEY);
+    if(!raw) return null;
+    const parsed = JSON.parse(raw);
+    if(!parsed || parsed.v!==2 || typeof parsed.state!=='object' || !parsed.state) return null;
+    return parsed;
+  }catch(e){ return null; }
+}
+
+function restoreState(){
+  const found = loadState();
+  if(!found) return 0;
+  const s = found.state;
+  const fresh = freshState();
+  try{
+    if(typeof s.name==='string') fresh.name = s.name;
+    fresh.returning = !!s.returning;
+    if(Array.isArray(s.team1) && s.team1.every(k=>PLAYERS[k])) fresh.team1 = s.team1;
+    if(typeof s.team1Reason==='string') fresh.team1Reason = s.team1Reason;
+    if(Array.isArray(s.team2) && s.team2.every(k=>PLAYERS[k])) fresh.team2 = s.team2;
+    if(typeof s.team2Decision==='string') fresh.team2Decision = s.team2Decision;
+    if(typeof s.team2Reason==='string') fresh.team2Reason = s.team2Reason;
+    if(typeof s.missionCompareNote==='string') fresh.missionCompareNote = s.missionCompareNote;
+    if(s.explainEvidence && typeof s.explainEvidence==='object') fresh.explainEvidence = {answer:String(s.explainEvidence.answer||''), complete:!!s.explainEvidence.complete};
+    if(s.interpretEvidence && typeof s.interpretEvidence==='object') fresh.interpretEvidence = {pick:String(s.interpretEvidence.pick||''), evidence:String(s.interpretEvidence.evidence||''), complete:!!s.interpretEvidence.complete};
+    if(s.compareEvidence && typeof s.compareEvidence==='object') fresh.compareEvidence = {
+      labChanged:!!s.compareEvidence.labChanged, labObservation:String(s.compareEvidence.labObservation||''),
+      mayaTop2:!!s.compareEvidence.mayaTop2, mayaPriority:String(s.compareEvidence.mayaPriority||''),
+      mayaWhy:String(s.compareEvidence.mayaWhy||''), complete:!!s.compareEvidence.complete};
+    if(s.evaluateEvidence && typeof s.evaluateEvidence==='object') fresh.evaluateEvidence = {
+      note:String(s.evaluateEvidence.note||''), decision:String(s.evaluateEvidence.decision||''),
+      reason:String(s.evaluateEvidence.reason||''), complete:!!s.evaluateEvidence.complete};
+    if(s.labWeights && typeof s.labWeights==='object'){
+      const w={...DEFAULT_WEIGHTS};
+      ['speed','shooting','teamwork'].forEach(k=>{ if(Number.isFinite(s.labWeights[k])) w[k]=Math.max(0,Math.min(BUDGET,s.labWeights[k])); });
+      fresh.labWeights = w;
+    }
+    fresh.recommendationRun = !!s.recommendationRun;
+    if(typeof s.recommendationResult==='string') fresh.recommendationResult = s.recommendationResult;
+    if(typeof s.reviewDecision==='string') fresh.reviewDecision = s.reviewDecision;
+    if(typeof s.exitReflection==='string') fresh.exitReflection = s.exitReflection;
+  }catch(e){ return 0; }
+  Object.assign(state, fresh);
+  return Number.isInteger(found.current) ? found.current : 0;
+}
+
+/* ---------- SMALL HELPERS ---------- */
+const $ = (s,r=document)=>r.querySelector(s);
+const $$ = (s,r=document)=>[...r.querySelectorAll(s)];
+function h(html){const t=document.createElement('template');t.innerHTML=html.trim();return t.content.firstElementChild;}
+function escapeHTML(s){return String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));}
+
+let sceneTimers=[];
+function after(ms,fn){
+  if(reducedMotion){ try{fn();}catch(e){/* ignore */} return null; }
+  const t=setTimeout(fn,ms); sceneTimers.push(t); return t;
+}
+function clearTimers(){sceneTimers.forEach(clearTimeout);sceneTimers=[];}
+function stagger(nodes,gap=110,start=80,cls='show'){nodes.forEach((n,i)=>after(start+i*gap,()=>n.classList.add(cls)));}
+
+function toast(msg){const t=$('#toast');t.textContent=msg;t.classList.remove('show');void t.offsetWidth;t.classList.add('show');}
+function announce(msg){const el=$('#liveRegion');if(!el)return;el.textContent='';window.setTimeout(()=>{el.textContent=msg;},30);}
+function confettiBurst(n=40){
+  if(reducedMotion) return;
+  const stg=$('#stage');const cols=['#28B7C9','#F0954E','#7E8FEE','#AFD645','#EF7A6B','#F2C14E'];
+  for(let i=0;i<n;i++){const c=document.createElement('div');c.className='confetti';
+    c.style.left=(10+Math.random()*80)+'%';c.style.background=cols[i%cols.length];
+    c.style.animationDelay=(Math.random()*.5)+'s';c.style.borderRadius=Math.random()>.5?'50%':'2px';
+    stg.appendChild(c);void c.offsetWidth;c.classList.add('go');
+    after(3200,()=>c.remove());}
+}
+
+/* fit = weighted average over active weight keys; profile is fixed */
+function fit(pkey, weights){
+  const p=PLAYERS[pkey]; let num=0,den=0;
+  for(const k in weights){ num+=p[k]*weights[k]; den+=weights[k]; }
+  if(den===0){
+    const keys=Object.keys(weights); keys.forEach(k=>num+=p[k]); return num/keys.length;
+  }
+  return num/den;
+}
+function ranked(pkeys, weights){
+  return [...pkeys].map(k=>({k,f:fit(k,weights)})).sort((a,b)=>b.f-a.f||PKEYS.indexOf(a.k)-PKEYS.indexOf(b.k));
+}
+function weightsEqual(a,b){ return ['speed','shooting','teamwork'].every(k=>(a[k]||0)===(b[k]||0)); }
+
+/* ---------- RADAR (SVG) — built once, updated in place (no innerHTML rebuild) ---------- */
+function radarPoints(key, R, c){
+  return ATTRS.map((a,i)=>{
+    const ang=(-90+i*72)*Math.PI/180, r=R*PLAYERS[key][a.k]/100;
+    return [c+r*Math.cos(ang), c+r*Math.sin(ang)];
+  });
+}
+function radarSVG(series, {size=360, showLabels=true}={}){
+  const c=size/2, R=size*0.36;
+  let grid='';
+  for(let lvl=1;lvl<=4;lvl++){
+    const rr=R*lvl/4;
+    const poly=ATTRS.map((a,i)=>{const ang=(-90+i*72)*Math.PI/180;return `${c+rr*Math.cos(ang)},${c+rr*Math.sin(ang)}`;}).join(' ');
+    grid+=`<polygon class="radar-grid-line" points="${poly}"/>`;
+  }
+  let spokes='',labels='';
+  ATTRS.forEach((a,i)=>{
+    const ang=(-90+i*72)*Math.PI/180;
+    const x=c+R*Math.cos(ang), y=c+R*Math.sin(ang);
+    spokes+=`<line class="radar-spoke" x1="${c}" y1="${c}" x2="${x}" y2="${y}"/>`;
+    if(showLabels){
+      const lx=c+(R+30)*Math.cos(ang), ly=c+(R+30)*Math.sin(ang);
+      const anchor = Math.abs(Math.cos(ang))<0.3?'middle':(Math.cos(ang)>0?'start':'end');
+      const dy = Math.sin(ang)>0.3?14:(Math.sin(ang)<-0.3?-6:4);
+      labels+=`<text class="radar-axis-label" x="${lx}" y="${ly+dy}" text-anchor="${anchor}">${a.label}</text>`;
+    }
+  });
+  let polys='',dots='';
+  series.forEach((s,si)=>{
+    const p=radarPoints(s.key,R,c);
+    const poly=p.map(q=>`${q[0].toFixed(1)},${q[1].toFixed(1)}`).join(' ');
+    polys+=`<polygon class="radar-poly" data-poly="${si}" data-key="${s.key}" data-r="${R}" data-c="${c}" points="${poly}" fill="${s.fill}" stroke="${s.stroke}" stroke-width="3" stroke-linejoin="round"/>`;
+    p.forEach((q,pi)=>dots+=`<circle class="radar-dot" data-dot="${si}" data-idx="${pi}" cx="${q[0].toFixed(1)}" cy="${q[1].toFixed(1)}" r="4.5" fill="${s.stroke}"/>`);
+  });
+  return `<svg class="radar-svg" viewBox="0 0 ${size} ${size}" role="img" aria-label="Player profile radar chart">
+    ${grid}${spokes}${labels}${polys}${dots}</svg>`;
+}
+function drawRadar(root){
+  $$('.radar-poly',root).forEach((p,i)=>after(200+i*450,()=>p.classList.add('drawn')));
+  $$('.radar-dot',root).forEach(d=>{const i=+d.dataset.dot;after(600+i*450,()=>d.classList.add('drawn'));});
+}
+/* smoothly morph one series (by index) from its current key to a new key — no innerHTML rebuild */
+function morphRadarSeries(svg, seriesIndex, newKey, duration=600){
+  const poly = svg.querySelector(`.radar-poly[data-poly="${seriesIndex}"]`);
+  if(!poly) return;
+  const R=+poly.dataset.r, c=+poly.dataset.c;
+  const dots = $$(`.radar-dot[data-dot="${seriesIndex}"]`,svg).sort((a,b)=>+a.dataset.idx-+b.dataset.idx);
+  const oldPts = poly.getAttribute('points').trim().split(' ').map(pair=>pair.split(',').map(Number));
+  const newPts = radarPoints(newKey,R,c);
+  poly.dataset.key = newKey;
+  if(reducedMotion){
+    poly.setAttribute('points', newPts.map(q=>`${q[0].toFixed(1)},${q[1].toFixed(1)}`).join(' '));
+    dots.forEach((d,i)=>{ d.setAttribute('cx',newPts[i][0].toFixed(1)); d.setAttribute('cy',newPts[i][1].toFixed(1)); });
+    return;
+  }
+  const t0 = performance.now();
+  const ease = p => 1-Math.pow(1-p,3);
+  function step(t){
+    const p = Math.min(1,(t-t0)/duration);
+    const e = ease(p);
+    const cur = oldPts.map((op,i)=>[op[0]+(newPts[i][0]-op[0])*e, op[1]+(newPts[i][1]-op[1])*e]);
+    poly.setAttribute('points', cur.map(q=>`${q[0].toFixed(1)},${q[1].toFixed(1)}`).join(' '));
+    dots.forEach((d,i)=>{ d.setAttribute('cx',cur[i][0].toFixed(1)); d.setAttribute('cy',cur[i][1].toFixed(1)); });
+    if(p<1) requestAnimationFrame(step);
+  }
+  requestAnimationFrame(step);
+}
+
+/* ---------- SKILL ROWS (stacked, overlap-safe) for Compare Mode ---------- */
+function deltaChipHTML(keyA, keyB, attrKey){
+  const d = PLAYERS[keyB][attrKey] - PLAYERS[keyA][attrKey];
+  const cls = d>0 ? 'pos' : (d<0 ? 'neg' : 'even');
+  const txt = d>0 ? `+${d}` : `${d}`;
+  return `<span class="sk-delta ${cls}" data-delta="${keyB}|${attrKey}">${txt}</span>`;
+}
+function skillValHTML(key,attrKey){
+  return `<div class="sk-val">
+    <span class="sk-dot" style="background:${PLAYERS[key].accent}"></span>
+    <span class="sk-bar-mini"><span class="sk-fill" data-k="${key}" data-a="${attrKey}" style="width:0;background:${PLAYERS[key].accent}"></span></span>
+    <span class="sk-num" data-num="${key}" data-a="${attrKey}">0</span>
+  </div>`;
+}
+function skillRowsHTML(keyA, keyB){
+  return `<div class="skillrows">
+    <div class="skillrow head"><span></span><span class="sk-head">${PLAYERS[keyA].name}</span><span class="sk-head">${PLAYERS[keyB].name}</span><span></span></div>
+    ${ATTRS.map(a=>`
+    <div class="skillrow">
+      <span class="sk-label">${a.label}</span>
+      ${skillValHTML(keyA,a.k)}
+      ${skillValHTML(keyB,a.k)}
+      ${deltaChipHTML(keyA,keyB,a.k)}
+    </div>`).join('')}</div>`;
+}
+function animateSkillRows(root, reset){
+  $$('.sk-fill',root).forEach((f)=>{
+    const k=f.dataset.k,a=f.dataset.a, target=PLAYERS[k][a];
+    if(reset) f.style.width='0';
+    requestAnimationFrame(()=>{ f.style.width=target+'%'; });
+  });
+  $$('.sk-num',root).forEach(n=>{
+    const k=n.dataset.num,a=n.dataset.a, target=PLAYERS[k][a];
+    const cur = reset?0:(parseInt(n.textContent)||0);
+    animateNum(n,cur,target);
+  });
+}
+function computeCompareSummary(a,b){
+  const pa=PLAYERS[a], pb=PLAYERS[b];
+  const aWins=[], bWins=[];
+  ATTRS.forEach(attr=>{
+    if(pa[attr.k]>pb[attr.k]) aWins.push(attr.label);
+    else if(pb[attr.k]>pa[attr.k]) bWins.push(attr.label);
+  });
+  const fmt=(list)=>list.length>1 ? list.slice(0,-1).join(', ')+' and '+list.slice(-1) : list[0];
+  const parts=[];
+  if(aWins.length) parts.push(`${pa.name} is stronger in ${fmt(aWins)}.`);
+  if(bWins.length) parts.push(`${pb.name} is stronger in ${fmt(bWins)}.`);
+  if(!parts.length) parts.push(`${pa.name} and ${pb.name} are evenly matched here.`);
+  return parts.join(' ');
+}
+
+/* ---------- PLAYER CARD MARKUP ---------- */
+function cardButtonHTML(key,{cues=true}={}){
+  const p=PLAYERS[key];
+  const cueHTML = cues ? `<div class="pcard-cues">${p.cues.map(c=>`<span class="cue">${c}</span>`).join('')}</div>` : '';
+  return `<button type="button" class="pcard" data-key="${key}" style="--accent:${p.accent}" aria-pressed="false" aria-label="Choose ${p.name}, ${p.role}">
+    <div class="pcard-top"><span class="pcard-role">${p.role}</span><img class="pcard-img" src="${p.img}" alt=""></div>
+    <div class="pcard-body"><div class="pcard-name">${p.name}</div><div class="pcard-tag">${p.tag}</div>${cueHTML}</div>
+    <div class="pick-badge" aria-hidden="true"><span>&#10003;</span></div>
+  </button>`;
+}
+function cardDisplayHTML(key){
+  const p=PLAYERS[key];
+  return `<div class="pcard" data-key="${key}" style="--accent:${p.accent};cursor:default">
+    <div class="pcard-top"><span class="pcard-role">${p.role}</span><img class="pcard-img" src="${p.img}" alt="${p.name}, ${p.role}"></div>
+    <div class="pcard-body"><div class="pcard-name">${p.name}</div><div class="pcard-tag">${p.tag}</div>
+      <div class="pcard-cues">${p.cues.map(c=>`<span class="cue">${c}</span>`).join('')}</div></div>
+  </div>`;
+}
+function miniHeadHTML(key,size='md'){
+  const p=PLAYERS[key];
+  const wh = size==='sm' ? '64px' : '96px';
+  return `<div style="width:${wh};height:calc(${wh} * 1.24);border-radius:16px;overflow:hidden;position:relative;background:radial-gradient(120% 100% at 50% 20%,${p.accent}66,#12294A);margin:0 auto">
+    <img src="${p.img}" alt="" style="position:absolute;top:0;left:50%;transform:translateX(-50%);width:108%;max-width:none;height:auto"></div>`;
+}
+
+function animateNum(el,from,to){
+  if(reducedMotion){ el.textContent=to; return; }
+  const dur=500,t0=performance.now();
+  const step=(t)=>{const p=Math.min(1,(t-t0)/dur);el.textContent=Math.round(from+(to-from)*p);if(p<1)requestAnimationFrame(step);};
+  requestAnimationFrame(step);
+}
+
+/* ============================================================
+   SCENES
+   ============================================================ */
+const SCENES = [];
+const IDX = {};
+function scene(o){SCENES.push(o);}
+
+/* ---- 1. COVER ---- */
+scene({chapter:'Opening', bg:'cream', build:()=>`
+  <div class="cover-wrap">
+    <img class="cover-img" src="${A('assets/session2-cover.png')}" alt="Players walking out of the tunnel">
+    <img class="cover-crowd" id="coverCrowd" src="${A('assets/stadium-crowd-layer.png')}" alt="">
+    <div class="cover-scrim"></div><div class="cover-vig"></div>
+    <img class="cover-ball" id="coverBall" src="${A('assets/football.png')}" alt="">
+    <div class="cover-meta" id="coverMeta">Grade 8 <b>&middot;</b> Module 5 <b>&middot;</b> Session 2</div>
+    <div class="cover-content">
+      <h1 class="display cover-title" id="coverTitle" tabindex="-1">
+        <span class="cl"><span>HOW WOULD AN AI</span></span>
+        <span class="cl"><span>PICK A TEAM?</span></span>
+      </h1>
+      <div class="cover-cta" id="coverCta"><button class="btn btn-primary btn-lg" data-next>Enter the Squad Lab &rsaquo;</button></div>
+    </div>
+  </div>`,
+  enter:(r)=>{
+    after(300,()=>{$('#coverCrowd',r).style.transition='opacity 2.4s ease';$('#coverCrowd',r).style.opacity='.18';});
+    after(500,()=>{$('#coverMeta',r).style.transition='opacity .9s';$('#coverMeta',r).style.opacity='1';});
+    $$('.cover-title .cl span',r).forEach((s,i)=>after(800+i*220,()=>{s.style.transition='transform .9s var(--e-out)';s.style.transform='translateY(0)';}));
+    after(1500,()=>{const b=$('#coverBall',r);b.style.transition='opacity 1s var(--e-out), transform 1.2s var(--e-spring)';b.style.opacity='1';b.style.transform='translateX(-30px) rotate(-30deg)';});
+    after(2000,()=>{$('#coverCta',r).style.transition='opacity .8s';$('#coverCta',r).style.opacity='1';});
+  }
+});
+
+/* ---- 2. OBJECTIVES ---- */
+scene({chapter:'Opening', bg:'learn', build:()=>`
+  <div class="scene-inner">
+    <div class="stack-c">
+      <p class="lead rv" style="max-width:44ch">Today, you'll follow a selection decision from the team's goal to the final recommendation.</p>
+      <div class="eyebrow rv dly1">By the end of this session, I can&hellip;</div>
+    </div>
+    <div class="path mt">
+      ${[
+        {v:'EXPLAIN',cls:'pv-explain',n:'01',o:'why the best player depends on what the team needs.'},
+        {v:'INTERPRET',cls:'pv-interpret',n:'02',o:'a player profile to find a strength that matters.'},
+        {v:'COMPARE',cls:'pv-compare',n:'03',o:'how changing priorities changes fit and ranking.'},
+        {v:'EVALUATE',cls:'pv-evaluate',n:'04',o:'whether a recommendation truly fits the goal.'},
+      ].map((o,i)=>`
+        ${i>0?`<div class="path-arrow">&rarr;</div>`:''}
+        <div class="path-node">
+          <div class="path-verb ${o.cls}"><span class="obj-num" style="color:currentColor"><span>${o.n}</span></span>${o.v}</div>
+          <div class="path-obj">${o.o}</div>
+        </div>`).join('')}
+    </div>
+  </div>`,
+  enter:(r)=>{
+    stagger($$('.stack-c .rv',r),160,150);
+    const verbs=$$('.path-verb',r), objs=$$('.path-obj',r), arrows=$$('.path-arrow',r);
+    verbs.forEach((v,i)=>{after(500+i*450,()=>{v.classList.add('show');objs[i].classList.add('show');if(arrows[i-1])arrows[i-1].classList.add('show');});});
+  }
+});
+
+/* ---- 3. REVIEW BOARD IDENTITY ---- */
+scene({chapter:'Opening', bg:'board', build:()=>{
+  const returning=state.returning;
+  return `<div class="scene-inner"><div class="id-grid">
+    <div class="id-portrait" id="idPort"><div class="id-glow"></div>
+      <img src="${A('assets/review-board-student.png')}" alt="Review Board members welcoming a new reviewer"></div>
+    <div class="id-panel">
+      ${returning ? `
+        <div class="eyebrow rv">Fair Play Review Board</div>
+        <h2 class="title rv dly1" tabindex="-1">WELCOME BACK, <span class="grad-teal">${escapeHTML((state.name||'REVIEWER').toUpperCase())}</span>.</h2>
+        <p class="lead rv dly2">New case. New kind of call to make.</p>
+        <div class="cred rv dly3" id="credCard">
+          <div class="cred-top"><span class="cred-org">Fair Play Review Board</span>
+            <div class="cred-seal"><span>${escapeHTML((state.name||'R')[0].toUpperCase())}</span></div></div>
+          <div class="cred-name">${escapeHTML(state.name||'Reviewer')}</div>
+          <div class="cred-role">Certified Reviewer &middot; Module 5</div>
+          <div class="cred-foot"><span>ID &middot; FPRB-${escapeHTML((state.name||'RV').slice(0,2).toUpperCase())}82</span><span>Session 2 unlocked</span></div>
+        </div>
+        <div class="row rv dly4"><button class="btn btn-primary" data-next>Take my seat &rsaquo;</button></div>
+      ` : `
+        <div class="eyebrow rv">Fair Play Review Board</div>
+        <h2 class="title rv dly1" tabindex="-1">JOIN THE <span class="grad-teal">REVIEW BOARD</span></h2>
+        <p class="lead rv dly2">Enter your name to create your reviewer badge.</p>
+        <div class="name-field rv dly3">
+          <label class="sr-only" for="nameInput">Your name</label>
+          <input class="name-input" id="nameInput" placeholder="Type your name" maxlength="18" autocomplete="off">
+          <button class="btn btn-primary" id="nameGo">Get my badge &rsaquo;</button>
+        </div>
+        <p class="body rv dly4" style="font-size:var(--f-ui)">You'll make real selection calls today. <button class="btn-ghost" style="color:var(--teal-deep);background:none;border:none;padding:0;text-decoration:underline;font-weight:700" id="skipName">Continue without a name</button></p>
+      `}
+    </div></div></div>`;
+},
+  enter:(r)=>{
+    after(200,()=>$('#idPort',r).classList.add('in'));
+    stagger($$('.rv',r),150,200);
+    const input=$('#nameInput',r), go=$('#nameGo',r), skip=$('#skipName',r);
+    if(go){
+      lockNext();
+      const commit=()=>{const v=(input.value||'').trim();if(!v)return;state.name=v;state.returning=true;saveState();updateChip();unlockNext();gotoScene(current+1);};
+      go.addEventListener('click',commit);
+      input.addEventListener('keydown',e=>{if(e.key==='Enter')commit();});
+      input.addEventListener('input',()=>{ if(input.value.trim()) unlockNext(); else lockNext('Type a name, or choose Continue without a name.'); });
+      skip.addEventListener('click',()=>{state.returning=true;saveState();unlockNext();gotoScene(current+1);});
+      lockNext('Type a name, or choose Continue without a name.');
+      after(700,()=>input.focus());
+    }
+    updateChip();
+  }
+});
+
+/* ---- 4. DRAFT ROOM INTRO (orientation only) ---- */
+scene({chapter:'Squad Draft', bg:'lab', build:()=>`
+  <div class="lab-bg"><img src="${A('assets/squadlab-background.png')}" alt=""></div><div class="lab-veil"></div>
+  <div class="lab-content">
+    <div class="stack-c">
+      <div class="pill pill-navy rv">&#9917; Welcome to the Squad Lab</div>
+      <h2 class="chapter ink-invert rv dly1" style="line-height:1" tabindex="-1">MEET YOUR <span class="grad-teal">SQUAD POOL.</span></h2>
+      <div class="instr obs rv dly2"><span class="instr-tag">Watch for</span><p>Meet the six players. Read their role and two quick clues on each card before you make your first choice.</p></div>
+    </div>
+    <div class="card-row mt" id="draftCards">
+      ${PKEYS.map(k=>cardDisplayHTML(k)).join('')}
+    </div>
+    <div class="stack-c rv dly7"><button class="btn btn-primary btn-lg" data-next>Meet the coach &rsaquo;</button></div>
+  </div>`,
+  enter:(r)=>{
+    stagger($$('.rv',r),140,150);
+    $$('.pcard',r).forEach((c,i)=>after(700+i*130,()=>c.classList.add('dealt')));
+  }
+});
+
+/* ---- 5. MISSION 1: TEAM NEEDS A GOAL (pick two -> pitch reveal + reason) ---- */
+IDX.mission1 = SCENES.length;
+scene({chapter:'Squad Draft', bg:'lab', build:()=>`
+  <div class="lab-bg"><img src="${A('assets/squadlab-background.png')}" alt=""></div><div class="lab-veil"></div>
+  <div class="lab-content">
+    <div class="mission-card rv" id="m1Mission" style="max-width:min(92vw,900px);margin:0 auto">
+      <img class="coach-mini" src="${A('assets/coach-cutout.png')}" alt="">
+      <div class="mission-txt">
+        <div class="mlabel">Coach &middot; Mission 1</div>
+        <div class="mbrief" tabindex="-1">WE NEED A GOAL.</div>
+        <div class="msub">Choose two players who could help the team score. Use the role and clues on each card.</div>
+      </div>
+    </div>
+    <div id="m1Pick">
+      <div class="card-row mt" id="pickCards">${PKEYS.map(k=>cardButtonHTML(k)).join('')}</div>
+      <div class="stack-c"><div class="ui status-line" id="pickHint" role="status">0 of 2 selected</div>
+        <p class="sim-note">Different pairs can work. Your choices should connect to the team's need.</p></div>
+    </div>
+    <div id="m1Result" class="hidden stack-c" style="gap:8px">
+      <button type="button" class="reset-btn" id="m1Change" style="justify-self:center;color:var(--teal-bright)">&#8249; Change my pick</button>
+      <p class="quest ink-invert" style="max-width:26ch;margin:0 auto">Why could this pair help the team score?</p>
+      <div class="pitch" id="m1Pitch" style="width:min(70vw,560px);height:min(24vh,200px);margin:0 auto"></div>
+      <div class="row-c" id="m1Chips" style="max-width:min(90vw,720px)"></div>
+    </div>
+  </div>`,
+  enter:(r)=>{
+    stagger([$('.mission-card',r)],0,120);
+    $$('#pickCards .pcard',r).forEach((c,i)=>after(300+i*90,()=>c.classList.add('dealt')));
+    const hint=$('#pickHint',r);
+    const already = Array.isArray(state.team1) && state.team1.length===2;
+    let picks = already ? [...state.team1] : [];
+    const sync=(announceIt)=>{
+      hint.textContent = `${picks.length} of 2 selected`;
+      $$('#pickCards .pcard',r).forEach(c=>{
+        const on = picks.includes(c.dataset.key);
+        c.classList.toggle('picked', on);
+        c.classList.toggle('dim', picks.length>=2 && !on);
+        c.setAttribute('aria-pressed', on?'true':'false');
+      });
+      if(picks.length===2){
+        state.team1=[...picks]; saveState(); unlockNext();
+        showResult();
+        if(announceIt) announce('2 of 2 selected. Your pair is ready.');
+      }else{
+        lockNext(`Choose ${2-picks.length} more player${2-picks.length===1?'':'s'} to continue.`);
+        $('#m1Result',r).classList.add('hidden');
+        $('#m1Pick',r).classList.remove('hidden');
+        $('#m1Mission',r).classList.remove('compact');
+      }
+    };
+    $$('#pickCards .pcard',r).forEach(c=>{
+      c.addEventListener('click',()=>{
+        const k=c.dataset.key;
+        if(picks.includes(k)){picks.splice(picks.indexOf(k),1);}
+        else{if(picks.length>=2)return;picks.push(k);}
+        sync(true);
+      });
+    });
+    function showResult(){
+      $('#m1Result',r).classList.remove('hidden');
+      $('#m1Pick',r).classList.add('hidden');
+      $('#m1Mission',r).classList.add('compact');
+      const pitch=$('#m1Pitch',r);
+      pitch.innerHTML=`<div class="pitch-line" style="left:50%;top:0;bottom:0;width:2px;transform:translateX(-50%)"></div>
+        <div class="pitch-line" style="left:50%;top:50%;width:100px;height:100px;border-radius:50%;transform:translate(-50%,-50%)"></div>`;
+      const slots=[{x:34,y:52},{x:66,y:44}];
+      state.team1.forEach((k,i)=>{
+        const s=slots[i];const t=h(`<div class="pitch-slot pitch-token" style="left:${s.x}%;top:${s.y}%">
+          <img src="${PLAYERS[k].img}" alt=""><div class="pt-name">${PLAYERS[k].name}</div></div>`);
+        pitch.appendChild(t);after(150+i*200,()=>t.classList.add('in'));
+      });
+      const chipsWrap=$('#m1Chips',r);
+      const chipOptions=['Fast in the box','Clinical finishing','Creates chances','Great movement'];
+      chipsWrap.innerHTML = chipOptions.map(c=>`<button type="button" class="switch-chip" data-chip="${escapeHTML(c)}" aria-pressed="false">${c}</button>`).join('');
+      $$('.switch-chip',chipsWrap).forEach(chip=>{
+        if(chip.dataset.chip===state.team1Reason) chip.classList.add('active');
+        chip.addEventListener('click',()=>{
+          $$('.switch-chip',chipsWrap).forEach(x=>{x.classList.remove('active');x.setAttribute('aria-pressed','false');});
+          chip.classList.add('active');chip.setAttribute('aria-pressed','true');
+          state.team1Reason=chip.dataset.chip; saveState();
+        });
+      });
+    }
+    $('#m1Change',r).addEventListener('click',()=>{
+      $('#m1Result',r).classList.add('hidden');
+      $('#m1Pick',r).classList.remove('hidden');
+      $('#m1Mission',r).classList.remove('compact');
+      lockNext('Choose 2 players to continue.');
+    });
+    sync(false);
+    if(already){ showResult(); unlockNext(); }
+  }
+});
+
+/* ---- 6. MISSION 2: PROTECT THE LEAD (keep/swap + reason) ---- */
+IDX.mission2 = SCENES.length;
+scene({chapter:'Squad Draft', bg:'lab', build:()=>`
+  <div class="lab-bg"><img src="${A('assets/squadlab-background.png')}" alt=""></div><div class="lab-veil"></div>
+  <div class="lab-content">
+    <div class="mission-card rv" id="m2Mission" style="max-width:min(92vw,900px);margin:0 auto">
+      <img class="coach-mini" src="${A('assets/coach-cutout.png')}" alt="">
+      <div class="mission-txt">
+        <div class="mlabel">Match update &middot; Mission 2</div>
+        <div class="mbrief" tabindex="-1">NOW WE'RE AHEAD.</div>
+        <div class="msub">Decide whether to keep your pair or choose players who can protect the lead.</div>
+      </div>
+    </div>
+    <div id="m2Choice" class="stack-c">
+      <div class="row-c">
+        <button class="btn btn-primary btn-lg" id="keepBtn">Keep the same pair</button>
+        <button class="btn btn-apri btn-lg" id="swapBtn">Choose different players</button>
+      </div>
+    </div>
+    <div id="m2Pick" class="hidden">
+      <div class="card-row mt" id="swapCards">${PKEYS.map(k=>cardButtonHTML(k)).join('')}</div>
+      <div class="stack-c"><div class="ui status-line" id="swapHint" role="status">0 of 2 selected</div></div>
+    </div>
+    <div id="m2Reason" class="hidden stack-c">
+      <p class="quest ink-invert" style="max-width:28ch">Why can this pair protect the lead?</p>
+      <div class="row-c" id="m2Chips" style="max-width:min(90vw,720px)"></div>
+    </div>
+  </div>`,
+  enter:(r)=>{
+    stagger([$('.mission-card',r)],0,120);
+    lockNext('Decide to keep or swap your pair, then give one reason.');
+    const chipOptions=['Strong defending','Good positioning','Works as a team','Reads danger early'];
+    function finishReason(reason){
+      state.team2Reason=reason; saveState();
+      unlockNext();
+      announce('Decision saved.');
+    }
+    function reasonUI(){
+      $('#m2Pick',r).classList.add('hidden');
+      $('#m2Mission',r).classList.add('compact');
+      $('#m2Reason',r).classList.remove('hidden');
+      const wrap=$('#m2Chips',r); wrap.innerHTML=chipOptions.map(c=>`<button type="button" class="switch-chip" data-chip="${escapeHTML(c)}" aria-pressed="false">${c}</button>`).join('');
+      $$('.switch-chip',wrap).forEach(chip=>chip.addEventListener('click',()=>{
+        $$('.switch-chip',wrap).forEach(x=>{x.classList.remove('active');x.setAttribute('aria-pressed','false');});
+        chip.classList.add('active');chip.setAttribute('aria-pressed','true');
+        finishReason(chip.dataset.chip);
+      }));
+    }
+    $('#keepBtn',r).addEventListener('click',()=>{
+      state.team2=[...state.team1]; state.team2Decision='keep'; saveState();
+      $('#m2Choice',r).classList.add('hidden');
+      reasonUI();
+    });
+    $('#swapBtn',r).addEventListener('click',()=>{
+      state.team2Decision='swap'; saveState();
+      $('#m2Choice',r).classList.add('hidden');
+      $('#m2Pick',r).classList.remove('hidden');
+      $$('#swapCards .pcard',r).forEach((c,i)=>after(i*70,()=>c.classList.add('dealt')));
+      const hint=$('#swapHint',r); let picks=[];
+      $$('#swapCards .pcard',r).forEach(c=>c.addEventListener('click',()=>{
+        const k=c.dataset.key;
+        if(picks.includes(k)){picks.splice(picks.indexOf(k),1);}
+        else{if(picks.length>=2)return;picks.push(k);}
+        hint.textContent=`${picks.length} of 2 selected`;
+        $$('#swapCards .pcard',r).forEach(cc=>{
+          const on=picks.includes(cc.dataset.key);
+          cc.classList.toggle('picked',on); cc.classList.toggle('dim',picks.length>=2&&!on);
+          cc.setAttribute('aria-pressed',on?'true':'false');
+        });
+        if(picks.length===2){ state.team2=[...picks]; saveState(); reasonUI(); }
+      }));
+    });
+    if(Array.isArray(state.team2) && state.team2Decision && state.team2Reason){ reasonUI(); unlockNext(); }
+  }
+});
+
+/* ---- 7. COMPARE YOUR TWO DECISIONS ---- */
+scene({chapter:'Squad Draft', bg:'lab', build:()=>`
+  <div class="lab-bg"><img src="${A('assets/squadlab-background.png')}" alt=""></div><div class="lab-veil"></div>
+  <div class="lab-content">
+    <div class="stack-c" style="gap:6px"><div class="pill pill-navy rv">Two decisions, one squad</div></div>
+    <div class="row-c" style="align-items:stretch;gap:clamp(14px,2.2vw,40px)" id="m2CompareRow"></div>
+    <div class="stack-c mt" style="max-width:min(90vw,760px);margin:0 auto">
+      <div class="instr dis"><span class="instr-tag">Discuss</span><p>Tell a partner: what changed when the team's need changed?</p></div>
+    </div>
+  </div>`,
+  enter:(r)=>{
+    stagger($$('.rv',r),140,120);
+    const mini=(keys,label,accent)=>`<div class="l-card" style="background:rgba(16,32,58,.66);border-color:var(--navy-line);text-align:center">
+      <div class="pill" style="background:${accent}22;color:${accent};font-family:'Sora'">${label}</div>
+      <div class="row-c mt">${keys.map(k=>`<div style="text-align:center">${miniHeadHTML(k,'sm')}
+        <div style="font-family:'Sora';font-weight:800;color:#fff;font-size:var(--f-ui);margin-top:6px">${PLAYERS[k].name}</div></div>`).join('')}</div>
+      <p class="body" style="color:#DCE8F5;font-size:var(--f-ui);margin-top:10px">${escapeHTML(label==='NEED A GOAL'?state.team1Reason:state.team2Reason)||'&hellip;'}</p>
+    </div>`;
+    $('#m2CompareRow',r).innerHTML = mini(state.team1||[],'NEED A GOAL','#F0954E') +
+      `<div style="align-self:center;font-family:'Sora';font-weight:800;font-size:var(--f-title);color:#28B7C9">VS</div>` +
+      mini(state.team2||state.team1||[],'PROTECT THE LEAD','#28B7C9');
+  }
+});
+
+/* ---- 7. START WITH THE NEED (merged Ch.1 title) ---- */
+scene({chapter:'Ch.1 - Best for what?', bg:'learn', build:()=>`
+  <div class="scene-inner"><div class="stack-c mw">
+    <div class="eyebrow rv">Chapter 1 &middot; Best&hellip; for what?</div>
+    <div class="instr obs rv dly1"><span class="instr-tag">Watch for</span><p>Follow the chain. Notice how the team's need shapes the profile we look for.</p></div>
+    <div class="chain mt" style="gap:clamp(4px,.8vh,10px)">
+      <div class="chain-node rv dly2" id="cn1" style="padding:clamp(8px,1vh,14px) clamp(18px,2vw,32px)"><div class="chain-label">The team needs&hellip;</div><div class="chain-val hl-a" style="font-size:var(--f-quest)">a goal</div></div>
+      <div class="chain-arrow rv dly3" id="ca1" style="font-size:var(--f-lead)">&darr;</div>
+      <div class="chain-node rv dly3" id="cn2" style="padding:clamp(8px,1vh,14px) clamp(18px,2vw,32px)"><div class="chain-label">So we look for&hellip;</div>
+        <div class="chain-multi"><span class="pill pill-apri">Shooting</span><span class="pill pill-teal">Movement</span><span class="pill" style="background:rgba(126,143,238,.16);color:#4A5AC0">Passing</span></div></div>
+      <div class="chain-arrow rv dly4" id="ca2" style="font-size:var(--f-lead)">&darr;</div>
+      <div class="chain-node rv dly4" id="cn3" style="border-color:var(--teal);background:linear-gradient(120deg,#fff,#EAFBFD);padding:clamp(8px,1vh,14px) clamp(18px,2vw,32px)">
+        <div class="chain-label" style="color:var(--teal)">This is called a&hellip;</div><div class="chain-val grad-teal" style="font-size:var(--f-quest)">PLAYER PROFILE</div></div>
+    </div>
+    <div class="l-card rv dly6" id="defNeed" style="max-width:640px;margin:6px auto 0;border-color:var(--teal);padding:clamp(10px,1.4vh,18px)">
+      <p class="body" style="color:var(--ink);font-size:var(--f-ui)"><b class="hl">Player profile:</b> the set of qualities we look for, once we know what the team needs.</p>
+    </div>
+  </div></div>`,
+  enter:(r)=>{stagger($$('.rv',r),160,150);}
+});
+
+/* ---- 8. SAME PLAYER, DIFFERENT JOB (role morph, student-controlled) ---- */
+scene({chapter:'Ch.1 - Best for what?', bg:'learn', build:()=>`
+  <div class="scene-inner"><div class="stack-c mw">
+    <div class="instr act rv"><span class="instr-tag">Do this</span><p>Compare the two roles. Which qualities become more important when the job changes?</p></div>
+  </div>
+  <div class="morph-stage mt">
+    <div class="role-col" style="align-items:flex-end;text-align:right">
+      <div class="eyebrow">As an&hellip;</div>
+      <div class="hi-list"><div class="hi-item show">&#127919; Shooting</div><div class="hi-item show">&#9889; Movement</div><div class="hi-item show">&#127939; Finding space</div></div>
+      <div class="role-badge role-attacker pop">ATTACKER</div>
+    </div>
+    <div class="morph-player"><img src="${A('assets/zane-player.png')}" alt="One player shown in two different roles"></div>
+    <div class="role-col" style="align-items:flex-start;text-align:left">
+      <div class="eyebrow" id="eyR" style="opacity:0">&hellip;or as a&hellip;</div>
+      <div class="hi-list" id="hiR"></div>
+      <div class="role-badge role-defender" id="titleR" style="opacity:0">DEFENDER</div>
+    </div>
+  </div>
+  <div class="stack-c mt" id="morphReveal" style="opacity:0">
+    <button class="btn btn-primary" id="morphBtn">Show the defender role &rsaquo;</button>
+  </div>
+  <div class="stack-c mt hidden" id="morphLines">
+    <h3 class="title kin-big" id="mLine1"><span class="grad-teal">THE PLAYER DIDN'T CHANGE.</span></h3>
+    <h3 class="title kin-big" id="mLine2"><span class="grad-apri">THE JOB DID.</span></h3>
+    <p class="lead kin" id="mLine3">Different roles can need different profiles.</p>
+  </div></div>`,
+  enter:(r)=>{
+    after(300,()=>{const rv=$('#morphReveal',r);rv.style.transition='opacity .6s';rv.style.opacity='1';});
+    $('#morphBtn',r).addEventListener('click',()=>{
+      $('#morphReveal',r).classList.add('hidden');
+      const eyR=$('#eyR',r);eyR.style.transition='opacity .6s';eyR.style.opacity='1';
+      const hiR=$('#hiR',r);
+      ['&#128737;&#65039; Positioning','&#128679; Defending','&#128483;&#65039; Communication'].forEach((t,i)=>{const it=h(`<div class="hi-item">${t}</div>`);hiR.appendChild(it);after(i*160,()=>it.classList.add('show'));});
+      after(300,()=>{const t=$('#titleR',r);t.style.transition='opacity .5s,transform .5s var(--e-spring)';t.style.opacity='1';t.classList.add('pop');});
+      after(700,()=>{
+        $('#morphLines',r).classList.remove('hidden');
+        $('#mLine1',r).classList.add('show');
+        after(400,()=>$('#mLine2',r).classList.add('show'));
+        after(800,()=>$('#mLine3',r).classList.add('show'));
+      });
+    });
+  }
+});
+
+/* ---- 9. MINI-CHECK 1: EXPLAIN ---- */
+IDX.explain = SCENES.length;
+scene({chapter:'Ch.1 - Best for what?', bg:'learn', build:()=>`
+  <div class="scene-inner"><div class="stack-c mw">
+    <div class="pill pill-teal rv">Mini-Check 1 &middot; Explain</div>
+    <div class="row-c rv dly1" style="gap:clamp(14px,2vw,36px)">
+      <div class="l-card" style="border-left:6px solid var(--apricot);padding:clamp(8px,1.1vh,16px) clamp(14px,1.6vw,22px)"><div class="chain-label" style="color:var(--apricot)">Team A needs</div><div class="chain-val" style="font-size:var(--f-lead)">Goals &#9917;</div></div>
+      <div class="l-card" style="border-left:6px solid var(--teal);padding:clamp(8px,1.1vh,16px) clamp(14px,1.6vw,22px)"><div class="chain-label" style="color:var(--teal)">Team B needs</div><div class="chain-val" style="font-size:var(--f-lead)">Stronger defending &#128737;&#65039;</div></div>
+    </div>
+    <div class="instr ref rv dly2"><span class="instr-tag">Reflect</span><p>Could the same player fit one team better than the other? Explain how the team's need changes the answer. Mention the need and one quality that matters.</p></div>
+    <label class="sr-only" for="explainAns">Your explanation</label>
+    <textarea class="ta rv dly3" id="explainAns" rows="2" placeholder="Write your explanation here&hellip;" style="max-width:640px;margin:0 auto">${escapeHTML(state.explainEvidence.answer)}</textarea>
+    <div class="row-c rv dly4"><button class="btn btn-primary" id="explainSubmit">Save my answer &rsaquo;</button></div>
+    <p class="sim-note hidden" id="tpsNote">&#128172; Optional: turn to a partner and tell them why, using one detail from your answer.</p>
+  </div></div>`,
+  enter:(r)=>{
+    stagger($$('.rv',r),160,150);
+    const ta=$('#explainAns',r);
+    lockNext(state.explainEvidence.complete ? '' : 'Write your explanation, then choose Save my answer.');
+    if(state.explainEvidence.complete){ unlockNext(); $('#tpsNote',r).classList.remove('hidden'); }
+    $('#explainSubmit',r).addEventListener('click',()=>{
+      const v=ta.value;
+      if(!isMeaningful(v,4)){ lockNext('Add a little more detail (at least a short sentence).'); announce('Add a bit more detail before continuing.'); return; }
+      state.explainEvidence={answer:v, complete:true}; saveState(); unlockNext();
+      toast('Explanation saved.');
+      $('#tpsNote',r).classList.remove('hidden');
+    });
+    ta.addEventListener('input',()=>{ state.explainEvidence.answer=ta.value; state.explainEvidence.complete=false; saveState(); $('#tpsNote',r).classList.add('hidden'); });
+  }
+});
+
+/* ---- 10. MORE THAN ONE NUMBER + FOUR PROFILE PERSPECTIVES (merged Ch.2 title) ---- */
+scene({chapter:'Ch.2 - Read the player', bg:'learn', build:()=>`
+  <div class="scene-inner"><div class="stack-c" style="gap:6px">
+    <div class="eyebrow rv">Chapter 2 &middot; A player is more than one number</div>
+    <div class="instr obs rv dly1"><span class="instr-tag">Watch for</span><p>A player is more than one score. Open each part of the profile and notice what it tells you.</p></div>
+  </div>
+  <div class="row mt" style="justify-content:center;gap:clamp(18px,3vw,60px);align-items:center;width:100%">
+    <div class="morph-player" id="mtnPlayer" style="height:min(50vh,420px);opacity:0"><img src="${A('assets/sofia-player.png')}" alt="A player, viewed as a full profile"></div>
+    <div class="persp-grid">
+      <div class="persp" style="--accent:var(--apricot)"><div class="persp-ico">&#9917;</div><div><h4>Skills</h4><p>What can they do?</p></div></div>
+      <div class="persp" style="--accent:var(--peri)"><div class="persp-ico">&#129504;</div><div><h4>Game Sense</h4><p>How do they read the play?</p></div></div>
+      <div class="persp" style="--accent:var(--teal)"><div class="persp-ico">&#9889;</div><div><h4>Movement</h4><p>How do they move and compete?</p></div></div>
+      <div class="persp" style="--accent:var(--lime)"><div class="persp-ico">&#129309;</div><div><h4>Team Side</h4><p>How do they work with others?</p></div></div>
+    </div>
+  </div></div>`,
+  enter:(r)=>{
+    stagger($$('.stack-c .rv',r),160,150);
+    const p=$('#mtnPlayer',r);after(500,()=>{p.style.transition='opacity .8s';p.style.opacity='1';});
+    stagger($$('.persp',r),260,900);
+  }
+});
+
+/* ---- 11. RADAR PROFILE TUTORIAL (merged Compare Mode Unlocked) ---- */
+scene({chapter:'Ch.2 - Read the player', bg:'lab', build:()=>`
+  <div class="lab-bg"><img src="${A('assets/squadlab-background.png')}" alt=""></div><div class="lab-veil"></div>
+  <div class="lab-content"><div class="compare-stage">
+    <div class="radar-box">${radarSVG([{key:'maya',stroke:'#28B7C9',fill:'rgba(40,183,201,.28)'}])}</div>
+    <div class="stack">
+      <div class="pill pill-navy" style="width:max-content">&#128274; Compare Mode</div>
+      <div class="row" style="align-items:center;gap:14px">
+        ${miniHeadHTML('maya','sm')}
+        <div><div class="mission-txt"><div class="mlabel">Reading a profile</div><div class="mbrief" style="font-size:var(--f-title)" tabindex="-1">Maya</div></div></div>
+      </div>
+      <div class="instr obs"><span class="instr-tag">Watch for</span><p>Follow Maya's profile. A point farther from the center shows a higher value for that skill.</p></div>
+      <p class="lead" id="tut3" style="opacity:0;color:#DCE8F5">See how far <b style="color:var(--c-pass)">Passing</b> reaches? That's a real strength.</p>
+      <table class="sr-only">
+        <caption>Maya's profile values out of 100</caption>
+        <tbody>${ATTRS.map(a=>`<tr><th scope="row">${a.label}</th><td>${PLAYERS.maya[a.k]}</td></tr>`).join('')}</tbody>
+      </table>
+      <p class="sim-note" id="tut4" style="opacity:0">&#128161; Maya's strongest areas are Teamwork (92) and Passing (90). The shape gives the quick story; numbers give the detail.</p>
+    </div>
+  </div></div>`,
+  enter:(r)=>{
+    drawRadar(r);
+    after(1600,()=>{const e=$('#tut3',r);e.style.transition='opacity .6s';e.style.opacity='1';});
+    after(2500,()=>{const e=$('#tut4',r);e.style.transition='opacity .6s';e.style.opacity='1';});
+  }
+});
+
+/* ---- 12. COMPARE MODE (redesigned 3-board, morphing radar) ---- */
+scene({chapter:'Ch.2 - Read the player', bg:'lab', build:()=>`
+  <div class="lab-bg"><img src="${A('assets/squadlab-background.png')}" alt=""></div><div class="lab-veil"></div>
+  <div class="lab-content" style="gap:10px">
+    <div class="stack-c" style="gap:6px"><div class="pill pill-navy rv">Compare Mode</div>
+      <div class="instr act rv dly1"><span class="instr-tag">Do this</span><p>Maya stays pinned. Choose another player, then compare where each profile is stronger.</p></div></div>
+    <div class="cmp3-grid rv dly2">
+      <div class="cmp-side" style="--accent:#178A9B">
+        <span class="cmp-pin">&#128204; Pinned</span>
+        <div class="cmp-photo" style="--accent:#178A9B" id="cmpPhotoA">${miniPhotoImg('maya')}</div>
+        <div class="cmp-pname">Maya</div><div class="cmp-prole">Midfielder</div><div class="cmp-ptag">Playmaker</div>
+      </div>
+      <div class="cmp-center">
+        <div id="cmpRadar"></div>
+        <div class="cmp-legend" id="cmpLegend"></div>
+        <div class="cmp-summary" id="cmpSummary" aria-live="polite"></div>
+        <div id="cmpSkills"></div>
+      </div>
+      <div class="cmp-side" style="--accent:#EF7A6B">
+        <div class="cmp-photo" style="--accent:#EF7A6B" id="cmpPhotoB">${miniPhotoImg('amara')}</div>
+        <div class="cmp-pname" id="cmpNameB">Amara</div><div class="cmp-prole" id="cmpRoleB">Forward</div><div class="cmp-ptag" id="cmpTagB">Speedster</div>
+        <div class="cmp-switcher" id="cmpSwitch">
+          ${PKEYS.filter(k=>k!=='maya').map((k,i)=>`<button type="button" class="switch-chip${i===0?' active':''}" data-key="${k}" aria-pressed="${i===0?'true':'false'}">${PLAYERS[k].name}</button>`).join('')}
+        </div>
+      </div>
+    </div>
+  </div>`,
+  enter:(r)=>{
+    stagger($$('.rv',r),140,150);
+    let second='amara';
+    const radarBox=$('#cmpRadar',r), legend=$('#cmpLegend',r), skills=$('#cmpSkills',r), summary=$('#cmpSummary',r);
+    radarBox.innerHTML=radarSVG([
+      {key:'maya',stroke:'#178A9B',fill:'rgba(23,138,155,.26)'},
+      {key:second,stroke:'#EF7A6B',fill:'rgba(239,122,107,.24)'}]);
+    const svg=$('svg',radarBox);
+    const updateLegend=()=>{legend.innerHTML=`<div class="leg-item"><span class="leg-swatch" style="background:#178A9B"></span>Maya</div>
+      <div class="leg-item"><span class="leg-swatch" style="background:#EF7A6B"></span>${PLAYERS[second].name}</div>`;};
+    updateLegend();
+    skills.innerHTML=skillRowsHTML('maya',second);
+    drawRadar(r); animateSkillRows(skills,true);
+    summary.textContent=computeCompareSummary('maya',second);
+    $$('.switch-chip',r).forEach(b=>b.addEventListener('click',()=>{
+      const newKey=b.dataset.key; if(newKey===second) return;
+      $$('.switch-chip',r).forEach(x=>{x.classList.remove('active');x.setAttribute('aria-pressed','false');});
+      b.classList.add('active'); b.setAttribute('aria-pressed','true');
+      second=newKey;
+      morphRadarSeries(svg,1,second,600);
+      updateLegend();
+      const photo=$('#cmpPhotoB',r);
+      photo.style.transition='opacity .25s';photo.style.opacity='0';
+      after(200,()=>{ photo.innerHTML=miniPhotoImg(second); photo.style.setProperty('--accent',PLAYERS[second].accent); photo.style.opacity='1'; });
+      $('#cmpNameB',r).textContent=PLAYERS[second].name;
+      $('#cmpRoleB',r).textContent=PLAYERS[second].role;
+      $('#cmpTagB',r).textContent=PLAYERS[second].tag;
+      skills.innerHTML=skillRowsHTML('maya',second);
+      animateSkillRows(skills,false);
+      const txt=computeCompareSummary('maya',second);
+      summary.textContent=txt; announce(txt);
+    }));
+  }
+});
+
+/* ---- 13. TRADE-OFF REVEAL (glossary board) ---- */
+scene({chapter:'Ch.2 - Read the player', bg:'lab', build:()=>`
+  <div class="lab-bg"><img src="${A('assets/squadlab-background.png')}" alt=""></div><div class="lab-veil"></div>
+  <div class="lab-content"><div class="compare-stage">
+    <div class="radar-box">${radarSVG([
+        {key:'maya',stroke:'#178A9B',fill:'rgba(23,138,155,.26)'},
+        {key:'amara',stroke:'#EF7A6B',fill:'rgba(239,122,107,.24)'}])}</div>
+    <div class="stack">
+      <div class="cmp-legend"><div class="leg-item"><span class="leg-swatch" style="background:#178A9B"></span>Maya</div><div class="leg-item"><span class="leg-swatch" style="background:#EF7A6B"></span>Amara</div></div>
+      <h3 class="title kin-big" id="to1"><span style="color:#fff">AMARA ISN'T</span> <span class="grad-apri">STRONGER EVERYWHERE.</span></h3>
+      <h3 class="title kin-big" id="to2"><span style="color:#fff">MAYA ISN'T EITHER.</span></h3>
+      <div class="glossary-board kin" id="to4" style="margin-top:6px">
+        <div class="gloss-tag">NEW WORD</div>
+        <h3 class="gloss-title"><span id="glossWipe">Trade-off</span></h3>
+        <div class="gloss-half a"></div><div class="gloss-half b"></div>
+        <div class="gloss-mid"></div><div class="gloss-center">&#9878;&#65039;</div>
+        <p class="gloss-def">Choosing more of one strength can mean accepting less of another.</p>
+        <p class="gloss-example">A faster attacker may offer less defending or teamwork.</p>
+      </div>
+    </div>
+  </div></div>`,
+  enter:(r)=>{
+    drawRadar(r);
+    after(1400,()=>$('#to1',r).classList.add('show'));
+    after(2000,()=>$('#to2',r).classList.add('show'));
+    after(2600,()=>{const e=$('#to4',r);e.classList.add('show');after(200,()=>$('#glossWipe',r).classList.add('wipe'));});
+  }
+});
+
+/* ---- 14. NUMBERS + JUDGMENT ---- */
+scene({chapter:'Ch.2 - Read the player', bg:'learn', build:()=>`
+  <div class="scene-inner"><div class="stack-c" style="gap:4px">
+    <div class="eyebrow rv">Two kinds of player information</div>
+    <div class="instr obs rv dly1"><span class="instr-tag">Watch for</span><p>Compare the three examples. Which information comes from counting, and which needs careful observation?</p></div></div>
+  <div class="nj-grid mt" style="grid-template-columns:repeat(3,1fr)">
+    <div class="nj-card rv dly2"><img class="nj-img" src="${A('assets/amara-sprint-shot-action.png')}" alt="Amara sprinting">
+      <div class="nj-body"><span class="nj-tag meas">&#9201; Easy to measure</span><h4>Speed</h4>
+      <p>Time a sprint and you get a number. Clean and clear.</p></div></div>
+    <div class="nj-card rv dly3"><img class="nj-img" src="${A('assets/maya-pass-action.png')}" alt="Maya spotting a pass">
+      <div class="nj-body"><span class="nj-tag judge">&#128065; Needs a watching eye</span><h4>Game awareness</h4>
+      <p>Seeing the right pass or the open space is harder to put a number on.</p></div></div>
+    <div class="nj-card rv dly4"><img class="nj-img" src="${A('assets/niko-defend-action.png')}" alt="Niko defending">
+      <div class="nj-body"><span class="nj-tag judge">&#128065; Needs a watching eye</span><h4>Positioning</h4>
+      <p>Being in the right spot to stop danger is judged by watching, not just counting.</p></div></div>
+  </div>
+  <div class="stack-c mt">
+    <h3 class="quest kin-big" id="njLine">The easiest thing to measure is not always the most important thing.</h3>
+  </div></div>`,
+  enter:(r)=>{stagger($$('.rv',r),200,150);after(1600,()=>$('#njLine',r).classList.add('show'));}
+});
+
+/* ---- 15. MINI-CHECK 2: INTERPRET (reuses Compare Mode board) ---- */
+IDX.interpret = SCENES.length;
+scene({chapter:'Ch.2 - Read the player', bg:'lab', build:()=>`
+  <div class="lab-bg"><img src="${A('assets/squadlab-background.png')}" alt=""></div><div class="lab-veil"></div>
+  <div class="lab-content" style="gap:10px">
+    <div class="mission-card compact rv" style="max-width:min(94vw,900px);margin:0 auto">
+      <img class="coach-mini" src="${A('assets/coach-cutout.png')}" alt="">
+      <div class="mission-txt"><div class="mlabel">Mini-Check 2 &middot; Interpret</div>
+        <div class="mbrief" tabindex="-1">THE TEAM NEEDS SOMEONE WHO <span class="grad-teal">CREATES CHANCES.</span></div>
+        <div class="msub">Choose the player who fits, then use one profile detail as evidence.</div></div>
+    </div>
+    <div class="cmp3-grid rv dly1">
+      <div class="cmp-side" style="--accent:#178A9B" id="mc2SideA">
+        <div class="cmp-photo" style="--accent:#178A9B" id="mc2PhotoA">${miniPhotoImg('maya')}</div>
+        <div class="cmp-pname" id="mc2NameA">Maya</div><div class="cmp-prole" id="mc2RoleA">Midfielder</div>
+        <div class="cmp-switcher" id="mc2SwitchA">${PKEYS.map(k=>`<button type="button" class="switch-chip${k==='maya'?' active':''}" data-role="a" data-key="${k}" aria-pressed="${k==='maya'}">${PLAYERS[k].name}</button>`).join('')}</div>
+        <button type="button" class="btn btn-primary" id="mc2PickA" style="margin-top:6px">This one fits &rsaquo;</button>
+      </div>
+      <div class="cmp-center">
+        <div id="mc2Radar"></div>
+        <div class="cmp-legend" id="mc2Legend"></div>
+        <div id="mc2Skills"></div>
+      </div>
+      <div class="cmp-side" style="--accent:#EF7A6B" id="mc2SideB">
+        <div class="cmp-photo" style="--accent:#EF7A6B" id="mc2PhotoB">${miniPhotoImg('leo')}</div>
+        <div class="cmp-pname" id="mc2NameB">Leo</div><div class="cmp-prole" id="mc2RoleB">Midfielder</div>
+        <div class="cmp-switcher" id="mc2SwitchB">${PKEYS.map(k=>`<button type="button" class="switch-chip${k==='leo'?' active':''}" data-role="b" data-key="${k}" aria-pressed="${k==='leo'}">${PLAYERS[k].name}</button>`).join('')}</div>
+        <button type="button" class="btn btn-primary" id="mc2PickB" style="margin-top:6px">This one fits &rsaquo;</button>
+      </div>
+    </div>
+    <div class="stack-c hidden" id="mc2EvBox" style="gap:3px">
+      <button type="button" class="reset-btn" id="mc2Change" style="justify-self:center;color:var(--teal-bright)">&#8249; Change my pick</button>
+      <p class="ui ink-invert" id="mc2PickLine" style="color:#fff;font-weight:700;font-size:var(--f-micro)"></p>
+      <div class="row-c" id="mc2Ev" style="max-width:min(90vw,720px);gap:6px"></div>
+      <div class="name-field" style="max-width:420px;margin:0 auto">
+        <label class="sr-only" for="mc2Custom">Or write your own evidence</label>
+        <input class="name-input" id="mc2Custom" placeholder="Or write your own evidence&hellip;" maxlength="80" style="padding:5px 14px;font-size:var(--f-micro)">
+      </div>
+    </div>
+  </div>`,
+  enter:(r)=>{
+    stagger($$('.rv',r),140,120);
+    let a='maya', b='leo', pick='';
+    const rb=$('#mc2Radar',r), lg=$('#mc2Legend',r), sk=$('#mc2Skills',r);
+    lockNext('Choose the player who fits, then add one clue as evidence.');
+    function syncDisabled(){
+      $$('#mc2SwitchA .switch-chip',r).forEach(btn=>{ const dis=btn.dataset.key===b; btn.disabled=dis; btn.setAttribute('aria-disabled',dis?'true':'false'); });
+      $$('#mc2SwitchB .switch-chip',r).forEach(btn=>{ const dis=btn.dataset.key===a; btn.disabled=dis; btn.setAttribute('aria-disabled',dis?'true':'false'); });
+    }
+    function render(reset){
+      $('#mc2NameA',r).textContent=PLAYERS[a].name; $('#mc2RoleA',r).textContent=PLAYERS[a].role;
+      $('#mc2NameB',r).textContent=PLAYERS[b].name; $('#mc2RoleB',r).textContent=PLAYERS[b].role;
+      $('#mc2PhotoA',r).innerHTML=miniPhotoImg(a); $('#mc2PhotoA',r).style.setProperty('--accent',PLAYERS[a].accent);
+      $('#mc2PhotoB',r).innerHTML=miniPhotoImg(b); $('#mc2PhotoB',r).style.setProperty('--accent',PLAYERS[b].accent);
+      rb.innerHTML=radarSVG([{key:a,stroke:'#178A9B',fill:'rgba(23,138,155,.26)'},{key:b,stroke:'#EF7A6B',fill:'rgba(239,122,107,.24)'}]);
+      lg.innerHTML=`<div class="leg-item"><span class="leg-swatch" style="background:#178A9B"></span>${PLAYERS[a].name}</div><div class="leg-item"><span class="leg-swatch" style="background:#EF7A6B"></span>${PLAYERS[b].name}</div>`;
+      sk.innerHTML=skillRowsHTML(a,b); drawRadar(r); animateSkillRows(sk,true);
+      syncDisabled();
+    }
+    render(true);
+    $$('.switch-chip[data-role]',r).forEach(btn=>btn.addEventListener('click',()=>{
+      const role=btn.dataset.role, key=btn.dataset.key;
+      if(role==='a'&&key===b)return; if(role==='b'&&key===a)return;
+      $$(`.switch-chip[data-role="${role}"]`,r).forEach(x=>{x.classList.remove('active');x.setAttribute('aria-pressed','false');});
+      btn.classList.add('active'); btn.setAttribute('aria-pressed','true');
+      if(role==='a')a=key; else b=key;
+      render(false);
+    }));
+    function choosePick(who){
+      pick=who; state.interpretEvidence.pick=who; saveState();
+      $('.mission-card',r).classList.add('hidden');
+      $('#mc2EvBox',r).classList.remove('hidden');
+      $('#mc2PickLine',r).textContent=`You picked ${PLAYERS[who].name}. What evidence backs that up?`;
+      const evOptions=['Strong Passing','High Game Awareness','Great Teamwork','Creates space'];
+      const wrap=$('#mc2Ev',r); wrap.innerHTML=evOptions.map(c=>`<button type="button" class="switch-chip" data-chip="${c}" aria-pressed="false">${c}</button>`).join('');
+      const custom=$('#mc2Custom',r);
+      custom.value = state.interpretEvidence.evidence && !evOptions.includes(state.interpretEvidence.evidence) ? state.interpretEvidence.evidence : '';
+      $$('.switch-chip',wrap).forEach(chip=>chip.addEventListener('click',()=>{
+        $$('.switch-chip',wrap).forEach(x=>{x.classList.remove('active');x.setAttribute('aria-pressed','false');});
+        chip.classList.add('active');chip.setAttribute('aria-pressed','true');
+        custom.value='';
+        state.interpretEvidence={pick,evidence:chip.dataset.chip,complete:true}; saveState(); unlockNext();
+        announce('Evidence saved. You can continue.');
+      }));
+      custom.addEventListener('input',()=>{
+        const v=custom.value.trim();
+        $$('.switch-chip',wrap).forEach(x=>{x.classList.remove('active');x.setAttribute('aria-pressed','false');});
+        if(v){ state.interpretEvidence={pick,evidence:custom.value,complete:true}; saveState(); unlockNext(); }
+        else{ lockNext('Add one clue from the profile to finish.'); }
+      });
+      if(!state.interpretEvidence.evidence) lockNext('Add one clue from the profile to finish.');
+    }
+    $('#mc2PickA',r).addEventListener('click',()=>choosePick(a));
+    $('#mc2PickB',r).addEventListener('click',()=>choosePick(b));
+    $('#mc2Change',r).addEventListener('click',()=>{
+      $('.mission-card',r).classList.remove('hidden');
+      $('#mc2EvBox',r).classList.add('hidden');
+      lockNext('Choose the player who fits, then add one clue as evidence.');
+    });
+    if(state.interpretEvidence.complete){ a='maya'; b='leo'; if(state.interpretEvidence.pick){ choosePick(state.interpretEvidence.pick); } unlockNext(); }
+  }
+});
+
+/* ---- 16. CRITERIA VS PRIORITY (merged Ch.3 title) ---- */
+scene({chapter:'Ch.3 - What matters most?', bg:'lab', build:()=>`
+  <div class="lab-bg"><img src="${A('assets/squadlab-background.png')}" alt=""></div><div class="lab-veil"></div>
+  <div class="lab-content"><div class="stack-c" style="gap:clamp(12px,2.4vh,26px)">
+    <div class="eyebrow rv">Chapter 3 &middot; What matters most?</div>
+    <div class="row-c" style="gap:clamp(16px,2.4vw,44px);align-items:stretch">
+      <div class="l-card rv dly1" style="border-top:6px solid var(--peri);max-width:320px;background:rgba(255,253,248,.95)">
+        <div class="pill" style="background:rgba(126,143,238,.16);color:#4A5AC0;margin-bottom:10px">Criteria</div>
+        <p class="lead" style="color:var(--ink)">What are we <b>looking at?</b></p>
+        <div class="chain-multi" style="justify-content:flex-start;margin-top:12px"><span class="pill pill-teal">Speed</span><span class="pill pill-apri">Shooting</span><span class="pill" style="background:rgba(175,214,69,.2);color:#5E7A18">Teamwork</span></div>
+      </div>
+      <div class="l-card rv dly2" style="border-top:6px solid var(--apricot);max-width:320px;background:rgba(255,253,248,.95)">
+        <div class="pill pill-apri" style="margin-bottom:10px">Priority</div>
+        <p class="lead" style="color:var(--ink)">How much should each one <b>matter?</b></p>
+        <div class="stack mt" style="gap:8px">
+          <div class="row" style="justify-content:space-between"><span class="ui" style="font-weight:700">Speed</span><span class="prio-pips">${'<span class="pip on" style="--pc:var(--apricot)"></span>'.repeat(3)}</span></div>
+          <div class="row" style="justify-content:space-between"><span class="ui" style="font-weight:700">Teamwork</span><span class="prio-pips"><span class="pip on" style="--pc:var(--apricot)"></span>${'<span class="pip"></span>'.repeat(2)}</span></div>
+        </div>
+      </div>
+    </div>
+  </div></div>`,
+  enter:(r)=>stagger($$('.rv',r),180,180)
+});
+
+/* ---- 16b. THE REAL WORD: WEIGHT ---- */
+scene({chapter:'Ch.3 - What matters most?', bg:'lab', build:()=>`
+  <div class="lab-bg"><img src="${A('assets/squadlab-background.png')}" alt=""></div><div class="lab-veil"></div>
+  <div class="lab-content"><div class="stack-c">
+    <div class="pill pill-navy rv">The real word</div>
+    <h2 class="chapter ink-invert rv dly1" tabindex="-1">WEIGHT</h2>
+    <div class="l-card rv dly2" style="max-width:660px;border-color:var(--teal);background:linear-gradient(120deg,#fff,#EAFBFD)">
+      <p class="body" style="color:var(--ink);font-size:var(--f-lead)">A <b class="hl">weight</b> tells the system that one criterion should count <b>more</b> than another.</p>
+    </div>
+  </div></div>`,
+  enter:(r)=>stagger($$('.rv',r),180,180)
+});
+
+/* ---- 17. WORKED RANKING EXAMPLE (student-controlled) ---- */
+const WE_STAGES=[
+  {label:'Priorities: all equal', w:{speed:2,shooting:2,teamwork:2}},
+  {label:'Now priority is Shooting', w:{speed:1,shooting:5,teamwork:1}},
+  {label:'Now priority is Teamwork', w:{speed:1,shooting:1,teamwork:5}},
+];
+scene({chapter:'Ch.3 - What matters most?', bg:'lab', build:()=>`
+  <div class="lab-bg"><img src="${A('assets/squadlab-background.png')}" alt=""></div><div class="lab-veil"></div>
+  <div class="lab-content"><div class="stack-c" style="gap:4px">
+    <div class="instr obs rv"><span class="instr-tag">Watch for</span><p>Watch the ranking. The player data stays the same while the priorities change.</p></div>
+    <h3 class="title ink-invert rv dly1" id="weLabel" tabindex="-1">Priorities: all equal</h3></div>
+  <div style="width:min(92vw,720px);margin:0 auto"><div class="rank-list" id="weRank"></div></div>
+  <div class="row-c mt">
+    <button class="btn btn-ghost" id="weReplay">&#8630; Replay</button>
+    <button class="btn btn-primary" id="weStep">Step &rsaquo;</button>
+    <button class="btn btn-apri" id="weSkip">Skip to end &#9197;</button>
+  </div>
+  <div class="stack-c mt hidden" id="weMsgs">
+    <h3 class="title kin-big" id="weMsg1"><span style="color:#fff">NOTHING ABOUT THE PLAYERS CHANGED.</span></h3>
+    <h3 class="title kin-big" id="weMsg2"><span class="grad-teal">WE CHANGED THE WEIGHTS.</span></h3>
+  </div></div>`,
+  enter:(r)=>{
+    const keys=['amara','maya','niko','zane'];
+    const rl=$('#weRank',r); let stage=0;
+    const show=(i,anim)=>{
+      stage=i; $('#weLabel',r).textContent=WE_STAGES[i].label;
+      renderRanking(rl,keys,WE_STAGES[i].w,{firstAnim:anim});
+      if(i===WE_STAGES.length-1){ $('#weMsgs',r).classList.remove('hidden'); $('#weMsg1',r).classList.add('show'); after(300,()=>$('#weMsg2',r).classList.add('show')); }
+      else{ $('#weMsgs',r).classList.add('hidden'); $('#weMsg1',r).classList.remove('show'); $('#weMsg2',r).classList.remove('show'); }
+    };
+    show(0,true);
+    $('#weStep',r).addEventListener('click',()=>{ if(stage<WE_STAGES.length-1) show(stage+1,false); });
+    $('#weReplay',r).addEventListener('click',()=>show(0,false));
+    $('#weSkip',r).addEventListener('click',()=>show(WE_STAGES.length-1,false));
+  }
+});
+
+/* ---- 18. RANKING LAB (centerpiece, gated) ---- */
+IDX.rankingLab = SCENES.length;
+scene({chapter:'Ch.3 - What matters most?', bg:'lab', build:()=>`
+  <div class="lab-bg"><img src="${A('assets/squadlab-background.png')}" alt=""></div><div class="lab-veil"></div>
+  <div class="lab-content" style="gap:8px">
+    <div class="stack-c" style="gap:2px"><div class="pill pill-navy rv">Ranking Lab</div>
+      <div class="instr act rv dly1"><span class="instr-tag">Do this</span><p>Change the priorities and watch the ranking move. Try to place different players at number one.</p></div></div>
+    <div class="lab-3col rv dly2">
+      <div class="lab-panel">
+        <h3>&#128100; Player Profile</h3><div class="sub">Fixed. It never changes.</div>
+        <div id="labRadar"></div>
+        <div class="player-switch" id="labSwitch">${PKEYS.map((k,i)=>`<button type="button" class="switch-chip${i===0?' active':''}" data-key="${k}" aria-pressed="${i===0}" style="--accent2:var(--teal-bright)">${PLAYERS[k].name}</button>`).join('')}</div>
+      </div>
+      <div class="lab-panel">
+        <h3>&#127942; Live Ranking</h3><div class="sub" role="status" id="labRankSub">Ordered by Fit</div>
+        <div class="rank-list" id="labRank"></div>
+      </div>
+      <div class="lab-panel">
+        <h3>&#127918; Priorities <span class="budget" style="margin-left:auto;font-size:var(--f-micro)">Budget</span></h3>
+        <div class="budget"><div class="budget-dots" id="labBudget"></div><span id="labBudgetTxt" style="font-size:var(--f-ui)">6 left</span></div>
+        <div id="labPrios" style="display:grid;gap:6px"></div>
+      </div>
+    </div>
+  </div>`,
+  enter:(r)=>{
+    stagger($$('.rv',r),150,150);
+    lockNext('Change at least one priority to continue.');
+    buildRankingLab(r,{prio:state.labWeights, radarKey:'maya', rankKeys:PKEYS,
+      onChange:(w)=>{
+        state.labWeights={...w};
+        state.compareEvidence.labChanged = !weightsEqual(w,DEFAULT_WEIGHTS);
+        saveState();
+        if(state.compareEvidence.labChanged) unlockNext();
+        else lockNext('Change at least one priority to continue.');
+      }});
+  }
+});
+
+/* ---- 19. BIG REVEAL ---- */
+scene({chapter:'Ch.3 - What matters most?', bg:'learn', build:()=>{
+  if(!state.compareEvidence.labChanged){
+    return `<div class="scene-inner"><div class="stack-c mw">
+      <div class="eyebrow rv">Hold on</div>
+      <h3 class="quest rv dly1" tabindex="-1">Go back to the Ranking Lab and change at least one priority first.</h3>
+      <button class="btn btn-primary rv dly2" id="backToLab">Back to Ranking Lab &rsaquo;</button>
+    </div></div>`;
+  }
+  const w=state.labWeights;
+  const before=ranked(PKEYS,DEFAULT_WEIGHTS), afterR=ranked(PKEYS,w);
+  const changed = before.map(x=>x.k).join()!==afterR.map(x=>x.k).join();
+  return `<div class="scene-inner"><div class="stack-c mw" style="gap:clamp(10px,1.8vh,22px)">
+    <div class="eyebrow rv">The big reveal</div>
+    <div class="row-c" style="align-items:stretch;gap:clamp(14px,2vw,34px)">
+      <div class="l-card rv dly1" style="min-width:200px;text-align:center"><div class="chain-label">Profile</div><div class="chain-val" style="font-size:var(--f-quest)">stayed the same</div><div style="font-size:32px;margin-top:6px">&#128100;</div></div>
+      <div class="l-card rv dly2" style="min-width:200px;text-align:center;border-color:var(--apricot)"><div class="chain-label" style="color:var(--apricot)">Priorities</div><div class="chain-val grad-apri" style="font-size:var(--f-quest)">changed</div><div style="font-size:32px;margin-top:6px">&#127918;</div></div>
+      <div class="l-card rv dly3" style="min-width:200px;text-align:center;border-color:var(--peri)"><div class="chain-label" style="color:#4A5AC0">Fit</div><div class="chain-val" style="font-size:var(--f-quest);color:#4A5AC0">changed</div><div style="font-size:32px;margin-top:6px">&#128202;</div></div>
+      <div class="l-card rv dly4" style="min-width:200px;text-align:center;border-color:var(--teal)"><div class="chain-label" style="color:var(--teal)">Ranking</div><div class="chain-val grad-teal" style="font-size:var(--f-quest)">${changed?'moved':'held'}</div><div style="font-size:32px;margin-top:6px">&#127942;</div></div>
+    </div>
+    <div class="stack-c mt" style="gap:2px">
+      <h3 class="quest kin-big" id="br1"><span style="color:var(--ink)">A ranking doesn't only show</span> <span class="grad-teal">who scored highest.</span></h3>
+      <h3 class="quest kin-big" id="br2">It also shows <span class="grad-apri">what the system was told to value.</span></h3>
+    </div>
+  </div></div>`;
+},
+  enter:(r)=>{
+    const back=$('#backToLab',r);
+    if(back){ stagger($$('.rv',r),200,150); back.addEventListener('click',()=>gotoScene(IDX.rankingLab)); return; }
+    $('.eyebrow',r).classList.add('show');
+    stagger($$('.rv',r).filter(n=>!n.classList.contains('eyebrow')),200,250);
+    after(1400,()=>$('#br1',r).classList.add('show'));after(2100,()=>$('#br2',r).classList.add('show'));
+  }
+});
+
+/* ---- 20. MINI-CHECK 3: COMPARE (ranking mission) ---- */
+IDX.compare = SCENES.length;
+scene({chapter:'Ch.3 - What matters most?', bg:'lab', build:()=>`
+  <div class="lab-bg"><img src="${A('assets/squadlab-background.png')}" alt=""></div><div class="lab-veil"></div>
+  <div class="lab-content" style="gap:8px">
+    <div class="mission-card compact rv" style="max-width:min(94vw,960px);margin:0 auto">
+      <img class="coach-mini" src="${A('assets/coach-cutout.png')}" alt="">
+      <div class="mission-txt"><div class="mlabel">Mini-Check 3 &middot; Compare</div>
+        <div class="mbrief" tabindex="-1">GET MAYA INTO THE <span class="grad-teal">TOP 2.</span></div>
+        <div class="msub">Adjust the priorities until Maya reaches the Top 2. Do not change Maya's profile.</div></div>
+    </div>
+    <div class="lab-3col rv dly1">
+      <div class="lab-panel">
+        <h3>&#128100; Maya's Profile</h3><div class="sub">Fixed. It never changes.</div>
+        <div id="mc3Radar"></div>
+      </div>
+      <div class="lab-panel">
+        <h3>&#127942; Live Ranking</h3><div class="sub" role="status" id="mc3Sub">Get Maya to #1 or #2</div>
+        <div class="rank-list" id="mc3Rank"></div>
+      </div>
+      <div class="lab-panel">
+        <h3>&#127918; Priorities</h3>
+        <div class="budget"><div class="budget-dots" id="mc3Budget"></div><span id="mc3BudgetTxt" style="font-size:var(--f-ui)">6 left</span></div>
+        <div id="mc3Prios" style="display:grid;gap:10px"></div>
+      </div>
+    </div>
+    <div class="stack-c hidden" id="mc3Follow" style="max-width:min(90vw,700px);margin:0 auto">
+      <div class="win-overlay" style="position:static;margin:0;animation:none" id="mc3Win"></div>
+    </div>
+  </div>`,
+  enter:(r)=>{
+    stagger($$('.rv',r),150,150);
+    lockNext('Get Maya into the Top 2 to continue.');
+    let won = state.compareEvidence.mayaTop2;
+    function finish(priorityLabel){
+      state.compareEvidence.mayaTop2=true; state.compareEvidence.mayaPriority=priorityLabel;
+      state.compareEvidence.mayaWhy=`Raised ${priorityLabel}, one of Maya's strongest qualities.`;
+      state.compareEvidence.complete=true; saveState(); unlockNext();
+      $('.mission-card',r).classList.add('hidden');
+      $('#mc3Follow',r).classList.remove('hidden');
+      $('#mc3Win',r).innerHTML=`<h3 class="title" style="font-size:var(--f-quest)"><span class="grad-teal">YOU DIDN'T CHANGE MAYA.</span></h3>
+        <h3 class="title" style="font-size:var(--f-quest)"><span style="color:#fff">YOU RAISED ${priorityLabel.toUpperCase()}, ONE OF HER STRENGTHS.</span></h3>`;
+    }
+    buildRankingLab(r,{prio:{speed:2,shooting:2,teamwork:2}, radarKey:'maya', rankKeys:PKEYS,
+      ids:{radar:'mc3Radar',rank:'mc3Rank',prios:'mc3Prios',budget:'mc3Budget',budgetTxt:'mc3BudgetTxt'},
+      onChange:(w)=>{
+        const rk=ranked(PKEYS,w);const pos=rk.findIndex(x=>x.k==='maya')+1;
+        const sub=$('#mc3Sub',r);sub.textContent=`Maya is currently number ${pos}`;
+        if(pos<=2){
+          const topAttr=ATTRS.filter(a=>w[a.k]!==undefined).sort((a,b)=>w[b.k]-w[a.k])[0];
+          if(!won){ won=true; confettiBurst(); toast('Maya is in the Top 2!'); announce('Maya reached the Top 2.'); }
+          finish(topAttr.label);
+        }else{
+          won=false;
+          state.compareEvidence.mayaTop2=false; state.compareEvidence.complete=false; saveState();
+          $('.mission-card',r).classList.remove('hidden');
+          $('#mc3Follow',r).classList.add('hidden');
+          lockNext('Get Maya into the Top 2 to continue.');
+        }
+      }});
+    if(won){ finish(state.compareEvidence.mayaPriority||'Teamwork'); }
+  }
+});
+
+/* ---- 21. SELECTION IS A PROCESS (funnel) ---- */
+scene({chapter:'Ch.4 - Ranking to Recommendation', bg:'lab', build:()=>`
+  <div class="world-scene">
+    <div class="world-bg"><img src="${A('assets/selection-funnel-world.png')}" alt="Players moving through a selection process"></div>
+    <div class="lab-content" style="position:relative;z-index:3">
+      <div class="stack-c"><div class="pill pill-navy rv">Chapter 4</div>
+        <div class="instr obs rv dly1"><span class="instr-tag">Watch for</span><p>Follow the selection process. Notice where a person can review, question, or change the result.</p></div></div>
+      <div class="funnel-flow mt">
+        ${[['1','Player Pool'],['2','Long List'],['3','Short List'],['4','Final Selection']].map((s,i)=>`
+          ${i>0?`<div class="flow-arrow">&rarr;</div>`:''}
+          <div class="flow-step"><div class="fs-n">${s[0]}</div><div class="fs-l">${s[1]}</div></div>`).join('')}
+      </div>
+      <div class="l-card rv" id="funNote" style="max-width:min(90vw,720px);margin:14px auto 0;background:rgba(255,253,248,.94)">
+        <p class="body" style="color:var(--ink);font-size:var(--f-lead)">A ranking can help <b class="hl">narrow</b> the options. It doesn't have to make the final choice. A person still can.</p>
+      </div>
+    </div>
+  </div>`,
+  enter:(r)=>{
+    stagger($$('.stack-c .rv',r),150,150);
+    const steps=$$('.flow-step',r),arrows=$$('.flow-arrow',r);
+    steps.forEach((s,i)=>after(600+i*500,()=>{s.classList.add('show');if(arrows[i-1])arrows[i-1].classList.add('show');}));
+    after(600+steps.length*500+200,()=>{$('#funNote',r).classList.add('show');});
+  }
+});
+
+/* ---- 22. WHAT AI CAN ADD (input-process-output hub) ---- */
+scene({chapter:'Ch.4 - Ranking to Recommendation', bg:'lab', build:()=>`
+  <div class="world-scene">
+    <div class="world-bg"><img src="${A('assets/scouting-analysis-hub.png')}" alt="Scouting analysis hub"></div>
+    <div class="lab-content" style="position:relative;z-index:3">
+      <div class="stack-c"><div class="pill pill-navy rv">What AI can add</div>
+        <div class="instr obs rv dly1"><span class="instr-tag">Watch for</span><p>Follow what goes in, what the system does, and what comes out.</p></div></div>
+      <div class="funnel-flow mt">
+        <div class="flow-step show"><div class="fs-l">Inputs</div><p class="body" style="font-size:var(--f-micro);margin-top:4px">Player info + team goal</p></div>
+        <div class="flow-arrow show">&rarr;</div>
+        <div class="flow-step show"><div class="fs-l">Process</div><p class="body" style="font-size:var(--f-micro);margin-top:4px">Compare using criteria + weights</p></div>
+        <div class="flow-arrow show">&rarr;</div>
+        <div class="flow-step show"><div class="fs-l">Output</div><p class="body" style="font-size:var(--f-micro);margin-top:4px">Ranking + recommendation</p></div>
+      </div>
+      <div class="stack-c mt" style="gap:2px">
+        <h3 class="quest kin-big" id="ai2"><span class="grad-apri">IT STILL NEEDS THE RIGHT QUESTION.</span></h3>
+      </div>
+    </div>
+  </div>`,
+  enter:(r)=>{
+    stagger($$('.stack-c .rv',r),150,150);
+    after(1200,()=>$('#ai2',r).classList.add('show'));
+  }
+});
+
+/* ---- 23. RECOMMEND MODE (gated) ---- */
+IDX.recommend = SCENES.length;
+scene({chapter:'Ch.4 - Ranking to Recommendation', bg:'lab', build:()=>`
+  <div class="lab-bg"><img src="${A('assets/squadlab-background.png')}" alt=""></div><div class="lab-veil"></div>
+  <div class="lab-content"><div class="stack-c" id="recoIntro">
+    <div class="pill pill-navy rv">Recommend Mode</div>
+    <div class="instr act rv dly1"><span class="instr-tag">Do this</span><p>Run the recommendation, then check why this player became the best match for your setup.</p></div>
+    <p class="lead rv dly2" style="color:#C7D6EC">Using the priorities you set in the Ranking Lab.</p>
+    <button class="btn btn-apri btn-lg rv dly3" id="runReco" style="margin-top:8px">&#9654; Run Recommendation</button>
+  </div>
+  <div class="stack-c hidden" id="recoRun">
+    <div class="reco-stack" id="recoStack"></div>
+    <div class="stack-c" id="recoResult" style="opacity:0">
+      <div class="pill pill-teal">Best match for your setup</div>
+      <h2 class="display ink-invert" id="recoName" tabindex="-1">&hellip;</h2>
+      <p class="lead" id="recoWhy" style="color:#C7D6EC"></p>
+      <p class="sim-note">This is the best match <b>for your priorities</b>, not a universal best player.</p>
+    </div>
+  </div></div>`,
+  enter:(r)=>{
+    stagger($$('.rv',r),150,150);
+    lockNext('Run the recommendation to continue.');
+    function run(){
+      $('#recoIntro',r).classList.add('hidden');$('#recoRun',r).classList.remove('hidden');
+      const w=state.labWeights, rk=ranked(PKEYS,w), winner=rk[0].k;
+      const stack=$('#recoStack',r); stack.innerHTML='';
+      rk.forEach((x,i)=>{const c=h(`<div class="reco-card${i===0?' reco-winner':''}" style="z-index:${10-i}">
+        <div class="pcard-top" style="height:60%"><img class="pcard-img" src="${PLAYERS[x.k].img}" alt=""></div>
+        <div class="pcard-body" style="text-align:center"><div class="pcard-name">${PLAYERS[x.k].name}</div><div class="pcard-tag">${PLAYERS[x.k].tag}</div></div></div>`);
+        c.style.transform=`translateY(${i*8}px) scale(${1-i*0.03}) rotate(${(i%2?1:-1)*i*2}deg)`;c.style.opacity=i<3?1:.5;
+        stack.appendChild(c);});
+      after(400,()=>{$$('.reco-card',r).forEach((c,i)=>{if(i>0){c.style.transform='translateY(30px) scale(.6)';c.style.opacity='0';}});});
+      after(1200,()=>{const win=$('.reco-winner',r);win.style.transform='scale(1.05)';win.style.boxShadow='0 0 0 4px rgba(242,193,78,.6),var(--shadow-lg)';});
+      after(1400,()=>{
+        $('#recoName',r).textContent=PLAYERS[winner].name;
+        const topAttr=ATTRS.filter(a=>w[a.k]!==undefined).sort((a,b)=>w[b.k]-w[a.k])[0];
+        const why=`Your setup leaned on ${topAttr.label}, and ${PLAYERS[winner].name} fits that best.`;
+        $('#recoWhy',r).innerHTML=`Your setup leaned on <b class="grad-teal">${topAttr.label}</b>, and ${PLAYERS[winner].name} fits that best.`;
+        $('#recoResult',r).style.transition='opacity .8s';$('#recoResult',r).style.opacity='1';
+        state.recommendationRun=true; state.recommendationResult=winner; saveState(); unlockNext();
+        confettiBurst(20); announce(why);
+      });
+    }
+    $('#runReco',r).addEventListener('click',run);
+    if(state.recommendationRun) run();
+  }
+});
+
+/* ---- 24. MINI-CHECK 4: EVALUATE (fixed audit case) ---- */
+IDX.evaluate = SCENES.length;
+scene({chapter:'Ch.4 - Ranking to Recommendation', bg:'lab', build:()=>`
+  <div class="lab-bg"><img src="${A('assets/squadlab-background.png')}" alt=""></div><div class="lab-veil"></div>
+  <div class="lab-content" style="gap:clamp(8px,1.4vh,16px)">
+    <div class="mission-card compact rv" style="max-width:min(94vw,900px);margin:0 auto">
+      <img class="coach-mini" src="${A('assets/coach-cutout.png')}" alt="">
+      <div class="mission-txt"><div class="mlabel">Mini-Check 4 &middot; Evaluate</div>
+        <div class="mbrief" tabindex="-1">THE TEAM NEEDS SOMEONE WHO <span class="grad-teal">CONNECTS THE TEAM.</span></div>
+        <div class="msub">But the setup rewards <b style="color:var(--c-speed)">Speed</b> + <b style="color:var(--c-shoot)">Shooting</b>&hellip;</div></div>
+    </div>
+    <div class="pill pill-apri rv" style="margin:0 auto">Fixed audit case: not your Ranking Lab setup</div>
+
+    <div id="auditTop" class="row-c" style="align-items:center;gap:clamp(18px,3vw,54px);width:100%">
+      <div class="l-card rv dly1" style="text-align:center;background:rgba(255,253,248,.95);flex-shrink:0">
+        <div class="pill pill-apri" style="margin-bottom:8px">The system recommends</div>
+        ${miniHeadHTML('amara')}
+        <div style="font-family:'Sora';font-weight:800;font-size:var(--f-title);color:var(--ink);margin-top:6px">Amara</div>
+        <div class="pcard-tag">A fast scorer</div>
+      </div>
+      <div class="stack" style="flex:1;max-width:640px;gap:clamp(6px,1vh,12px)">
+        <div class="instr ref"><span class="instr-tag">Reflect</span><p>What would you check before trusting this recommendation? Pick one.</p></div>
+        <div class="row-c" id="revChips">
+          ${['What the team actually needs','What criteria were used','Why Teamwork got no weight','Who else could fit as well'].map(c=>`<button type="button" class="switch-chip" data-chip="${c}" aria-pressed="false">${c}</button>`).join('')}
+        </div>
+      </div>
+    </div>
+
+    <div class="stack-c hidden" id="auditReveal" style="gap:clamp(8px,1.6vh,18px)">
+      <div class="row-c" style="gap:clamp(12px,1.8vw,28px)">
+        <div class="l-card" style="text-align:center;min-width:170px"><div class="chain-label">Team goal</div><div class="chain-val" style="font-size:var(--f-body)">Connects the team &#129309;</div></div>
+        <div class="chain-arrow" style="align-self:center">&rarr;</div>
+        <div class="l-card" style="text-align:center;min-width:170px;border-color:var(--apricot)"><div class="chain-label" style="color:var(--apricot)">Criteria used</div><div class="chain-val" style="font-size:var(--f-body)">Speed + Shooting</div></div>
+        <div class="chain-arrow" style="align-self:center">&rarr;</div>
+        <div class="l-card" style="text-align:center;min-width:170px;border-color:var(--rose)"><div class="chain-label" style="color:var(--rose)">Weights</div><div class="chain-val" style="font-size:var(--f-body)">Teamwork = 0</div></div>
+      </div>
+      <h3 class="quest" style="font-size:var(--f-quest)"><span style="color:#fff">THE SYSTEM FOLLOWED THE SETUP.</span></h3>
+      <h3 class="quest" style="font-size:var(--f-quest)"><span class="grad-apri">THE SETUP DIDN'T FIT THE JOB.</span></h3>
+      <div class="l-card" style="background:rgba(255,253,248,.97);max-width:640px;margin:0 auto;padding:clamp(12px,1.6vh,20px)">
+        <p class="ui" style="font-weight:700;color:var(--ink);margin-bottom:8px">What should happen now?</p>
+        <div class="row-c" id="decisionBtns">
+          <button type="button" class="btn btn-primary" data-d="keep">Keep the recommendation</button>
+          <button type="button" class="btn btn-apri" data-d="revise">Revise the setup</button>
+          <button type="button" class="btn btn-ghost" style="color:var(--ink);border-color:var(--cream-3)" data-d="reject">Reject it for now</button>
+        </div>
+      </div>
+    </div>
+  </div>`,
+  enter:(r)=>{
+    stagger([$('.mission-card',r)],0,120);stagger($$('.rv',r),160,300);
+    lockNext('Pick what you would check first.');
+    function goReveal(){
+      $('.mission-card',r).classList.add('hidden');
+      $('#auditTop',r).classList.add('hidden');
+      $('#auditReveal',r).classList.remove('hidden');
+      let decision=state.evaluateEvidence.decision;
+      $$('#decisionBtns button',r).forEach(b=>{
+        b.classList.toggle('active', b.dataset.d===decision);
+        if(b.dataset.d===decision) b.style.outline='3px solid var(--gold)';
+        b.addEventListener('click',()=>{
+          decision=b.dataset.d; state.evaluateEvidence.decision=decision; state.reviewDecision=decision;
+          $$('#decisionBtns button',r).forEach(x=>x.style.outline='none');
+          b.style.outline='3px solid var(--gold)';
+          state.evaluateEvidence.complete=true; saveState(); unlockNext();
+          announce('Evaluation saved. You can continue.');
+        });
+      });
+      if(decision) unlockNext();
+      else lockNext('Choose keep, revise, or reject.');
+    }
+    $$('#revChips .switch-chip',r).forEach(chip=>chip.addEventListener('click',()=>{
+      $$('#revChips .switch-chip',r).forEach(x=>{x.classList.remove('active');x.setAttribute('aria-pressed','false');});
+      chip.classList.add('active'); chip.setAttribute('aria-pressed','true');
+      state.evaluateEvidence.note=chip.dataset.chip; saveState();
+      goReveal();
+    }));
+    if(state.evaluateEvidence.note && state.evaluateEvidence.decision){ goReveal(); }
+  }
+});
+
+/* ---- 25. EXIT TICKET (required reflection) ---- */
+IDX.exitTicket = SCENES.length;
+scene({chapter:'Final Review', bg:'board', build:()=>`
+  <div class="scene-inner"><div class="exit-grid">
+    <div class="clip-fig-wrap" style="display:grid;place-items:center"><img class="clip-fig" src="${A('assets/review-clipboard.png')}" alt="Review clipboard"></div>
+    <div class="exit-form">
+      <div class="stack" style="gap:2px"><div class="eyebrow rv">Fair Play Review Board</div>
+        <h2 class="title rv dly1" tabindex="-1">YOUR FINAL REVIEW</h2></div>
+      <div class="checklist rv dly2" style="gap:4px">
+        ${[['&#127919;','What does the team <b>need?</b>'],['&#128100;','What <b>profile</b> fits that need?'],['&#128229;','What <b>information</b> was used?'],['&#127918;','What was given more <b>weight?</b>'],['&#9989;','Does the <b>recommendation fit?</b>']].map(c=>`
+          <div class="check-item show" style="padding:5px 12px;gap:8px"><span class="check-ico" style="font-size:var(--f-body)">${c[0]}</span><p style="font-size:var(--f-micro)">${c[1]}</p></div>`).join('')}
+      </div>
+      <div class="prompt-block rv dly3">
+        <label for="exitReflect" style="font-size:var(--f-lead)"><span class="starter">Before you trust an AI ranking, what should you check first, and why?</span></label>
+        <textarea class="ta" id="exitReflect" rows="3" placeholder="Write your thinking here&hellip;">${escapeHTML(state.exitReflection)}</textarea>
+      </div>
+      <div class="row rv dly4"><button class="btn btn-primary" id="exitSubmit">Build my scout report &rsaquo;</button></div>
+    </div>
+  </div></div>`,
+  enter:(r)=>{
+    after(200,()=>$('.clip-fig',r).classList.add('in'));
+    stagger($$('.rv',r),160,300);
+    lockNext('Write a short reflection to finish.');
+    const ta=$('#exitReflect',r);
+    ta.addEventListener('input',()=>{state.exitReflection=ta.value;saveState();});
+    $('#exitSubmit',r).addEventListener('click',()=>{
+      if(!isMeaningful(ta.value,4)){ lockNext('Write a bit more before continuing.'); announce('Add a little more detail to your reflection.'); return; }
+      state.exitReflection=ta.value; saveState(); unlockNext(); gotoScene(current+1);
+    });
+    if(isMeaningful(state.exitReflection,4)) unlockNext();
+  }
+});
+
+/* ---- 26. SCOUT REPORT (completion summary + edit links) ---- */
+IDX.scoutReport = SCENES.length;
+scene({chapter:'Final Review', bg:'board', build:()=>{
+  const rows=[
+    {label:'Explain', ok:state.explainEvidence.complete, text:state.explainEvidence.answer, idx:IDX.explain},
+    {label:'Interpret', ok:state.interpretEvidence.complete, text:state.interpretEvidence.evidence?`Picked ${PLAYERS[state.interpretEvidence.pick]?PLAYERS[state.interpretEvidence.pick].name:''}. Evidence: ${state.interpretEvidence.evidence}`:'', idx:IDX.interpret},
+    {label:'Compare', ok:state.compareEvidence.complete, text:state.compareEvidence.mayaWhy, idx:IDX.compare},
+    {label:'Evaluate', ok:state.evaluateEvidence.complete, text:state.evaluateEvidence.note && state.evaluateEvidence.decision ? `Checked: ${state.evaluateEvidence.note}. Decision: ${state.evaluateEvidence.decision}.` : '', idx:IDX.evaluate},
+  ];
+  return `<div class="scene-inner"><div class="stack-c" style="gap:4px;margin-bottom:6px"><div class="eyebrow rv">Self-check</div>
+    <h2 class="title rv dly1" tabindex="-1">YOUR SCOUT REPORT</h2></div>
+  <div class="report-grid">
+    <div class="report-card rv dly2">
+      <div class="report-q"><div class="rq-lbl">Before I trust the ranking&hellip;</div>
+        <div class="rq-ans">${state.exitReflection?escapeHTML(state.exitReflection):'<span style="opacity:.6">(You left this blank. Go back and jot a thought now.)</span>'}</div></div>
+    </div>
+    <div class="stack">
+      <p class="lead rv dly3" style="color:var(--ink)">Your objective evidence:</p>
+      <div class="checklist" id="checklist">
+        ${rows.map((row,i)=>`<div class="check-item show" style="align-items:center;justify-content:space-between;gap:10px">
+          <div style="display:flex;gap:12px;align-items:flex-start;min-width:0">
+            <span class="check-ico" style="color:${row.ok?'var(--lime)':'var(--ink-mute)'}">${row.ok?'&#9989;':'&#9888;&#65039;'}</span>
+            <p><b>${row.label}:</b> ${row.text?escapeHTML(String(row.text)).slice(0,70):'<span style="opacity:.6">not finished yet</span>'}</p>
+          </div>
+          <button type="button" class="reset-btn" data-jump="${row.idx}" style="flex-shrink:0;color:var(--teal-deep)">Edit</button>
+        </div>`).join('')}
+      </div>
+      <p class="body rv" style="color:var(--ink-soft);font-size:var(--f-ui)">Use Edit to revisit and strengthen any answer.</p>
+    </div>
+  </div></div>`;
+},
+  enter:(r)=>{
+    $('.eyebrow',r).classList.add('show');stagger($$('.rv',r).filter(n=>!n.classList.contains('eyebrow')),180,250);
+    $$('[data-jump]',r).forEach(b=>b.addEventListener('click',()=>gotoScene(+b.dataset.jump)));
+  }
+});
+
+/* ---- 27. BADGE REVEAL (evidence-gated) ---- */
+scene({chapter:'Final Review', bg:'lab', build:()=>{
+  const eligible = computeBadgeEligible();
+  if(!eligible){
+    const rows=[
+      {label:'Explain', ok:state.explainEvidence.complete, idx:IDX.explain},
+      {label:'Interpret', ok:state.interpretEvidence.complete, idx:IDX.interpret},
+      {label:'Compare', ok:state.compareEvidence.complete, idx:IDX.compare},
+      {label:'Evaluate', ok:state.evaluateEvidence.complete, idx:IDX.evaluate},
+      {label:'Final reflection', ok:isMeaningful(state.exitReflection,4), idx:IDX.exitTicket},
+    ];
+    return `<div class="lab-bg" style="filter:brightness(.5)"><img src="${A('assets/squadlab-background.png')}" alt=""></div><div class="lab-veil"></div>
+    <div class="lab-content"><div class="stack-c">
+      <div class="pill pill-navy">Almost there</div>
+      <h2 class="title ink-invert" tabindex="-1">Finish these to unlock your badge:</h2>
+      <div class="checklist" style="max-width:min(90vw,600px);margin:0 auto">
+        ${rows.map(row=>`<div class="check-item show" style="align-items:center;justify-content:space-between;gap:10px">
+          <div style="display:flex;gap:12px;align-items:center"><span class="check-ico" style="color:${row.ok?'var(--lime)':'var(--ink-mute)'}">${row.ok?'&#9989;':'&#9888;&#65039;'}</span><p>${row.label}</p></div>
+          <button type="button" class="reset-btn" data-jump="${row.idx}" style="color:var(--teal-deep)">Edit</button>
+        </div>`).join('')}
+      </div>
+    </div></div>`;
+  }
+  return `<div class="lab-bg" style="filter:brightness(.5)"><img src="${A('assets/squadlab-background.png')}" alt=""></div><div class="lab-veil"></div>
+  <div class="badge-scene">
+    <div class="badge-rays" id="badgeRays"></div>
+    <div class="badge-core">
+      <img class="badge-img" id="badgeImg" src="${A('assets/selection-strategist-badge.png')}" alt="Selection Strategist badge">
+      <div class="stack-c" style="gap:6px">
+        <h2 class="display ink-invert kin-big" id="bTitle" tabindex="-1" style="font-size:var(--f-chapter)"><span class="grad-gold">SELECTION STRATEGIST</span></h2>
+        <p class="lead kin" id="bAward" style="color:#C7D6EC">Awarded to</p>
+        <h3 class="title ink-invert kin-big" id="bName">${escapeHTML(state.name||'Reviewer')}</h3>
+        <p class="ui kin" id="bOrg" style="color:#9FB2CF;font-family:'Sora';font-weight:600;letter-spacing:.08em">Fair Play Review Board &middot; Session 2</p>
+      </div>
+    </div>
+  </div>`;
+},
+  enter:(r)=>{
+    const jumpBtns=$$('[data-jump]',r);
+    if(jumpBtns.length){ jumpBtns.forEach(b=>b.addEventListener('click',()=>gotoScene(+b.dataset.jump))); return; }
+    after(200,()=>$('#badgeRays',r).classList.add('on'));
+    const stg=$('.badge-scene',r);const cols=['#28B7C9','#F0954E','#7E8FEE','#AFD645','#EF7A6B'];
+    if(!reducedMotion){
+      for(let i=0;i<16;i++){const p=document.createElement('div');p.className='badge-converge';
+        p.style.background=cols[i%cols.length];const ang=i/16*Math.PI*2;const dist=40;
+        p.style.left=`calc(50% + ${Math.cos(ang)*dist}vmin)`;p.style.top=`calc(50% + ${Math.sin(ang)*dist}vmin)`;
+        stg.appendChild(p);after(200+i*30,()=>{p.style.transition='all 1s var(--e-out)';p.style.opacity='1';p.style.left='50%';p.style.top='50%';});
+        after(1200,()=>{p.style.opacity='0';});}
+    }
+    after(900,()=>{const b=$('#badgeImg',r);b.classList.add('in','shine');});
+    after(1600,()=>{$('#bTitle',r).classList.add('show');confettiBurst(60);});
+    after(2100,()=>$('#bAward',r).classList.add('show'));
+    after(2400,()=>{$('#bName',r).classList.add('show');});
+    after(2800,()=>$('#bOrg',r).classList.add('show'));
+    announce('Badge unlocked: Selection Strategist.');
+  }
+});
+
+/* small helper used by Compare Mode boards */
+function miniPhotoImg(key){
+  return `<img src="${PLAYERS[key].img}" alt="">`;
+}
+
+/* ============================================================
+   RANKING LAB BUILDER (shared by Ranking Lab & Mini-Check 3)
+   ============================================================ */
+const PRIO_DEFS=[
+  {k:'speed',label:'Speed',ico:'&#9889;',color:'var(--c-speed)'},
+  {k:'shooting',label:'Shooting',ico:'&#127919;',color:'var(--c-shoot)'},
+  {k:'teamwork',label:'Teamwork',ico:'&#129309;',color:'var(--c-team)'},
+];
+
+function buildRankingLab(root,opts){
+  const ids=opts.ids||{radar:'labRadar',rank:'labRank',prios:'labPrios',budget:'labBudget',budgetTxt:'labBudgetTxt'};
+  const weights={...opts.prio};
+  let radarKey=opts.radarKey;
+  const radarEl=$('#'+ids.radar,root), rankEl=$('#'+ids.rank,root),
+        prioEl=$('#'+ids.prios,root), budgetEl=$('#'+ids.budget,root), budgetTxt=$('#'+ids.budgetTxt,root);
+
+  const drawR=()=>{radarEl.innerHTML=radarSVG([{key:radarKey,stroke:PLAYERS[radarKey].accent,fill:PLAYERS[radarKey].accent+'40'}],{size:300,showLabels:true});
+    $$('.radar-poly',radarEl).forEach(p=>p.classList.add('drawn'));$$('.radar-dot',radarEl).forEach(d=>d.classList.add('drawn'));};
+  const total=()=>PRIO_DEFS.reduce((s,d)=>s+weights[d.k],0);
+  const drawBudget=()=>{const left=BUDGET-total();budgetEl.innerHTML=Array.from({length:BUDGET},(_,i)=>`<span class="bd ${i<total()?'on':''}"></span>`).join('');
+    budgetTxt.textContent=`${left} left`;};
+  const drawPrios=()=>{
+    prioEl.innerHTML=PRIO_DEFS.map(d=>`
+      <div class="prio-ctrl">
+        <div class="prio-head"><span class="prio-name"><span class="prio-dot" style="background:${d.color}"></span>${d.ico} ${d.label}</span>
+          <span class="prio-pips">${Array.from({length:BUDGET},(_,i)=>`<span class="pip ${i<weights[d.k]?'on':''}" style="--pc:${d.color}"></span>`).join('')}</span></div>
+        <div class="prio-btns"><button type="button" data-k="${d.k}" data-op="-1" aria-label="Decrease ${d.label} weight" ${weights[d.k]<=0||total()<=1?'disabled':''}>&minus;</button>
+          <button type="button" data-k="${d.k}" data-op="1" aria-label="Increase ${d.label} weight" ${total()>=BUDGET||weights[d.k]>=BUDGET?'disabled':''}>+</button></div>
+      </div>`).join('');
+    $$('.prio-btns button',prioEl).forEach(b=>b.addEventListener('click',()=>{
+      const k=b.dataset.k,op=+b.dataset.op;
+      if(op<0&&weights[k]>0&&total()>1)weights[k]--;
+      if(op>0&&total()<BUDGET&&weights[k]<BUDGET)weights[k]++;
+      update(false);
+    }));
+  };
+  const update=(first)=>{
+    drawPrios();drawBudget();
+    renderRanking(rankEl,opts.rankKeys,weights,{firstAnim:first,highlight:opts.radarKey});
+    if(opts.onChange)opts.onChange(weights);
+  };
+  drawR();update(true);
+}
+
+/* renderRanking with FLIP */
+function renderRanking(container,pkeys,weights,{firstAnim=false}={}){
+  const order=ranked(pkeys,weights);
+  const existing={};
+  $$('.rank-row',container).forEach(row=>existing[row.dataset.key]=row);
+  const firstRects={};
+  Object.values(existing).forEach(row=>firstRects[row.dataset.key]=row.getBoundingClientRect());
+
+  order.forEach(x=>{
+    if(!existing[x.k]){
+      const p=PLAYERS[x.k];
+      const row=h(`<div class="rank-row" data-key="${x.k}" style="--accent:${p.accent}">
+        <div class="rank-pos"></div>
+        <div class="rank-face"><img src="${p.img}" alt=""></div>
+        <div class="rank-info"><div class="rank-name">${p.name}</div><div class="rank-tag">${p.tag}</div></div>
+        <div class="rank-fit"><div class="rank-fit-num">0</div><div class="rank-fit-lbl">Fit</div></div>
+      </div>`);
+      container.appendChild(row);existing[x.k]=row;
+      if(!firstAnim){row.style.opacity='0';}
+    }
+  });
+  order.forEach((x,i)=>{
+    const row=existing[x.k];container.appendChild(row);
+    row.querySelector('.rank-pos').textContent='#'+(i+1);
+    row.classList.toggle('top',i===0);
+    const fitNum=Math.round(x.f);
+    const numEl=row.querySelector('.rank-fit-num');
+    const cur=parseInt(numEl.textContent)||0;
+    animateNum(numEl,cur,fitNum);
+  });
+  if(!firstAnim && !reducedMotion){
+    order.forEach(x=>{
+      const row=existing[x.k];row.style.opacity='1';
+      const last=row.getBoundingClientRect();const fr=firstRects[x.k];
+      if(fr){const dy=fr.top-last.top;
+        if(Math.abs(dy)>1){row.style.transform=`translateY(${dy}px)`;row.style.transition='none';
+          requestAnimationFrame(()=>{row.style.transition='transform .6s var(--e-out)';row.style.transform='';});}
+      }
+    });
+  }else if(!firstAnim){
+    order.forEach(x=>{ existing[x.k].style.opacity='1'; });
+  }
+}
+
+/* ============================================================
+   ENGINE
+   ============================================================ */
+let current=0;
+const stage=$('#stage');
+
+function buildScene(i){
+  const s=SCENES[i];
+  const el=document.createElement('div');
+  el.className='scene';el.dataset.bg=s.bg;el.dataset.idx=i;
+  el.innerHTML=s.build();
+  return el;
+}
+
+let locked=false, lockMsg='';
+function lockNext(msg){locked=true;lockMsg=msg||'';updateNav();}
+function unlockNext(){locked=false;lockMsg='';updateNav();}
+
+function gotoScene(i){
+  if(i<0||i>=SCENES.length)return;
+  clearTimers();locked=false;lockMsg='';
+  const old=$('.scene.active',stage);
+  if(old){old.classList.remove('active');old.remove();}
+  $$('.confetti',stage).forEach(c=>c.remove());
+  current=i;
+  const el=buildScene(i);
+  stage.appendChild(el);
+  void el.offsetWidth;
+  el.classList.add('active');
+  const heading = el.querySelector('h1,h2,h3,[tabindex="-1"]');
+  if(heading){ if(!heading.hasAttribute('tabindex')) heading.setAttribute('tabindex','-1'); heading.focus({preventScroll:true}); }
+  const s=SCENES[i];
+  if(s.enter)s.enter(el);
+  /* safety net: guarantee no .rv/.kin/.kin-big element is ever left stuck
+     invisible because a scene's own stagger() call missed it */
+  after(3500,()=>{ $$('.rv,.kin,.kin-big',el).forEach(n=>n.classList.add('show')); });
+  updateNav();updateChip();
+  saveState();
+}
+
+function updateNav(){
+  $('#prevBtn').disabled=current===0;
+  const next=$('#nextBtn');
+  next.disabled=locked||current===SCENES.length-1;
+  next.classList.toggle('pulse',!locked&&current<SCENES.length-1&&current>=3);
+  next.setAttribute('aria-describedby','nextHint');
+  if(current===SCENES.length-1){next.textContent='Done';}
+  else{next.textContent='Next ›';}
+  $('#progRead').textContent=`${current+1} / ${SCENES.length}`;
+  const hint=$('#nextHint');
+  if(hint){
+    if(locked && lockMsg){ hint.textContent=lockMsg; hint.classList.remove('hidden'); }
+    else{ hint.textContent=''; hint.classList.add('hidden'); }
+  }
+}
+
+function updateChip(){
+  const chip=$('#idchip');
+  if(state.name && current>=3){
+    chip.style.display='flex';
+    $('#idName').textContent=state.name;
+    $('#idInitial').textContent=(state.name[0]||'R').toUpperCase();
+    const active=$('.scene.active',stage);
+    chip.classList.toggle('on-lab',active&&active.dataset.bg==='lab');
+  }else{chip.style.display='none';}
+}
+
+/* nav wiring */
+$('#nextBtn').addEventListener('click',()=>{if(!$('#nextBtn').disabled)gotoScene(current+1);});
+$('#prevBtn').addEventListener('click',()=>gotoScene(current-1));
+document.addEventListener('keydown',e=>{
+  const t=e.target;
+  if(t && t.closest && t.closest('button,a,input,textarea,select,[role="slider"],[contenteditable="true"]'))return;
+  if(e.key==='ArrowRight'&&!$('#nextBtn').disabled)gotoScene(current+1);
+  if(e.key==='ArrowLeft'&&current>0)gotoScene(current-1);
+});
+stage.addEventListener('click',e=>{const b=e.target.closest('[data-next]');if(b&&!$('#nextBtn').disabled)gotoScene(current+1);});
+
+/* font size */
+let fsIdx=2;const FS=[.82,.9,1,1.12,1.24];
+function applyFS(){document.documentElement.style.setProperty('--fsm',FS[fsIdx]);document.body.classList.toggle('fs-max',fsIdx===FS.length-1);}
+$('#fsUp').addEventListener('click',()=>{fsIdx=Math.min(FS.length-1,fsIdx+1);applyFS();});
+$('#fsDown').addEventListener('click',()=>{fsIdx=Math.max(0,fsIdx-1);applyFS();});
+$('#fsReset').addEventListener('click',()=>{fsIdx=2;applyFS();});
+
+/* reset */
+$('#resetBtn').addEventListener('click',()=>{
+  if(confirm('Reset this session? This clears your name, picks, and notes and starts over from the beginning.')){
+    Object.assign(state, freshState());
+    try{localStorage.removeItem(STORE_KEY);}catch(e){}
+    $('#idchip').style.display='none';
+    gotoScene(0);
+  }
+});
+
+/* boot */
+const restoredIdx = restoreState();
+applyFS();
+gotoScene(Math.min(Math.max(restoredIdx,0),SCENES.length-1));
+
+</script>
+</body>
+</html>
