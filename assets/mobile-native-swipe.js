@@ -1,0 +1,3 @@
+const phoneQuery=matchMedia('(pointer: coarse) and (max-width: 767px)'),selectors='#work-k12 .strip,#work-other .strip';
+const setup=strip=>{if(!phoneQuery.matches){strip.removeAttribute('data-native-swipe');return}strip.setAttribute('data-native-swipe','');if(strip.dataset.nativeSwipeReady)return;strip.dataset.nativeSwipeReady='true';const centre=()=>{if(strip.scrollLeft||!phoneQuery.matches)return;strip.scrollLeft=Math.max(0,(strip.scrollWidth-strip.clientWidth)/2)};new ResizeObserver(centre).observe(strip);requestAnimationFrame(centre)};
+const refresh=()=>document.querySelectorAll(selectors).forEach(setup);phoneQuery.addEventListener('change',refresh);new MutationObserver(refresh).observe(document.body,{childList:true,subtree:true});refresh();

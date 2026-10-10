@@ -1,5 +1,6 @@
 <!doctype html>
-<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<html lang="en"><head>
+<script src="../../assets/preview-session.js"></script><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <title>What Do You Want to Be Known For? · Standalone</title>
 <script type="application/json" id="__CONFIG__">
       {"remoteManifest":{"ai_scenario":{".js":["ai-scenario/entry.js"]},"learn_distribution_frontend":{".js":["learn_dist/entry.js"]},"mondrian":{".js":["mondrian/entry.js"]}},"assetTargetPrefixes":{"media":"assets","font":"lib/fonts"},"loadOnlyInLms":false,"surface":"web-export"}
@@ -80,6 +81,7 @@ function fixCss(css,key) {
   });
 }
 function fixHtml(html,key){
+  html = html.replace(/<head([^>]*)>/i, head => head + "<script>(() => {\n  const makeStorage = () => {\n    const values = new Map();\n    const methods = { getItem: key => values.get(String(key)) ?? null,\n      setItem: (key, value) => { values.set(String(key), String(value)); },\n      removeItem: key => { values.delete(String(key)); }, clear: () => values.clear(),\n      key: index => [...values.keys()][index] ?? null };\n    return new Proxy(methods, {\n      get: (target, key) => key === 'length' ? values.size : key in target ? target[key] : values.get(String(key)),\n      set: (target, key, value) => { values.set(String(key), String(value)); return true; },\n      deleteProperty: (target, key) => { values.delete(String(key)); return true; },\n      ownKeys: () => [...values.keys()],\n      getOwnPropertyDescriptor: () => ({ configurable: true, enumerable: true })\n    });\n  };\n  for (const key of ['localStorage', 'sessionStorage']) {\n    Object.defineProperty(window, key, { configurable: true, value: makeStorage() });\n  }\n  if ('scrollRestoration' in history) history.scrollRestoration = 'manual';\n  window.addEventListener('pagehide', () => document.querySelectorAll('video,audio').forEach(media => media.pause()));\n})();<\/script>");
   // The embedded self-contained interaction has ordinary relative image paths.
   return html.replace(/(\b(?:src|href)\s*=\s*)(['"])([^'"]+)\2/gi,(all,eq,q,v)=>{
     const found=resolve(v,key);return found?`${eq}${q}${getURL(found)}${q}`:all;

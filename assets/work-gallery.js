@@ -147,10 +147,12 @@ function SlidePlayer({ project }) {
 }
 
 function VideoPlayer({ project }) {
+  const media = React.useRef(null);
+  React.useEffect(() => { const video = media.current; video.pause(); video.load(); return () => { video.pause(); video.removeAttribute('src'); video.load(); }; }, [project.href]);
   const [failed, setFailed] = React.useState(false);
   return h('div', { className: 'video-player' },
     h('p', { className: 'video-language' }, h('span', { 'aria-hidden': true }, '◉ '), 'Video in Indonesian'),
-    h('video', { src: project.href, poster: project.poster, controls: true, playsInline: true, preload: 'metadata',
+    h('video', { ref: media, src: project.href, poster: project.poster, controls: true, playsInline: true, preload: 'metadata',
       'aria-label': `${project.title} — video in Indonesian`, onError: () => setFailed(true) }),
     failed && h('p', { role: 'alert' }, 'The video could not load. ', h('a', { href: project.href, target: '_blank', rel: 'noopener noreferrer' }, 'Open the original video')));
 }
