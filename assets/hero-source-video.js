@@ -1,8 +1,12 @@
-import colors from './hero-colors.js';
-import { createFrameSequence as createVideoFallback } from './hero-video-fallback.js';
-const SUBJECT = { x: .725, y: .55, r: .44, left: .44, right: .97 };
-// Full 1920×1080 lossless frames, decoded ahead into a bounded bitmap cache.
-export function createFrameSequence(canvas, { width, height, video, onLuma }) {
+import { createFrameSequence as createOriginalVideoSequence } from './hero-video-fallback.js';
+
+// The original 1920×1080 globe movie is decoded by the browser's video pipeline.
+// It avoids decoding large image bitmaps during scroll while preserving the source resolution.
+export function createFrameSequence(canvas, options) {
+  return createOriginalVideoSequence(canvas, options);
+}
+/*
+export function legacyFrameSequence(canvas, { width, height, video, onLuma }) {
   const ctx=canvas.getContext('2d',{alpha:false});
   const cache=new Map(), pending=new Map();
   const compact=window.innerWidth<768 || navigator.deviceMemory<=4;
@@ -92,3 +96,4 @@ export function createFrameSequence(canvas, { width, height, video, onLuma }) {
     destroy(){disposed=true;cancelAnimationFrame(raf);fallback?.destroy();for(const controller of pending.values())controller.abort();for(const bitmap of cache.values())bitmap.close();cache.clear();}
   };
 }
+*/
