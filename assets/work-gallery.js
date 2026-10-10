@@ -49,21 +49,32 @@ export const otherCategory = {
 
 function LoopVideo({ project, playing }) {
   const ref = React.useRef(null);
+  const [activated, setActivated] = React.useState(false);
   React.useEffect(() => {
-    const video = ref.current;
+    const holder = ref.current;
+    if (!holder) return undefined;
     let visible = false;
     const update = () => {
+      const video = holder.querySelector('video');
+      if (!video) return;
       if (visible && playing && !document.hidden) video.play().catch(() => {});
       else video.pause();
     };
-    const observer = new IntersectionObserver(([entry]) => { visible = entry.isIntersecting; update(); });
+    const observer = new IntersectionObserver(([entry]) => {
+      visible = entry.isIntersecting;
+      if (visible) setActivated(true);
+      update();
+    }, { rootMargin: '240px 0px' });
     const onVisibility = update;
-    observer.observe(video);
+    observer.observe(holder);
     document.addEventListener('visibilitychange', onVisibility);
-    return () => { observer.disconnect(); video.pause(); document.removeEventListener('visibilitychange', onVisibility); };
-  }, [playing]);
-  return h('video', { ref, src: project.video, poster: project.poster, muted: true, loop: true,
-    playsInline: true, preload: 'none', 'aria-hidden': true, disablePictureInPicture: true });
+    return () => { observer.disconnect(); holder.querySelector('video')?.pause(); document.removeEventListener('visibilitychange', onVisibility); };
+  }, [playing, activated]);
+  return h('span', { ref, className: 'loop-video-shell' },
+    activated
+      ? h('video', { src: project.video, poster: project.poster, muted: true, loop: true,
+          playsInline: true, preload: 'metadata', 'aria-hidden': true, disablePictureInPicture: true })
+      : h('img', { src: project.poster, alt: '', loading: 'lazy', decoding: 'async', fetchPriority: 'low', 'aria-hidden': true }));
 }
 
 function CorporateCard({ project, playing, onOpen, confidential = false }) {
@@ -95,7 +106,7 @@ export function CorporateGallery({ unlocked, motionEnabled, paused, onOpen }) {
             key: project.id, project, playing: motionEnabled && !paused, onOpen })))
         : h(React.Fragment, null,
             h('div', { className: 'sealed-previews', 'aria-hidden': true }, corporateProjects.map(project =>
-              h('div', { key: project.id, className: 'sealed-preview' }, h('img', { src: project.poster, alt: '' })))),
+              h('div', { key: project.id, className: 'sealed-preview' }, h('img', { src: project.poster, alt: '', loading: 'lazy', decoding: 'async', fetchPriority: 'low' })))),
             h(CorporateCard, { project: confidentialProject, playing: motionEnabled && !paused, onOpen, confidential: true }))),
     h('p', { className: 'sr-only', role: 'status' }, unlocked ? 'Three selected examples are now available.' : 'Read the confidentiality note to reveal three examples.'));
 }

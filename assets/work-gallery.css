@@ -5,6 +5,7 @@
 .corporate-card{width:100%;min-width:0;will-change:auto}
 .corporate-card .card-hit{text-align:left;color:#f4f6ff}
 .corporate-card .card-media video{transform:none;width:100%;height:100%;object-fit:cover}
+.corporate-card .card-media .loop-video-shell,.corporate-card .card-media .loop-video-shell>img,.corporate-card .card-media .loop-video-shell>video{display:block;width:100%;height:100%}.corporate-card .card-media .loop-video-shell>img{object-fit:cover}
 .work-card-caption{display:flex;flex-direction:column;gap:9px;padding:18px 12px 14px;text-align:left}
 .work-card-caption strong{font-family:var(--display,var(--sans));font-size:clamp(19px,1.6vw,27px);font-weight:550;letter-spacing:-.02em;line-height:1.25}
 .work-card-eyebrow{font-family:var(--sans);font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;opacity:.72;line-height:1.5}
